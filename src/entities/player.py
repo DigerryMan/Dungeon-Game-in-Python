@@ -1,23 +1,24 @@
 import pygame
+from config import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, name="Player1"):
+    def __init__(self, game, x, y, name="Player1"):
         self.__health = 3
         self.__movement_speed = 100
         self.__name = name
-        self._layer = 3
-        self.x = 0
-        self.y = 0
-        self.vel = 5
-        self.width = 20
-        self.height = 20
+        self._layer = PLAYER_LAYER
+        self.x = x * TILE_SIZE
+        self.y = y * TILE_SIZE
+        self.vel = 10
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
         self.facing = 'down'
 
         self.game = game
         self.groups = self.game.all_sprites
 
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill((255,0,0))
+        self.image.fill(RED)
 
         self.rect = self.image.get_rect()
 

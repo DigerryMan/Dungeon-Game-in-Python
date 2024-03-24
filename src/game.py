@@ -1,7 +1,8 @@
 import pygame
+import sys
+from map.map import *
 from entities.player import *
 from config import *
-import sys
 
 class Game:
     def __init__(self):
@@ -18,7 +19,10 @@ class Game:
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
 
-        self.player = Player(self)
+        self.map = Map(self)
+        self.map.draw_room()
+
+        
 
     def events(self):
         for event in pygame.event.get():
@@ -31,6 +35,7 @@ class Game:
 
     def draw(self):
         self.screen.fill(BLACK)
+        #self.blocks.draw(self.screen)
         self.all_sprites.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
