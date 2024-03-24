@@ -25,17 +25,17 @@ class Player(pygame.sprite.Sprite):
     def move(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_LEFT] and self.x > 0 + self.x < 1000 - self.width:
+        if keys[pygame.K_a]:
             self.x -= self.vel
         
-        if keys[pygame.K_RIGHT] and self.x < 1000 - self.width:
+        if keys[pygame.K_d]:
             self.x += self.vel
 
-        if keys[pygame.K_UP] and self.y > 0 + self.height: 
-            self.y += self.vel
-
-        if keys[pygame.K_DOWN] and self.y > 1000 - self.height:
+        if keys[pygame.K_w]: 
             self.y -= self.vel
+
+        if keys[pygame.K_s]:
+            self.y += self.vel
 
         self.rect.x = self.x
         self.rect.y = self.y
