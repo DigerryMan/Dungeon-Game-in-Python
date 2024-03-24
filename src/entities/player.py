@@ -14,6 +14,9 @@ class Player(pygame.sprite.Sprite):
         self.height = TILE_SIZE
         self.facing = 'down'
 
+        self.x_change = 0
+        self.y_change = 0
+
         self.game = game
         self.groups = self.game.all_sprites
 
@@ -21,6 +24,8 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(RED)
 
         self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
 
         pygame.sprite.Sprite.__init__(self, self.groups)
     
@@ -28,25 +33,49 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
-            self.x -= self.vel
+            self.x_change -= self.vel
             self.facing = 'left'
         
         if keys[pygame.K_d]:
-            self.x += self.vel
+            self.x_change += self.vel
             self.facing = 'right'
 
 
         if keys[pygame.K_w]: 
-            self.y -= self.vel
+            self.y_change -= self.vel
             self.facing = 'up'
 
 
         if keys[pygame.K_s]:
-            self.y += self.vel
+            self.y_change += self.vel
             self.facing = 'down'
 
-        self.rect.x = self.x
-        self.rect.y = self.y
+
 
     def update(self):
         self.move()
+
+        self.rect.x += self.x_change
+        self.collide_blocks("x")
+        self.rect.y += self.y_change
+        self.collide_blocks("y")
+
+        self.x_change = 0
+        self.y_change = 0
+    
+    def collide_blocks(self, direction):
+        if direction == "x":
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                if self.x_change > 0:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                if self.x_change < 0:
+                    self.rect.x = hits[0].rect.right
+
+        if direction == "y":
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                if self.y_change > 0:
+                    self.rect.y = hits[0].rect.top - self.rect.height
+                if self.y_change < 0:
+                    self.rect.y = hits[0].rect.bottom
