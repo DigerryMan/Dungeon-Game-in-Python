@@ -1,4 +1,5 @@
 import pygame
+from entities.player import *
 from config import *
 import sys
 
@@ -17,7 +18,7 @@ class Game:
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
 
-        #self.player = Player()
+        self.player = Player(self)
 
     def events(self):
         for event in pygame.event.get():
@@ -26,10 +27,13 @@ class Game:
                 self.running = False
 
     def update(self):
-        pass
+        self.all_sprites.update()
 
     def draw(self):
-        pass
+        self.screen.fill(BLACK)
+        self.all_sprites.draw(self.screen)
+        self.clock.tick(FPS)
+        pygame.display.update()
 
     def run_game(self):
         while self.running:
