@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         self._layer = PLAYER_LAYER
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
-        self.vel = 10
+        self.speed = 10
         self.width = TILE_SIZE
         self.height = TILE_SIZE
         self.facing = 'down'
@@ -29,52 +29,61 @@ class Player(pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self, self.groups)
     
-    def move(self):
+    def _move(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
-            self.x_change -= self.vel
+            self.x_change -= self.speed
             self.facing = 'left'
         
         if keys[pygame.K_d]:
-            self.x_change += self.vel
+            self.x_change += self.speed
             self.facing = 'right'
 
 
         if keys[pygame.K_w]: 
-            self.y_change -= self.vel
+            self.y_change -= self.speed
             self.facing = 'up'
 
 
         if keys[pygame.K_s]:
-            self.y_change += self.vel
+            self.y_change += self.speed
             self.facing = 'down'
 
 
 
     def update(self):
-        self.move()
+        self._move()
+        
+        self._correct_diagonal_movement()
 
         self.rect.x += self.x_change
-        self.collide_blocks("x")
+        self._collide_blocks('x')
         self.rect.y += self.y_change
-        self.collide_blocks("y")
+        self._collide_blocks('y')
 
         self.x_change = 0
         self.y_change = 0
     
-    def collide_blocks(self, direction):
-        if direction == "x":
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
+    def _correct_diagonal_movement(self):
+        if(self.x_change and self.y_change):
+            self.x_change //= 1.41
+            self.y_change //= 1.41
+            if self.x_change < 0:
+                self.x_change += 1
+            if self.y_change < 0:
+                self.y_change += 1
+
+    def _collide_blocks(self, direction:str):
+        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        if hits:
+            if direction == 'x':
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
 
-        if direction == "y":
-            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-            if hits:
+            if direction == 'y':
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
