@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.vel = 5
         self.width = 20
         self.height = 20
+        self.facing = 'down'
 
         self.game = game
         self.groups = self.game.all_sprites
@@ -27,21 +28,24 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_a]:
             self.x -= self.vel
+            self.facing = 'left'
         
         if keys[pygame.K_d]:
             self.x += self.vel
+            self.facing = 'right'
+
 
         if keys[pygame.K_w]: 
             self.y -= self.vel
+            self.facing = 'up'
+
 
         if keys[pygame.K_s]:
             self.y += self.vel
+            self.facing = 'down'
 
         self.rect.x = self.x
         self.rect.y = self.y
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, (0,0,255), (self.x, self.y, self.width, self.height))
 
     def update(self):
         self.move()
