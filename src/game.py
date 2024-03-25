@@ -34,7 +34,7 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        if len(self.enemies) == 0:
+        if len(self.enemies) == 0 or ADMIN:
             self.map.set_room_cleared()
 
     def render_next_room(self, direction:str):
