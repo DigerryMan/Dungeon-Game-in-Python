@@ -6,7 +6,6 @@ class Player(pygame.sprite.Sprite):
         self.__health = 3
         self.__movement_speed = 100
         self.__name = name
-        self._layer = PLAYER_LAYER
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
         self.speed = 10
@@ -18,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.y_change = 0
 
         self.game = game
-        self.groups = self.game.all_sprites
+        self.groups = self.game.all_sprites, self.game.player_sprite
 
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(RED)
@@ -26,6 +25,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self._layer = self.rect.bottom
 
         pygame.sprite.Sprite.__init__(self, self.groups)
     
@@ -62,9 +63,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.y_change
         self._collide_blocks('y')
 
+        self._layer = self.rect.bottom
+
         self.x_change = 0
         self.y_change = 0
     
+
+
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
             self.x_change //= 1.41
@@ -88,3 +93,11 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
+
+    def set_position(self, x, y):
+        self.rect.x = x * TILE_SIZE
+        self.rect.y = y * TILE_SIZE
+
+    def get_hit(self, dmg:int):
+        self.__health -= dmg
+        print(self.__health)
