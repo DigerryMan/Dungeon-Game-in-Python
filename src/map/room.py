@@ -10,7 +10,7 @@ class Room():
         self.room = rooms[room_type]
         self.player = player
 
-    def draw_room(self, game):
+    def draw_room(self, game, entry_direction:str):
         for y, row in enumerate(self.room):
             for x, col in enumerate(row):
                 if col == '#':
@@ -29,6 +29,22 @@ class Room():
 
                 if col == 'E':
                     Enemy(game, x, y)
+
+        self.spawn_player(entry_direction)
                     
-                if col == 'P':
-                    self.player.set_position(x, y)
+    
+    def spawn_player(self, entry_direction):
+        if entry_direction == 'up':
+            self.player.set_position(self.player.rect.x / TILE_SIZE, MAP_HEIGHT - 2)
+
+        elif entry_direction == 'down':
+            self.player.set_position(self.player.rect.x / TILE_SIZE, 1)
+
+        elif entry_direction == 'left':
+            self.player.set_position(MAP_WIDTH - 2, self.player.rect.y / TILE_SIZE)
+
+        elif entry_direction == 'right':
+            self.player.set_position(1, self.player.rect.y / TILE_SIZE)
+
+        elif entry_direction == 'center':
+            self.player.set_position(MAP_WIDTH / 2, MAP_HEIGHT / 2)
