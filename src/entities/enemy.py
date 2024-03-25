@@ -66,13 +66,12 @@ class Enemy(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
             self.game.damage_player(self.__damage)
-            #print("enemy: ", self._layer)
             self.game.playing = False
 
     def get_hit(self, dmg:int):
         self.__health -= dmg
         if self.__health <= 0:
             self.kill()
-
+        
     def animate(self):
         pass

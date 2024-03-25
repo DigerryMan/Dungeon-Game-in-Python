@@ -44,6 +44,8 @@ class Game:
         self.blocks.empty()
         self.doors.empty()
         self.attacks.empty()
+        self.enemies.empty()
+     
 
     def damage_player(self, enemy_dmg:int):
         self.player.get_hit(enemy_dmg)
