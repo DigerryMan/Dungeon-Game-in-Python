@@ -94,9 +94,9 @@ class Player(pygame.sprite.Sprite):
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
 
-    def set_position(self, x, y):
-        self.rect.x = x * TILE_SIZE
-        self.rect.y = y * TILE_SIZE
+    def set_rect_position(self, x_rect, y_rect):
+        self.rect.x = x_rect
+        self.rect.y = y_rect
 
     def get_hit(self, dmg:int):
         self.__health -= dmg
