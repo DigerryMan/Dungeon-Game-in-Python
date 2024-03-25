@@ -54,7 +54,7 @@ class Room():
 
     def set_room_cleared(self):
         self.room_cleared = True
-        print(len(self.doors))
+        
         for door in self.doors:
             door.is_open = True
             door.image.fill(GREEN)
