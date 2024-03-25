@@ -48,3 +48,7 @@ class Map():
 
         elif direction == 'right':
             self.current_position[1] += 1
+
+    def set_room_cleared(self):
+        x, y = self.current_position
+        self.room_map[x][y].set_room_cleared()

@@ -3,6 +3,7 @@ from config import *
 
 class Door(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction:str):
+        self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER
         self.groups = self.game.all_sprites, self.game.doors
@@ -24,9 +25,10 @@ class Door(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.collide()
+        if self.is_open:
+            self.collide()
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.render_next_room(self.direction)  
+            self.game.render_next_room(self.direction)
