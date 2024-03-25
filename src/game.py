@@ -17,12 +17,13 @@ class Game:
         self.player_sprite = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
 
         self.player = Player(self, 0, 0)
         self.map = Map(self, self.player)
-        self.map.draw_room()
+        self.map.draw_initial_room()
 
 
     def events(self):
@@ -34,6 +35,16 @@ class Game:
     def update(self):
         self.all_sprites.update()
 
+    def render_next_room(self, direction:str):
+        self._clear_sprites()
+        self.map.draw_room(direction)
+
+    def _clear_sprites(self):
+        self.all_sprites.remove(self.blocks, self.doors, self.enemies, self.attacks)
+        self.blocks.empty()
+        self.doors.empty()
+        self.attacks.empty()
+
     def damage_player(self, enemy_dmg:int):
         self.player.get_hit(enemy_dmg)
 
@@ -43,6 +54,8 @@ class Game:
         sprite_list = sorted(self.all_sprites, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             self.screen.blit(sprite.image, sprite.rect)
+
+        self.blocks.draw(self.screen)
 
         self.clock.tick(FPS)
         pygame.display.update()
