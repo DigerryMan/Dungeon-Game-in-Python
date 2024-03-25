@@ -1,5 +1,6 @@
 import pygame
 from config import *
+from .bullet import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, name="Player1"):
@@ -27,12 +28,20 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = self.y
 
         self._layer = self.rect.bottom
+        self.__last_hit = pygame.time.get_ticks()
+        self.__immortality_after_hit = 1000
+        self.__shooting_cooldown = 500
+        self.__last_shot = pygame.time.get_ticks()
+
 
         pygame.sprite.Sprite.__init__(self, self.groups)
     
-    def _move(self):
+    def _user_input(self):
         keys = pygame.key.get_pressed()
+        self._move(keys)
+        self._shoot(keys)
 
+    def _move(self, keys):
         if keys[pygame.K_a]:
             self.x_change -= self.speed
             self.facing = 'left'
@@ -51,10 +60,16 @@ class Player(pygame.sprite.Sprite):
             self.y_change += self.speed
             self.facing = 'down'
 
-
+    def _shoot(self, keys):
+        if keys[pygame.K_SPACE]:
+            now = pygame.time.get_ticks()
+            if now - self.__last_shot > self.__shooting_cooldown:
+                self.__last_shot = now
+                Bullet(self.game, self.rect.centerx, self.rect.centery, self.facing)
+            pass
 
     def update(self):
-        self._move()
+        self._user_input()
         
         self._correct_diagonal_movement()
 
@@ -99,5 +114,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y_rect
 
     def get_hit(self, dmg:int):
-        self.__health -= dmg
-        print(self.__health)
+        now = pygame.time.get_ticks()
+        if now - self.__last_hit > self.__immortality_after_hit:
+            self.__health -= dmg
+            self.__last_hit = now
+            if self.__health <= 0:
+                self.game.game_over()
+                print("KONIEC GRY!")
+            print(self.__health)
+
+    

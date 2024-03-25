@@ -29,5 +29,4 @@ class Door(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.render_next_room(self.direction)
-            print("nie drzwi nie")    
+            self.game.render_next_room(self.direction)  
