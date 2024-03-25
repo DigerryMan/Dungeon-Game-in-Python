@@ -17,5 +17,7 @@ RED = (255, 0, 0)
 GREEN = (0,255,0)
 YELLOW = (255,255,0)
 BROWN = (156, 106, 6)
+PURPLE = (226, 35, 247)
 
 ADMIN = True
+

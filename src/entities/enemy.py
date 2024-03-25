@@ -1,9 +1,10 @@
 import pygame
 import random
 from config import *
+from entities.bullet import Bullet
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, x:int, y:int):
+    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True):
         self.game = game
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -13,12 +14,15 @@ class Enemy(pygame.sprite.Sprite):
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
-        self.__speed = 7
+        self._speed = 4
         self.x_change = 0
         self.y_change = 0
+        self._check_block_colisions = check_block_colisions
 
-        self.__health = 1
-        self.__damage = 1
+        self._health = 1
+        self._damage = 1
+        self._attack_speed = 800
+        self._last_attack = pygame.time.get_ticks()
 
         self.facing = random.choice(['left', 'right'])
         self.animation_loop = 1
@@ -40,38 +44,82 @@ class Enemy(pygame.sprite.Sprite):
         self.move()
         self.animate()
         self.collide_enemy()
+        self.attack()
 
         self.rect.x += self.x_change
-        self.rect.y += self.y_change
+        if self._check_block_colisions:
+            self.collide_blocks('x')
 
+        self.rect.y += self.y_change
+        if self._check_block_colisions:
+            self.collide_blocks('y')
+        
         self._layer = self.rect.bottom
 
         self.x_change = 0
         self.y_change = 0
 
     def move(self):
-        if self.facing == 'left':
-            self.x_change -= self.__speed
-            self.movement_loop -= 1
-            if self.movement_loop <= -self.max_travel:
-                self.facing = 'right'
-        
-        if self.facing == 'right':
-            self.x_change += self.__speed
-            self.movement_loop += 1
-            if self.movement_loop >= self.max_travel:
-                self.facing = 'left'
+        p_x, p_y = self.game.player.rect.x, self.game.player.rect.y
 
+        diff = abs(p_x - self.rect.x)
+        loc_speed = self._speed
+
+        if diff < self._speed:
+           loc_speed = diff
+        
+        if self.rect.x < p_x:
+            self.x_change = loc_speed
+        elif self.rect.x > p_x:
+            self.x_change = -loc_speed
+
+    
+        diff = abs(p_y - self.rect.y)
+        loc_speed = self._speed
+
+        if diff < self._speed:
+            loc_speed = diff
+        
+        if self.rect.y < p_y:
+            self.y_change = loc_speed
+        elif self.rect.y > p_y:
+            self.y_change = -loc_speed
+
+    
     def collide_enemy(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.damage_player(self.__damage)
+            self.game.damage_player(self._damage)
             self.game.playing = False
 
+    def collide_blocks(self, direction:str):
+        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        if hits:
+            if direction == 'x':
+                if self.x_change > 0:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                if self.x_change < 0:
+                    self.rect.x = hits[0].rect.right
+
+            if direction == 'y':
+                if self.y_change > 0:
+                    self.rect.y = hits[0].rect.top - self.rect.height
+                if self.y_change < 0:
+                    self.rect.y = hits[0].rect.bottom
+
     def get_hit(self, dmg:int):
-        self.__health -= dmg
-        if self.__health <= 0:
+        self._health -= dmg
+        if self._health <= 0:
             self.kill()
-        
+    
+    def attack(self):
+        now = pygame.time.get_ticks()
+        if now - self._last_attack > self._attack_speed:
+            self._last_attack = now
+            Bullet(self.game, self.rect.centerx, self.rect.centery, 'left', False, self._damage)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, 'right', False, self._damage)
+            
     def animate(self):
         pass
+            
+        

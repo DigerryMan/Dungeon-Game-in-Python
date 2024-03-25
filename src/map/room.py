@@ -4,6 +4,7 @@ from .block import *
 from .door import *
 from entities.player import *
 from entities.enemy import *
+from entities.mob1 import *
 
 class Room():    
     def __init__(self, room_type, player:Player):
@@ -29,8 +30,11 @@ class Room():
                     elif(x == MAP_WIDTH - 1):
                         self.doors.append(Door(game, x, y, 'right'))
 
-                if col == 'E' and not self.room_cleared:
-                    Enemy(game, x, y)
+                if not self.room_cleared:
+                    if col == 'E':
+                        Enemy(game, x, y)
+                    elif col == 'M':
+                        Mob1(game, x, y)
 
         self.spawn_player(entry_direction)
         
@@ -54,7 +58,7 @@ class Room():
 
     def set_room_cleared(self):
         self.room_cleared = True
-        
+
         for door in self.doors:
             door.is_open = True
             door.image.fill(GREEN)
