@@ -114,42 +114,26 @@ class Map():
 
 
 
-
-
-
-
-
-
-
-
-    ################# DO NAPRAWY #################
     def create_map_shape(self, arr, row_, col_):
         room_cnt = 1
-        q = deque()
-        q.append([row_, col_])
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-        d_row = [0, 0, 1, -1]
-        d_col = [1, -1, 0, 0]
-
+        row, col = row_, col_
         while room_cnt < ROOM_NUMBER:
-            if len(q) > 0:
-                row, col = q.popleft()
+            arr[row][col] = 1
+            room_cnt += 1
 
-            else:
-                row = random.randint(0, 14)
-                col = random.randint(0, 14)
-                while arr[row][col] == -inf:
-                    row = random.randint(0, 14)
-                    col = random.randint(0, 14)
+            d_row, d_col = random.choice(directions)
+            row, col = row + d_row, col + d_col
 
-            for i in range(4):
-                new_row = row + d_row[i]
-                new_col = col + d_col[i]
+            if row < 0 or col < 0 or row >= 15 or col >= 15:
+                row, col = row - d_row, col - d_col
 
-                if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and arr[new_row][new_col] == 0 and random.random() < 0.5:
-                    arr[new_row][new_col] = 1
-                    room_cnt += 1
-                    q.append([new_row, new_col])
+            while arr[row][col] == 1:
+                d_row, d_col = random.choice(directions)
+                row, col = row + d_row, col + d_col
+                if row < 0 or col < 0 or row >= 15 or col >= 15:
+                    row, col = row - d_row, col - d_col
 
         print_2d_array(arr)
 
