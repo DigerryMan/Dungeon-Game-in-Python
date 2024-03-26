@@ -5,7 +5,7 @@ from entities.bullet import Bullet
 from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True):
+    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, is_wandering:bool=True):
         self.game = game
         self.groups = self.game.all_sprites, self.game.enemies
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -20,16 +20,28 @@ class Enemy(pygame.sprite.Sprite):
         self.y_change = 0
         self._check_block_colisions = check_block_colisions
 
-        self._health = 1
+        self._health = 2
         self._damage = 1
         self._collision_damage = 1
         self._attack_speed = 800
         self._last_attack = pygame.time.get_ticks()
 
+        self._last_shot = pygame.time.get_ticks()
+        self._shot_cd = 2500
+        self._projectal_speed = 10
+
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
         self.animation_loop = 1
         self.movement_loop = 0
         self.max_travel = random.randint(10,30)
+        self._is_wandering = is_wandering
+        self._wander_interval = [700,1700]
+        self._idle_interval = [1200,2500]
+        self._wander_time = self.roll_interval(self._wander_interval)
+        self._idle_time = self.roll_interval(self._idle_interval)
+        self._is_idling = self._is_wandering
+        self._last_idle = pygame.time.get_ticks()
+        self._last_wander = pygame.time.get_ticks()
 
         #WCZYTANIE TEKSTURY DLA MOBA
         self.image = pygame.Surface([self.width, self.height])
@@ -45,7 +57,8 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.move()
         self.collide_player()
-        self.attack()
+        if not self._is_wandering:
+            self.attack()
 
         self.rect.x += self.x_change
         if self._check_block_colisions:
@@ -55,7 +68,7 @@ class Enemy(pygame.sprite.Sprite):
         if self._check_block_colisions:
             self.collide_blocks('y')
         
-        self.change_facing()
+        #self.change_facing()
         self.animate()
 
         self._layer = self.rect.bottom
@@ -64,6 +77,53 @@ class Enemy(pygame.sprite.Sprite):
         self.y_change = 0
 
     def move(self):
+        if self._is_wandering:
+            self.wander()
+        else:
+            self.chase() 
+        
+    def wander(self):
+        if self._is_idling:
+            self.idle()
+        
+        else:
+            now = pygame.time.get_ticks()
+            if now - self._last_idle > self._wander_time:
+                self._last_wander = now
+                self._is_idling = True
+                self._wander_time = self.roll_interval(self._wander_interval)
+            
+            else:
+                if self.facing == Directions.LEFT:
+                    self.x_change = -self._speed//2
+                elif self.facing == Directions.RIGHT:
+                    self.x_change = self._speed//2
+                elif self.facing == Directions.UP:
+                    self.y_change = -self._speed//2
+                elif self.facing == Directions.DOWN:
+                    self.y_change = self._speed//2
+
+    def idle(self):
+        now = pygame.time.get_ticks()
+        if now - self._last_wander > self._idle_time:
+            self._last_idle = now
+            self._is_idling = False
+            self.roll_facing()
+            self._idle_time = self.roll_interval(self._idle_interval)
+
+    def roll_facing(self):
+        rand = random.randint(1, 4)
+        if rand == 1:
+            self.facing = self.facing.rotate_clockwise()
+
+        elif rand == 2:
+            self.facing = self.facing.rotate_counter_clockwise()
+           
+        elif rand == 3:
+            self.facing = self.facing.reverse()
+           
+    
+    def chase(self):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         enemy_vector = pygame.math.Vector2(self.rect.center)
 
@@ -80,7 +140,15 @@ class Enemy(pygame.sprite.Sprite):
         self.x_change = velocity.x
         self.y_change = velocity.y
         self._correct_rounding()
-        
+        self.correct_facing()
+
+    def attack(self):
+        now = pygame.time.get_ticks()
+        if now > self._last_shot + self._shot_cd:
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False)
+            self._last_shot = now
+            self.roll_next_shot_cd()
+
     def _correct_rounding(self):
         if self.x_change < 0:
             self.x_change = self.x_change - 1
@@ -92,12 +160,11 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.y_change = self.y_change + 1
 
-    def change_facing(self):
+    def correct_facing(self):
         y_abs = abs(self.y_change)
         x_abs = abs(self.x_change)
 
-        x_bigger_impact = x_abs >= y_abs
-        if x_bigger_impact:
+        if(x_abs >= y_abs):
             if self.x_change < 0:
                 self.facing = Directions.LEFT
             else:
@@ -134,12 +201,19 @@ class Enemy(pygame.sprite.Sprite):
 
     def get_hit(self, dmg:int):
         self._health -= dmg
+        self._is_wandering = False
+        self.check_if_dead()
+    
+    def check_if_dead(self):
         if self._health <= 0:
             self.kill()
-    
-    def attack(self):
-        pass
-            
+
+    def roll_interval(self, interval):
+        return random.randint(interval[0], interval[1])
+
+    def roll_next_shot_cd(self):
+        self._shot_cd = random.randint(1500, 3000)
+
     def animate(self):
         pass
             

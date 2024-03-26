@@ -6,12 +6,12 @@ from ..enemy import Enemy
 
 class Parasite(Enemy):
     def __init__(self, game, x: int, y: int):
-        super().__init__(game, x, y, False)
+        super().__init__(game, x, y, False, False)
         self._health = 3
         self.image.fill(BROWN)
         self._dig_cooldown = 1500
         self.shoot_after_dig_out = 700
-        self.shot = True
+        self.shot = False
         self.last_dig = pygame.time.get_ticks()
         self.last_dig_out = 0
         self.is_dig = True
@@ -31,15 +31,15 @@ class Parasite(Enemy):
             if now - self.last_dig_out > self._dig_cooldown: #zakopanie
                 self.is_dig = True
                 self.last_dig = now
-                self.shot = True
+                self.shot = False
                 self.change_dmg_vulnerability(False)
 
     def attack(self):
         if not self.is_dig:
             now = pygame.time.get_ticks()
-            if now > self.last_dig_out + self.shoot_after_dig_out and self.shot:
+            if now > self.last_dig_out + self.shoot_after_dig_out and not self.shot:
                 Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, is_friendly = False)
-                self.shot = False
+                self.shot = True
     
     def collide_player(self):
         if not self.is_dig:

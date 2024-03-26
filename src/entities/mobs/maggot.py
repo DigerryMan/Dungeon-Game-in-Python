@@ -31,7 +31,8 @@ class Maggot(Enemy):
         if self.facing == Directions.DOWN:
             self.y_change += self._speed
         
-        
+    def attack(self):
+        pass
 
 
     def wall_collision(self):

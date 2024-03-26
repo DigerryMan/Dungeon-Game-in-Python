@@ -22,6 +22,7 @@ BROWN = (156, 106, 6)
 PURPLE = (226, 35, 247)
 DARK_PURPLE = (153, 0, 153)
 WHITE = (237, 237, 218)
+DARK_RED = (139, 0, 0)
 
 ADMIN = False
 
