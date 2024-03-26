@@ -91,6 +91,7 @@ class Player(pygame.sprite.Sprite):
                 self.x_change += 1
             if self.y_change < 0:
                 self.y_change += 1
+                
 
     def _collide_blocks(self, direction:str):
         hits = pygame.sprite.spritecollide(self, self.game.blocks, False)

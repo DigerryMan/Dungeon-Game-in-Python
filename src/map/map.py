@@ -1,5 +1,5 @@
 from config import *
-from .room_types import rooms
+from .room_types import rooms, special_rooms
 from .room import Room
 from entities.player import *
 import random
@@ -18,17 +18,57 @@ class Map():
         self.game = game
         self.player = player
         self.current_position = [0, 0]
-        self.create_map()
+        self.map_scheme = self.create_map_scheme()
+        #print_2d_array(self.map_scheme)
         self._generate_rooms()
 
 
     def _generate_rooms(self):
-        room_type = 0
-        self.current_position = [0, 0] #tu trzeba losowac pozycje startowa
-        #self.room_map[0][0] = Room(room_type, self.player)
-        self.room_map[0][0] = Room(0, self.player)
-        self.room_map[0][1] = Room(1, self.player)
-        self.room_map[1][1] = Room(2, self.player)
+        for row in range(len(self.map_scheme)):
+            for col in range(len(self.map_scheme[row])):
+                if self.map_scheme[row][col] == -inf:
+                    continue
+
+                d_row = [0, 0, 1, -1]
+                d_col = [1, -1, 0, 0]
+                door_directions = [Directions.RIGHT, Directions.LEFT, Directions.DOWN, Directions.UP]
+
+                doors_to_spawn = []
+
+                for i in range(4):
+                    new_row = row + d_row[i]
+                    new_col = col + d_col[i]
+
+                    if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and self.map_scheme[new_row][new_col] != -inf:
+                        doors_to_spawn.append(door_directions[i])
+
+                if self.map_scheme[row][col] == 'S':
+                    self.room_map[row][col] = Room("shop", self.player, doors_to_spawn)
+
+                elif self.map_scheme[row][col] == 'B':
+                    self.room_map[row][col] = Room("boss", self.player, doors_to_spawn)
+
+                elif self.map_scheme[row][col] == 'T':
+                    self.room_map[row][col] = Room("start", self.player, doors_to_spawn)
+                    self.current_position = [row, col]
+
+                else:
+                    room_random_type = random.randint(0, len(rooms) - 1)
+                    self.room_map[row][col] = Room(room_random_type, self.player, doors_to_spawn)
+        
+        print_2d_array(self.map_scheme)
+        room_cnt = 0
+
+        help_arr = [[' ' for _ in range(15)] for _ in range(15)]
+        for row in range(len(self.room_map)):
+            for col in range(len(self.room_map[row])):
+                if self.room_map[row][col] is not None:
+                    help_arr[row][col] = 'X'
+                    room_cnt += 1
+        
+        #print('\n\n')
+        #print_2d_array(help_arr)
+        print(room_cnt)
 
 
     def draw_initial_room(self):
@@ -39,14 +79,14 @@ class Map():
 
 
     def draw_room(self, direction:Directions):
-        self._change_room(direction)
+        self._change_position_on_map(direction)
         row, col = self.current_position
 
         room = self.room_map[row][col]
         room.draw_room(self.game, direction)
 
 
-    def _change_room(self, direction:Directions):
+    def _change_position_on_map(self, direction:Directions):
         if direction == Directions.UP:
             self.current_position[0] -= 1
 
@@ -59,11 +99,13 @@ class Map():
         elif direction == Directions.RIGHT:
             self.current_position[1] += 1
 
+
     def set_room_cleared(self):
         x, y = self.current_position
         self.room_map[x][y].set_room_cleared()
 
-    def create_map(self):
+
+    def create_map_scheme(self):
         #setting row, col for starting room
         row = 7
         col = 7
@@ -77,22 +119,22 @@ class Map():
 
             self.create_map_shape(arr, row, col)
 
-            bfs_array = [[-inf for _ in range(15)] for _ in range(15)]
-            bfs_array[row][col] = 0
+            distance_array = [[-inf for _ in range(15)] for _ in range(15)]
+            distance_array[row][col] = 0
 
-            self.bfs(arr, bfs_array, row, col)
+            self.fill_distances(arr, distance_array, row, col)
 
             row_max = 0
             col_max = 0
 
-            for row in range(len(bfs_array)):
-                for col in range(len(bfs_array[row])):
-                    if bfs_array[row][col] > bfs_array[row_max][col_max]:
+            for row in range(len(distance_array)):
+                for col in range(len(distance_array[row])):
+                    if distance_array[row][col] > distance_array[row_max][col_max]:
                         row_max, col_max = row, col
             
-            bfs_array[row_max][col_max] = 0
-            print('\n\n')
-            satisfied, key_rooms = self.check_if_map_valid(bfs_array, row_max, col_max)
+            distance_array[row_max][col_max] = 0
+            #print('\n\n')
+            satisfied, key_rooms = self.check_if_map_valid(distance_array, row_max, col_max)
 
 
         #################################### T E S T I N G ####################################
@@ -100,17 +142,17 @@ class Map():
         boss_row, boss_col = key_rooms["boss"]
         start_row, start_col = key_rooms["start"]
 
-        bfs_array[shop_row][shop_col] = 'S'
-        bfs_array[boss_row][boss_col] = 'B'
-        bfs_array[start_row][start_col] = 'T'
+        distance_array[shop_row][shop_col] = 'S'
+        distance_array[boss_row][boss_col] = 'B'
+        distance_array[start_row][start_col] = 'T'
 
-        print_2d_array(bfs_array)
-        print(key_rooms)
+        #print_2d_array(distance_array)
+        #print(key_rooms)
 
         #######################################################################################
 
-        room_index_map = [[-1 for _ in range(15)] for _ in range(15)]
-        room_index_map[row][col] = 0
+        return distance_array
+
 
 
 
@@ -119,7 +161,7 @@ class Map():
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
         row, col = row_, col_
-        while room_cnt < ROOM_NUMBER:
+        while room_cnt <= ROOM_NUMBER:
             arr[row][col] = 1
             room_cnt += 1
 
@@ -135,10 +177,10 @@ class Map():
                 if row < 0 or col < 0 or row >= 15 or col >= 15:
                     row, col = row - d_row, col - d_col
 
-        print_2d_array(arr)
+        #print_2d_array(arr)
 
 
-    def bfs(self, arr, bfs_array, row, col):
+    def fill_distances(self, arr, distance_array, row, col):
         q = deque()
         q.append([row, col])
         visited = [[False for _ in range(15)] for _ in range(15)]
@@ -155,11 +197,11 @@ class Map():
                 new_col = col + d_col[i]
 
                 if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and not visited[new_row][new_col] and arr[new_row][new_col] == 1:
-                    bfs_array[new_row][new_col] = bfs_array[row][col] + 1
+                    distance_array[new_row][new_col] = distance_array[row][col] + 1
                     q.append([new_row, new_col])
                     visited[new_row][new_col] = True
 
-        print_2d_array(bfs_array)
+        #print_2d_array(distance_array)
 
 
     def check_if_map_valid(self, arr, row_, col_):
