@@ -44,7 +44,6 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self):
         self.move()
-        self.animate()
         self.collide_player()
         self.attack()
 
@@ -56,6 +55,9 @@ class Enemy(pygame.sprite.Sprite):
         if self._check_block_colisions:
             self.collide_blocks('y')
         
+        self.change_facing()
+        self.animate()
+
         self._layer = self.rect.bottom
 
         self.x_change = 0
@@ -89,6 +91,27 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.y_change = self.y_change + 1
         
+
+    def change_facing(self):
+        y_abs = abs(self.y_change)
+        x_abs = abs(self.x_change)
+
+        x_bigger_impact = x_abs >= y_abs
+        if x_bigger_impact:
+            if self.x_change < 0:
+                self.facing = Directions.LEFT
+            else:
+                self.facing = Directions.RIGHT
+        else:
+            if self.y_change < 0:
+                self.facing = Directions.UP
+            else:
+                self.facing = Directions.DOWN 
+
+        print(self.facing)
+
+
+
 
     def get_vector_distance(self, vector1, vector2):
         return (vector1 - vector2).magnitude()
