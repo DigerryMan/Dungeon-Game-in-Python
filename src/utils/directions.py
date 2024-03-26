@@ -18,4 +18,28 @@ class Directions(Enum):
         elif self == Directions.RIGHT:
             return Directions.LEFT
         
+        return self
 
+    def rotate_clockwise(self):
+        if self == Directions.UP:
+            return Directions.RIGHT
+        elif self == Directions.RIGHT:
+            return Directions.DOWN
+        elif self == Directions.DOWN:
+            return Directions.LEFT
+        elif self == Directions.LEFT:
+            return Directions.UP
+        
+        return self
+    
+    def rotate_counter_clockwise(self):
+        if self == Directions.UP:
+            return Directions.LEFT
+        elif self == Directions.LEFT:
+            return Directions.DOWN
+        elif self == Directions.DOWN:
+            return Directions.RIGHT
+        elif self == Directions.RIGHT:
+            return Directions.UP
+        
+        return self
