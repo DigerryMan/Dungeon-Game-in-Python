@@ -106,7 +106,7 @@ class Player(pygame.sprite.Sprite):
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
 
-    def animate():
+    def animate(self):
         pass
 
     def set_rect_position(self, x_rect, y_rect):
