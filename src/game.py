@@ -22,6 +22,9 @@ class Game:
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
 
+        #for collision detection
+        self.collidables = pygame.sprite.LayeredUpdates()
+
         self.player = Player(self, 0, 0)
         self.map = Map(self, self.player)
         self.map.draw_initial_room()
@@ -36,6 +39,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
         if len(self.enemies) == 0 or ADMIN:
+            self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
     def render_next_room(self, direction:Directions):
@@ -48,6 +52,7 @@ class Game:
         self.doors.empty()
         self.attacks.empty()
         self.enemies.empty()
+        self.collidables.empty()
      
 
     def damage_player(self, enemy_dmg:int):
