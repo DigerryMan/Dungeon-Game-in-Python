@@ -61,34 +61,38 @@ class Enemy(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
 
+
     def move(self):
-        #fix directions
-        p_x, p_y = self.game.player.rect.x, self.game.player.rect.y
+        player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
+        enemy_vector = pygame.math.Vector2(self.rect.center)
 
-        diff = abs(p_x - self.rect.x)
-        loc_speed = self._speed
+        distance = self.get_vector_distance(player_vector, enemy_vector)
+        direction = None
 
-        if diff < self._speed:
-           loc_speed = diff
+        if distance > 0:
+            direction = (player_vector - enemy_vector).normalize()
+        else:
+            direction = pygame.math.Vector2()
         
-        if self.rect.x < p_x:
-            self.x_change = loc_speed
-        elif self.rect.x > p_x:
-            self.x_change = -loc_speed
+        velocity = direction * self._speed
+        new_pos = pygame.math.Vector2(self.rect.center) + velocity
+        self.x_change = int(new_pos.x - enemy_vector.x)
+        self.y_change = int(new_pos.y - enemy_vector.y) 
 
-    
-        diff = abs(p_y - self.rect.y)
-        loc_speed = self._speed
+        if self.x_change < 0:
+            self.x_change = self.x_change - 1
+        else:
+            self.x_change = self.x_change + 1
 
-        if diff < self._speed:
-            loc_speed = diff
+        if self.y_change < 0:
+            self.y_change = self.y_change - 1
+        else:
+            self.y_change = self.y_change + 1
         
-        if self.rect.y < p_y:
-            self.y_change = loc_speed
-        elif self.rect.y > p_y:
-            self.y_change = -loc_speed
 
-    
+    def get_vector_distance(self, vector1, vector2):
+        return (vector1 - vector2).magnitude()
+
     def collide_player(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
