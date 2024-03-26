@@ -89,9 +89,8 @@ class Bullet(pygame.sprite.Sprite):
                 player_hits[0].get_hit(self.dmg)
                 self.kill()
             
-        block_hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
-        door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
-        if block_hits or door_hits:
+        block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
+        if block_hits:
             self.kill()
 
 
