@@ -5,6 +5,7 @@ from .door import *
 from entities.player import *
 from entities.enemy import *
 from entities.mobs.mob1 import *
+from entities.mobs.parasite import *
 
 class Room():    
     def __init__(self, room_type, player:Player):
@@ -35,6 +36,8 @@ class Room():
                         Enemy(game, x, y)
                     elif col == 'M':
                         Mob1(game, x, y)
+                    elif col == 'P':
+                        Parasite(game, x, y)
 
         self.spawn_player(entry_direction)
         

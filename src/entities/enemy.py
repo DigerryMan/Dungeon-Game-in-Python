@@ -76,10 +76,12 @@ class Enemy(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         velocity = direction * self._speed
-        new_pos = pygame.math.Vector2(self.rect.center) + velocity
-        self.x_change = int(new_pos.x - enemy_vector.x)
-        self.y_change = int(new_pos.y - enemy_vector.y) 
 
+        self.x_change = velocity.x
+        self.y_change = velocity.y
+        self._correct_rounding()
+        
+    def _correct_rounding(self):
         if self.x_change < 0:
             self.x_change = self.x_change - 1
         else:
