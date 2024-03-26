@@ -15,7 +15,7 @@ class Enemy(pygame.sprite.Sprite):
         self.width = TILE_SIZE
         self.height = TILE_SIZE
 
-        self._speed = 4
+        self._speed = 3
         self.x_change = 0
         self.y_change = 0
         self._check_block_colisions = check_block_colisions
@@ -44,7 +44,6 @@ class Enemy(pygame.sprite.Sprite):
     
     def update(self):
         self.move()
-        self.animate()
         self.collide_player()
         self.attack()
 
@@ -56,39 +55,60 @@ class Enemy(pygame.sprite.Sprite):
         if self._check_block_colisions:
             self.collide_blocks('y')
         
+        self.change_facing()
+        self.animate()
+
         self._layer = self.rect.bottom
 
         self.x_change = 0
         self.y_change = 0
 
     def move(self):
-        #fix directions
-        p_x, p_y = self.game.player.rect.x, self.game.player.rect.y
+        player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
+        enemy_vector = pygame.math.Vector2(self.rect.center)
 
-        diff = abs(p_x - self.rect.x)
-        loc_speed = self._speed
+        distance = self.get_vector_distance(player_vector, enemy_vector)
+        direction = None
 
-        if diff < self._speed:
-           loc_speed = diff
+        if distance > 0:
+            direction = (player_vector - enemy_vector).normalize()
+        else:
+            direction = pygame.math.Vector2()
         
-        if self.rect.x < p_x:
-            self.x_change = loc_speed
-        elif self.rect.x > p_x:
-            self.x_change = -loc_speed
+        velocity = direction * self._speed
+        new_pos = pygame.math.Vector2(self.rect.center) + velocity
+        self.x_change = int(new_pos.x - enemy_vector.x)
+        self.y_change = int(new_pos.y - enemy_vector.y) 
 
-    
-        diff = abs(p_y - self.rect.y)
-        loc_speed = self._speed
+        if self.x_change < 0:
+            self.x_change = self.x_change - 1
+        else:
+            self.x_change = self.x_change + 1
 
-        if diff < self._speed:
-            loc_speed = diff
-        
-        if self.rect.y < p_y:
-            self.y_change = loc_speed
-        elif self.rect.y > p_y:
-            self.y_change = -loc_speed
+        if self.y_change < 0:
+            self.y_change = self.y_change - 1
+        else:
+            self.y_change = self.y_change + 1
 
-    
+    def change_facing(self):
+        y_abs = abs(self.y_change)
+        x_abs = abs(self.x_change)
+
+        x_bigger_impact = x_abs >= y_abs
+        if x_bigger_impact:
+            if self.x_change < 0:
+                self.facing = Directions.LEFT
+            else:
+                self.facing = Directions.RIGHT
+        else:
+            if self.y_change < 0:
+                self.facing = Directions.UP
+            else:
+                self.facing = Directions.DOWN 
+
+    def get_vector_distance(self, vector1, vector2):
+        return (vector1 - vector2).magnitude()
+
     def collide_player(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
@@ -116,11 +136,7 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
     
     def attack(self):
-        now = pygame.time.get_ticks()
-        if now - self._last_attack > self._attack_speed:
-            self._last_attack = now
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, False, self._damage)
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, False, self._damage)
+        pass
             
     def animate(self):
         pass

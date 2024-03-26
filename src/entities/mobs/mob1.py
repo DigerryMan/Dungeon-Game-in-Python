@@ -1,4 +1,4 @@
-from .enemy import *
+from ..enemy import *
 
 class Mob1(Enemy):
     def __init__(self, game, x, y):
@@ -15,6 +15,12 @@ class Mob1(Enemy):
         if self.facing == Directions.RIGHT:
             self.x_change += self._speed
          
+    def attack(self):
+        now = pygame.time.get_ticks()
+        if now - self._last_attack > self._attack_speed:
+            self._last_attack = now
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, 12, False, self._damage)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, 12, False, self._damage)
 
     def wall_collision(self):
         hits = pygame.sprite.spritecollide(self, self.game.blocks, False)

@@ -52,6 +52,9 @@ class Game:
     def damage_player(self, enemy_dmg:int):
         self.player.get_hit(enemy_dmg)
 
+    def get_player_rect(self):
+        return self.player.rect
+
     def draw(self):
         self.screen.fill(BLACK)
         #self.all_sprites.draw(self.screen)

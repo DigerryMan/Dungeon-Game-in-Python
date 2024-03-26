@@ -4,7 +4,7 @@ from config import *
 from utils.directions import Directions
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:Directions, is_friendly=True, dmg=1):
+    def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, dmg=1):
         self.dmg = dmg
         self.is_friendly = is_friendly
         self.width = 10
@@ -17,7 +17,7 @@ class Bullet(pygame.sprite.Sprite):
         self.y = y
         self.x_change = 0
         self.y_change = 0
-        self.speed = 20
+        self.speed = speed
         self.direction = direction
 
         self.game = game
