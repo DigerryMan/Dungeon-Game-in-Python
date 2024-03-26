@@ -1,4 +1,5 @@
 from config import *
+from entities.mobs.maggot import Maggot
 from .room_types import rooms, special_rooms
 from .block import *
 from .door import *
@@ -44,10 +45,12 @@ class Room():
                 if not self.room_cleared:
                     if col == 'E':
                         Enemy(game, x, y)
-                    elif col == 'M':
+                    elif col == 'L':
                         Legs(game, x, y)
                     elif col == 'P':
                         Parasite(game, x, y)
+                    elif col == 'M':
+                        Maggot(game, x, y)
 
         self.spawn_player(entry_direction)
         

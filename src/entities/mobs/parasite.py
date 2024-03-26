@@ -15,7 +15,7 @@ class Parasite(Enemy):
         self.last_dig = pygame.time.get_ticks()
         self.last_dig_out = 0
         self.is_dig = True
-        self.change_dmg_vulnerability(not self.is_dig)
+        self.change_dmg_vulnerability(self.is_dig)
 
     def move(self):
         now = pygame.time.get_ticks()
@@ -41,8 +41,17 @@ class Parasite(Enemy):
                 Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, is_friendly = False)
                 self.shot = False
     
+    def collide_player(self):
+        if not self.is_dig:
+            hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
+            if hits:
+                self.game.damage_player(self._collision_damage)
+                self.game.playing = False
+
     def change_dmg_vulnerability(self, is_on: bool):
         if is_on:
-            self.game.enemies.add(self)
+            self.game.not_voulnerable.remove(self)
         else:
-            self.game.enemies.remove(self)
+            self.game.not_voulnerable.add(self)
+
+    

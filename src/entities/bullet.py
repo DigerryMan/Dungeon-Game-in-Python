@@ -79,7 +79,7 @@ class Bullet(pygame.sprite.Sprite):
     def _collide(self):
         if self.is_friendly:       
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
-            if mob_hits:
+            if mob_hits and mob_hits[0] not in self.game.not_voulnerable:
                 mob_hits[0].get_hit(self.dmg)
                 self.kill()
             
