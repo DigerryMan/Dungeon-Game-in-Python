@@ -6,7 +6,7 @@ class Block(pygame.sprite.Sprite):
         self.game = game
         self._layer = BLOCK_LAYER
         #self.groups = self.game.all_sprites, self.game.blocks
-        self.groups = self.game.blocks
+        self.groups = self.game.blocks, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE

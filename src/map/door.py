@@ -7,7 +7,7 @@ class Door(pygame.sprite.Sprite):
         self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER
-        self.groups = self.game.all_sprites, self.game.doors
+        self.groups = self.game.all_sprites, self.game.doors, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.direction = direction
