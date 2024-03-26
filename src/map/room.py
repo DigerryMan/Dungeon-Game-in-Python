@@ -1,4 +1,5 @@
 from config import *
+from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.maggot import Maggot
 from .room_types import rooms, special_rooms
 from .block import *
@@ -51,6 +52,8 @@ class Room():
                         Parasite(game, x, y)
                     elif col == 'M':
                         Maggot(game, x, y)
+                    elif col == 'A':
+                        AlphaMaggot(game, x, y)
 
         self.spawn_player(entry_direction)
         

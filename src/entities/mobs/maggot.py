@@ -66,9 +66,9 @@ class Maggot(Enemy):
         else:
             self.facing = self.facing.rotate_counter_clockwise()
 
-        self.roll_rotation_cd()
+        self.roll_rotation_cd(400, 2200)
         self._last_change_of_direction = pygame.time.get_ticks()
         
 
-    def roll_rotation_cd(self):
-        self._random_dir_change_cd = random.randint(200, 2500)
+    def roll_rotation_cd(self, mini:int, maxi:int):
+        self._random_dir_change_cd = random.randint(mini, maxi)
