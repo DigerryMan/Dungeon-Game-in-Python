@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = 10
         self.width = TILE_SIZE
         self.height = TILE_SIZE
-        self.facing = 'down'
+        self.facing = Directions.DOWN
 
         self.x_change = 0
         self.y_change = 0
@@ -44,21 +44,21 @@ class Player(pygame.sprite.Sprite):
     def _move(self, keys):
         if keys[pygame.K_a]:
             self.x_change -= self.speed
-            self.facing = 'left'
+            self.facing = Directions.LEFT
         
         if keys[pygame.K_d]:
             self.x_change += self.speed
-            self.facing = 'right'
+            self.facing = Directions.RIGHT
 
 
         if keys[pygame.K_w]: 
             self.y_change -= self.speed
-            self.facing = 'up'
+            self.facing = Directions.UP
 
 
         if keys[pygame.K_s]:
             self.y_change += self.speed
-            self.facing = 'down'
+            self.facing = Directions.DOWN
 
     def _shoot(self, keys):
         if keys[pygame.K_SPACE]:

@@ -37,7 +37,7 @@ class Game:
         if len(self.enemies) == 0 or ADMIN:
             self.map.set_room_cleared()
 
-    def render_next_room(self, direction:str):
+    def render_next_room(self, direction:Directions):
         self._clear_sprites()
         self.map.draw_room(direction)
 

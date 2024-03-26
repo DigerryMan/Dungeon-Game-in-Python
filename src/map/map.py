@@ -35,10 +35,10 @@ class Map():
         row, col = self.current_position
 
         room = self.room_map[row][col]
-        room.draw_room(self.game, 'center')
+        room.draw_room(self.game, Directions.CENTER)
 
 
-    def draw_room(self, direction:str):
+    def draw_room(self, direction:Directions):
         self._change_room(direction)
         row, col = self.current_position
 
@@ -46,17 +46,17 @@ class Map():
         room.draw_room(self.game, direction)
 
 
-    def _change_room(self, direction:str):
-        if direction == 'up':
+    def _change_room(self, direction:Directions):
+        if direction == Directions.UP:
             self.current_position[0] -= 1
 
-        elif direction == 'down':
+        elif direction == Directions.DOWN:
             self.current_position[0] += 1
 
-        elif direction == 'left':
+        elif direction == Directions.LEFT:
             self.current_position[1] -= 1
 
-        elif direction == 'right':
+        elif direction == Directions.RIGHT:
             self.current_position[1] += 1
 
     def set_room_cleared(self):

@@ -13,7 +13,7 @@ class Room():
         self.room_cleared = False
         self.doors = []
 
-    def draw_room(self, game, entry_direction:str):
+    def draw_room(self, game, entry_direction:Directions):
         self.doors = []
         for y, row in enumerate(self.room):
             for x, col in enumerate(row):
@@ -22,13 +22,13 @@ class Room():
 
                 if col == 'D':
                     if(y == 0):
-                        self.doors.append(Door(game, x, y, 'up'))
+                        self.doors.append(Door(game, x, y, Directions.UP))
                     elif(y == MAP_HEIGHT - 1):
-                        self.doors.append(Door(game, x, y, 'down'))
+                        self.doors.append(Door(game, x, y, Directions.DOWN))
                     elif(x == 0):
-                        self.doors.append(Door(game, x, y, 'left'))
+                        self.doors.append(Door(game, x, y, Directions.LEFT))
                     elif(x == MAP_WIDTH - 1):
-                        self.doors.append(Door(game, x, y, 'right'))
+                        self.doors.append(Door(game, x, y, Directions.RIGHT))
 
                 if not self.room_cleared:
                     if col == 'E':
@@ -40,19 +40,19 @@ class Room():
         
     
     def spawn_player(self, entry_direction):
-        if entry_direction == 'up':
+        if entry_direction == Directions.UP:
             self.player.set_rect_position(self.player.rect.x, (MAP_HEIGHT - 2)*TILE_SIZE)
 
-        elif entry_direction == 'down':
+        elif entry_direction == Directions.DOWN:
             self.player.set_rect_position(self.player.rect.x, 1 * TILE_SIZE)
 
-        elif entry_direction == 'left':
+        elif entry_direction == Directions.LEFT:
             self.player.set_rect_position((MAP_WIDTH - 2) * TILE_SIZE, self.player.rect.y)
 
-        elif entry_direction == 'right':
+        elif entry_direction == Directions.RIGHT:
             self.player.set_rect_position(1 * TILE_SIZE, self.player.rect.y)
 
-        elif entry_direction == 'center':
+        elif entry_direction == Directions.CENTER:
             self.player.set_rect_position((MAP_WIDTH / 2) * TILE_SIZE, (MAP_HEIGHT / 2) * TILE_SIZE)
 
 

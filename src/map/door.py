@@ -1,8 +1,9 @@
 import pygame
 from config import *
+from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:str):
+    def __init__(self, game, x, y, direction:Directions):
         self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER

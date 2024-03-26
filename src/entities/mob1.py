@@ -9,17 +9,14 @@ class Mob1(Enemy):
     
     def move(self):
         self.wall_collision()
-        if self.facing == 'left':
+        if self.facing == Directions.LEFT:
             self.x_change -= self._speed
 
-        if self.facing == 'right':
+        if self.facing == Directions.RIGHT:
             self.x_change += self._speed
          
 
     def wall_collision(self):
         hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
         if(hits):
-            if self.facing == 'left':
-                self.facing = 'right'
-            elif self.facing == 'right':
-                self.facing = 'left'
+            self.facing = self.facing.reverse()

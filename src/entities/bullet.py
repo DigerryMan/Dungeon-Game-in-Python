@@ -1,9 +1,10 @@
 import pygame
 
 from config import *
+from utils.directions import Directions
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:str, is_friendly=True, dmg=1):
+    def __init__(self, game, x, y, direction:Directions, is_friendly=True, dmg=1):
         self.dmg = dmg
         self.is_friendly = is_friendly
         self.width = 10
@@ -16,7 +17,7 @@ class Bullet(pygame.sprite.Sprite):
         self.y = y
         self.x_change = 0
         self.y_change = 0
-        self.speed = 30
+        self.speed = 20
         self.direction = direction
 
         self.game = game
@@ -25,16 +26,16 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
 
     def move(self):
-        if(self.direction == "up"):
+        if(self.direction == Directions.UP):
             self.y_change -= self.speed
 
-        elif(self.direction == "down"):
+        elif(self.direction == Directions.DOWN):
             self.y_change += self.speed
 
-        elif(self.direction == "left"):
+        elif(self.direction == Directions.LEFT):
             self.x_change -= self.speed
 
-        elif(self.direction == "right"):
+        elif(self.direction == Directions.RIGHT):
             self.x_change += self.speed
         pass
 

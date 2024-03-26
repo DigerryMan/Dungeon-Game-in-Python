@@ -2,6 +2,7 @@ import pygame
 import random
 from config import *
 from entities.bullet import Bullet
+from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True):
@@ -21,10 +22,11 @@ class Enemy(pygame.sprite.Sprite):
 
         self._health = 1
         self._damage = 1
+        self._collision_damage = 1
         self._attack_speed = 800
         self._last_attack = pygame.time.get_ticks()
 
-        self.facing = random.choice(['left', 'right'])
+        self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
         self.animation_loop = 1
         self.movement_loop = 0
         self.max_travel = random.randint(10,30)
@@ -43,7 +45,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.move()
         self.animate()
-        self.collide_enemy()
+        self.collide_player()
         self.attack()
 
         self.rect.x += self.x_change
@@ -60,6 +62,7 @@ class Enemy(pygame.sprite.Sprite):
         self.y_change = 0
 
     def move(self):
+        #fix directions
         p_x, p_y = self.game.player.rect.x, self.game.player.rect.y
 
         diff = abs(p_x - self.rect.x)
@@ -86,22 +89,22 @@ class Enemy(pygame.sprite.Sprite):
             self.y_change = -loc_speed
 
     
-    def collide_enemy(self):
+    def collide_player(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.damage_player(self._damage)
+            self.game.damage_player(self._collision_damage)
             self.game.playing = False
 
-    def collide_blocks(self, direction:str):
+    def collide_blocks(self, orientation:str):
         hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
         if hits:
-            if direction == 'x':
+            if orientation == 'x':
                 if self.x_change > 0:
                     self.rect.x = hits[0].rect.left - self.rect.width
                 if self.x_change < 0:
                     self.rect.x = hits[0].rect.right
 
-            if direction == 'y':
+            if orientation == 'y':
                 if self.y_change > 0:
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
@@ -116,8 +119,8 @@ class Enemy(pygame.sprite.Sprite):
         now = pygame.time.get_ticks()
         if now - self._last_attack > self._attack_speed:
             self._last_attack = now
-            Bullet(self.game, self.rect.centerx, self.rect.centery, 'left', False, self._damage)
-            Bullet(self.game, self.rect.centerx, self.rect.centery, 'right', False, self._damage)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, False, self._damage)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, False, self._damage)
             
     def animate(self):
         pass
