@@ -1,7 +1,7 @@
 import pygame
 import random
 from config import *
-from .lootables import *
+from .lootables.lootable_item import Lootable_item
 
 
 class Chest(pygame.sprite.Sprite):
@@ -14,11 +14,11 @@ class Chest(pygame.sprite.Sprite):
         self.is_open = False
         self.opened_once = False
         self.contents = {
-            "silver_coin": 0,
-            "golden_coin": 0,
-            "health_potion": 0
+            "silver_coin": [],
+            "golden_coin": [],
+            "health_potion": []
         }
-        self.set_contents()
+        
         #self.groups = self.game.all_sprites, self.game.blocks
         self.groups = self.game.chests, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -35,17 +35,23 @@ class Chest(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.set_contents()
+
     def open(self):
-        self.is_open = True
-        self.image.fill(RED)
         if not self.opened_once:
-            self.drop_loot()
+            #print("Chest opened")
+            self.is_open = True
+            self.image.fill(RED)
             self.opened_once = True
+
+    def update(self, screen):
+        if self.is_open:
+            self.drop_loot(screen)
         
     
     def set_contents(self):
         if self.type == "small":
-            self.contents["silver_coin"] = random.randint(1, 3)
+            self.contents["silver_coin"] = [Lootable_item(self.game, self.rect.centerx, self.rect.centery) for _ in range(random.randint(5, 5))]
 
         elif self.type == "medium":
             self.contents["silver_coin"] = random.randint(3, 5)
@@ -57,9 +63,12 @@ class Chest(pygame.sprite.Sprite):
             self.contents["golden_coin"] = random.randint(2, 5)
             self.contents["health_potion"] = 1
 
-    def drop_loot(self):
-        self.animate_opening()
-        pass
+    def drop_loot(self, screen):
+        for arr in self.contents.values():
+            if arr:
+                for item in arr:
+                    item.drop(screen)
+
 
     def animate_opening(self):
         pass

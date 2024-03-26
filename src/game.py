@@ -73,6 +73,8 @@ class Game:
 
         #self.blocks.draw(self.screen)
         self.collidables.draw(self.screen)
+        
+        self.map.draw_lootables(self.screen)
 
         self.clock.tick(FPS)
         pygame.display.update()

@@ -104,6 +104,9 @@ class Map():
         x, y = self.current_position
         self.room_map[x][y].set_room_cleared()
 
+    def draw_lootables(self, screen):
+        x, y = self.current_position
+        self.room_map[x][y].draw_lootables(screen)
 
     def create_map_scheme(self):
         #setting row, col for starting room

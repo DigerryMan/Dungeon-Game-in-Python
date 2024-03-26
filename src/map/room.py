@@ -58,6 +58,7 @@ class Room():
                         Maggot(game, x, y)
 
         self.spawn_player(entry_direction)
+        print("Doors: ", len(self.doors))
         
     
     def spawn_player(self, entry_direction):
@@ -107,3 +108,7 @@ class Room():
 
         for chest in self.chests:
             chest.open()
+
+    def draw_lootables(self, screen):
+        for chest in self.chests:
+            chest.update(screen)
