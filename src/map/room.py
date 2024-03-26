@@ -4,6 +4,7 @@ from .room_types import rooms, special_rooms
 from .block import *
 from .door import *
 from .wall import *
+from .chest import *
 from entities.player import *
 from entities.enemy import *
 from entities.mobs.legs import *
@@ -20,6 +21,7 @@ class Room():
         self.room_cleared = False
         self.doors_to_spawn = doors_to_spawn
         self.doors = []
+        self.chests = []
 
     def draw_room(self, game, entry_direction:Directions):
         doors_positions = self.get_doors_positions()
@@ -38,6 +40,9 @@ class Room():
 
                 elif col == '#':
                     Wall(game, x, y)
+
+                elif col == 'C':
+                    self.chests.append(Chest(game, x, y, "small"))
 
                 elif col == 'B':
                     Block(game, x, y)
@@ -99,3 +104,6 @@ class Room():
         for door in self.doors:
             door.is_open = True
             door.image.fill(GREEN)
+
+        for chest in self.chests:
+            chest.open()

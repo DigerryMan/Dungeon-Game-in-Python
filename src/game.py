@@ -21,6 +21,7 @@ class Game:
         self.enemies = pygame.sprite.LayeredUpdates()
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
+        self.chests = pygame.sprite.LayeredUpdates()
 
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
@@ -53,6 +54,8 @@ class Game:
         self.attacks.empty()
         self.enemies.empty()
         self.collidables.empty()
+        self.not_voulnerable.empty()
+        self.chests.empty()
      
 
     def damage_player(self, enemy_dmg:int):
@@ -68,7 +71,8 @@ class Game:
         for sprite in sprite_list:
             self.screen.blit(sprite.image, sprite.rect)
 
-        self.blocks.draw(self.screen)
+        #self.blocks.draw(self.screen)
+        self.collidables.draw(self.screen)
 
         self.clock.tick(FPS)
         pygame.display.update()
