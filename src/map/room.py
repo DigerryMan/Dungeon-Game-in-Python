@@ -20,48 +20,67 @@ class Room():
 
         self.player = player
         self.room_cleared = False
+        self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
+
         self.doors = []
-        self.chests = []
+        self.chest:Chest = None
+        self.enemies = []
+        self.blocks = []
+        self.walls = []
+        self.items = []
 
-    def draw_room(self, game, entry_direction:Directions):
-        doors_positions = self.get_doors_positions()
-        self.doors = []
-        for y, row in enumerate(self.room):
-            for x, col in enumerate(row):
-                if (y, x) in doors_positions:
-                    if(y == 0):
-                        self.doors.append(Door(game, x, y, Directions.UP))
-                    elif(y == MAP_HEIGHT - 1):
-                        self.doors.append(Door(game, x, y, Directions.DOWN))
-                    elif(x == 0):
-                        self.doors.append(Door(game, x, y, Directions.LEFT))
-                    elif(x == MAP_WIDTH - 1):
-                        self.doors.append(Door(game, x, y, Directions.RIGHT))
+    def get_objects(self):
+        return {
+            "doors": self.doors,
+            "chest": self.chest,
+            "enemies": self.enemies,
+            "blocks": self.blocks,
+            "walls": self.walls,
+            "items": self.items
+        }
+    
+    def remove_item(self, item:Lootable_item):
+        self.items.remove(item)
 
-                elif col == '#':
-                    Wall(game, x, y)
+    def generate_room(self, game, entry_direction:Directions):
+        if not self.drawn_once:
+            doors_positions = self.get_doors_positions()
+            for y, row in enumerate(self.room):
+                for x, col in enumerate(row):
+                    if (y, x) in doors_positions:
+                        if(y == 0):
+                            self.doors.append(Door(game, x, y, Directions.UP))
+                        elif(y == MAP_HEIGHT - 1):
+                            self.doors.append(Door(game, x, y, Directions.DOWN))
+                        elif(x == 0):
+                            self.doors.append(Door(game, x, y, Directions.LEFT))
+                        elif(x == MAP_WIDTH - 1):
+                            self.doors.append(Door(game, x, y, Directions.RIGHT))
 
-                elif col == 'C':
-                    self.chests.append(Chest(game, x, y, "small"))
+                    elif col == '#':
+                        self.walls.append(Wall(game, x, y))
 
-                elif col == 'B':
-                    Block(game, x, y)
+                    elif col == 'C':
+                        self.chest = Chest(game, x, y, "small")
 
-                if not self.room_cleared:
-                    if col == 'E':
-                        Enemy(game, x, y)
-                    elif col == 'L':
-                        Legs(game, x, y)
-                    elif col == 'P':
-                        Parasite(game, x, y)
-                    elif col == 'M':
-                        Maggot(game, x, y)
-                    elif col == 'A':
-                        AlphaMaggot(game, x, y)
+                    elif col == 'B':
+                        self.blocks.append(Block(game, x, y))
+
+                    if not self.room_cleared:
+                        if col == 'E':
+                            self.enemies.append(Enemy(game, x, y))
+                        elif col == 'L':
+                            self.enemies.append(Legs(game, x, y))
+                        elif col == 'P':
+                            self.enemies.append(Parasite(game, x, y))
+                        elif col == 'M':
+                            self.enemies.append(Maggot(game, x, y))
+                        elif col == 'A':
+                            self.enemies.append(AlphaMaggot(game, x, y))
 
         self.spawn_player(entry_direction)
-        print("Doors: ", len(self.doors))
+        self.drawn_once = True
         
     
     def spawn_player(self, entry_direction):
@@ -104,14 +123,11 @@ class Room():
 
     def set_room_cleared(self):
         self.room_cleared = True
+        self.enemies.clear()
 
         for door in self.doors:
             door.is_open = True
             door.image.fill(GREEN)
 
-        for chest in self.chests:
-            chest.open()
-
-    def draw_lootables(self, screen):
-        for chest in self.chests:
-            chest.update(screen)
+        if self.chest and not self.chest.is_open:
+            self.items = self.chest.open()

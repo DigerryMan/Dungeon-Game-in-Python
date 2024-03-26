@@ -6,12 +6,6 @@ import random
 from math import inf
 from collections import deque
 
-#for testing purposes
-def print_2d_array(arr):
-    max_widths = [max(map(len, (str(elem) for elem in col))) for col in zip(*arr)]
-    for row in arr:
-        print(' '.join(f"{elem:<{max_widths[i]}}" for i, elem in enumerate(row)))
-
 class Map():
     def __init__(self, game, player:Player):
         self.room_map = [[None for _ in range(15)] for _ in range(15)]
@@ -19,9 +13,48 @@ class Map():
         self.player = player
         self.current_position = [0, 0]
         self.map_scheme = self.create_map_scheme()
-        #print_2d_array(self.map_scheme)
         self._generate_rooms()
 
+
+    def create_map_scheme(self):
+        #setting row, col for starting room
+        row = 7
+        col = 7
+
+        self.current_position = [row, col]
+        satisfied = False
+
+        while not satisfied:
+            arr = [[0 for _ in range(15)] for _ in range(15)]
+            arr[row][col] = 1
+
+            self.create_map_shape(arr, row, col)
+
+            distance_array = [[-inf for _ in range(15)] for _ in range(15)]
+            distance_array[row][col] = 0
+
+            self.fill_distances(arr, distance_array, row, col)
+
+            row_max = 0
+            col_max = 0
+
+            for row in range(len(distance_array)):
+                for col in range(len(distance_array[row])):
+                    if distance_array[row][col] > distance_array[row_max][col_max]:
+                        row_max, col_max = row, col
+            
+            distance_array[row_max][col_max] = 0
+            satisfied, key_rooms = self.check_if_map_valid(distance_array, row_max, col_max)
+
+        shop_row, shop_col = key_rooms["shop"]
+        boss_row, boss_col = key_rooms["boss"]
+        start_row, start_col = key_rooms["start"]
+
+        distance_array[shop_row][shop_col] = 'S'
+        distance_array[boss_row][boss_col] = 'B'
+        distance_array[start_row][start_col] = 'T'
+
+        return distance_array
 
     def _generate_rooms(self):
         for row in range(len(self.map_scheme)):
@@ -55,35 +88,21 @@ class Map():
                 else:
                     room_random_type = random.randint(0, len(rooms) - 1)
                     self.room_map[row][col] = Room(room_random_type, self.player, doors_to_spawn)
-        
-        print_2d_array(self.map_scheme)
-        room_cnt = 0
-
-        help_arr = [[' ' for _ in range(15)] for _ in range(15)]
-        for row in range(len(self.room_map)):
-            for col in range(len(self.room_map[row])):
-                if self.room_map[row][col] is not None:
-                    help_arr[row][col] = 'X'
-                    room_cnt += 1
-        
-        #print('\n\n')
-        #print_2d_array(help_arr)
-        print(room_cnt)
 
 
-    def draw_initial_room(self):
+    def render_initial_room(self):
         row, col = self.current_position
 
         room = self.room_map[row][col]
-        room.draw_room(self.game, Directions.CENTER)
+        room.generate_room(self.game, Directions.CENTER)
 
 
-    def draw_room(self, direction:Directions):
+    def render_next_room(self, direction:Directions):
         self._change_position_on_map(direction)
         row, col = self.current_position
 
         room = self.room_map[row][col]
-        room.draw_room(self.game, direction)
+        room.generate_room(self.game, direction)
 
 
     def _change_position_on_map(self, direction:Directions):
@@ -103,60 +122,6 @@ class Map():
     def set_room_cleared(self):
         x, y = self.current_position
         self.room_map[x][y].set_room_cleared()
-
-    def draw_lootables(self, screen):
-        x, y = self.current_position
-        self.room_map[x][y].draw_lootables(screen)
-
-    def create_map_scheme(self):
-        #setting row, col for starting room
-        row = 7
-        col = 7
-
-        self.current_position = [row, col]
-        satisfied = False
-
-        while not satisfied:
-            arr = [[0 for _ in range(15)] for _ in range(15)]
-            arr[row][col] = 1
-
-            self.create_map_shape(arr, row, col)
-
-            distance_array = [[-inf for _ in range(15)] for _ in range(15)]
-            distance_array[row][col] = 0
-
-            self.fill_distances(arr, distance_array, row, col)
-
-            row_max = 0
-            col_max = 0
-
-            for row in range(len(distance_array)):
-                for col in range(len(distance_array[row])):
-                    if distance_array[row][col] > distance_array[row_max][col_max]:
-                        row_max, col_max = row, col
-            
-            distance_array[row_max][col_max] = 0
-            #print('\n\n')
-            satisfied, key_rooms = self.check_if_map_valid(distance_array, row_max, col_max)
-
-
-        #################################### T E S T I N G ####################################
-        shop_row, shop_col = key_rooms["shop"]
-        boss_row, boss_col = key_rooms["boss"]
-        start_row, start_col = key_rooms["start"]
-
-        distance_array[shop_row][shop_col] = 'S'
-        distance_array[boss_row][boss_col] = 'B'
-        distance_array[start_row][start_col] = 'T'
-
-        #print_2d_array(distance_array)
-        #print(key_rooms)
-
-        #######################################################################################
-
-        return distance_array
-
-
 
 
     def create_map_shape(self, arr, row_, col_):
@@ -282,3 +247,6 @@ class Map():
             return False, key_rooms
 
         return True, key_rooms
+    
+    def get_current_room(self):
+        return self.room_map[self.current_position[0]][self.current_position[1]]

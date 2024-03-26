@@ -13,14 +13,9 @@ class Chest(pygame.sprite.Sprite):
         self.type = type
         self.is_open = False
         self.opened_once = False
-        self.contents = {
-            "silver_coin": [],
-            "golden_coin": [],
-            "health_potion": []
-        }
         
         #self.groups = self.game.all_sprites, self.game.blocks
-        self.groups = self.game.chests, self.game.collidables
+        self.groups = self.game.chest, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * TILE_SIZE
@@ -35,39 +30,37 @@ class Chest(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.set_contents()
 
     def open(self):
         if not self.opened_once:
-            #print("Chest opened")
+            itmes = []
             self.is_open = True
             self.image.fill(RED)
             self.opened_once = True
 
-    def update(self, screen):
-        if self.is_open:
-            self.drop_loot(screen)
-        
-    
-    def set_contents(self):
+            self.drop_loot(itmes)
+
+            return itmes
+
+
+
+    def drop_loot(self, items_to_craft:list):
         if self.type == "small":
-            self.contents["silver_coin"] = [Lootable_item(self.game, self.rect.centerx, self.rect.centery) for _ in range(random.randint(5, 5))]
+            #silver coin
+            for _ in range(random.randint(5, 5)):
+                items_to_craft.append(Lootable_item(self.game, self.rect.centerx, self.rect.centery))
 
-        elif self.type == "medium":
-            self.contents["silver_coin"] = random.randint(3, 5)
-            self.contents["golden_coin"] = random.randint(1, 2)
-            self.contents["health_potion"] = random.randint(0, 1)
 
-        elif self.type == "large":
-            self.contents["silver_coin"] = random.randint(5, 10)
-            self.contents["golden_coin"] = random.randint(2, 5)
-            self.contents["health_potion"] = 1
+        #rest to implement
+        #elif self.type == "medium":
+        #    self.contents["silver_coin"] = random.randint(3, 5)
+        #    self.contents["golden_coin"] = random.randint(1, 2)
+        #    self.contents["health_potion"] = random.randint(0, 1)
 
-    def drop_loot(self, screen):
-        for arr in self.contents.values():
-            if arr:
-                for item in arr:
-                    item.drop(screen)
+        #elif self.type == "large":
+        #    self.contents["silver_coin"] = random.randint(5, 10)
+        #    self.contents["golden_coin"] = random.randint(2, 5)
+        #    self.contents["health_potion"] = 1
 
 
     def animate_opening(self):
