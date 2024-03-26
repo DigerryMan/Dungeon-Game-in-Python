@@ -6,54 +6,55 @@ from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, is_wandering:bool=True):
-        self.game = game
-        self.groups = self.game.all_sprites, self.game.enemies
-        pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
-
-        self._speed = 3
-        self.x_change = 0
-        self.y_change = 0
-        self._check_block_colisions = check_block_colisions
-
+        #CHANGEABLE STATS
         self._health = 2
         self._damage = 1
         self._collision_damage = 1
         self._attack_speed = 800
-        self._last_attack = pygame.time.get_ticks()
-
-        self._last_shot = pygame.time.get_ticks()
-        self._shot_cd = 2500
+        
+        self._speed = 3
         self._projectal_speed = 10
+        self._shot_cd = 2500
 
-        self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
-        self.animation_loop = 1
-        self.movement_loop = 0
-        self.max_travel = random.randint(10,30)
-        self._is_wandering = is_wandering
         self._wander_interval = [700,1700]
         self._idle_interval = [1200,2500]
+
+        #POSITION
+        self.width = TILE_SIZE
+        self.height = TILE_SIZE
+        self.x_change = 0
+        self.y_change = 0
+        
+        #SKINS
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(GREEN)
+        self.animation_loop = 1
+
+
+        #HITBOX
+        self.rect = self.image.get_rect()
+        self.rect.x = x * self.width
+        self.rect.y = y * self.height
+        self._layer = self.rect.bottom
+     
+        #REST
+        self._check_block_colisions = check_block_colisions
+        self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
+
+        self._last_attack = pygame.time.get_ticks()
+        self._last_shot = pygame.time.get_ticks()
+        self._is_wandering = is_wandering
         self._wander_time = self.roll_interval(self._wander_interval)
         self._idle_time = self.roll_interval(self._idle_interval)
         self._is_idling = self._is_wandering
         self._last_idle = pygame.time.get_ticks()
         self._last_wander = pygame.time.get_ticks()
 
-        #WCZYTANIE TEKSTURY DLA MOBA
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(GREEN)
-        #self.image.set_colorkey(BLACK)
+        self.game = game
+        self.groups = self.game.all_sprites, self.game.enemies
+        pygame.sprite.Sprite.__init__(self, self.groups)
+   
 
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
-        self._layer = self.rect.bottom
-    
     def update(self):
         self.move()
         self.collide_player()
@@ -68,10 +69,9 @@ class Enemy(pygame.sprite.Sprite):
         if self._check_block_colisions:
             self.collide_blocks('y')
         
-        #self.change_facing()
+        self.correct_facing()
+        self.correct_layer()
         self.animate()
-
-        self._layer = self.rect.bottom
 
         self.x_change = 0
         self.y_change = 0
@@ -80,7 +80,7 @@ class Enemy(pygame.sprite.Sprite):
         if self._is_wandering:
             self.wander()
         else:
-            self.chase() 
+            self.chase_player() 
         
     def wander(self):
         if self._is_idling:
@@ -111,23 +111,11 @@ class Enemy(pygame.sprite.Sprite):
             self.roll_facing()
             self._idle_time = self.roll_interval(self._idle_interval)
 
-    def roll_facing(self):
-        rand = random.randint(1, 4)
-        if rand == 1:
-            self.facing = self.facing.rotate_clockwise()
-
-        elif rand == 2:
-            self.facing = self.facing.rotate_counter_clockwise()
-           
-        elif rand == 3:
-            self.facing = self.facing.reverse()
-           
-    
-    def chase(self):
+    def chase_player(self):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         enemy_vector = pygame.math.Vector2(self.rect.center)
 
-        distance = self.get_vector_distance(player_vector, enemy_vector)
+        distance = (player_vector - enemy_vector).magnitude()
         direction = None
 
         if distance > 0:
@@ -142,47 +130,18 @@ class Enemy(pygame.sprite.Sprite):
         self._correct_rounding()
         self.correct_facing()
 
+    def collide_player(self):
+        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
+        if hits:
+            self.game.damage_player(self._collision_damage)
+            self.game.playing = False
+
     def attack(self):
         now = pygame.time.get_ticks()
         if now > self._last_shot + self._shot_cd:
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False)
             self._last_shot = now
             self.roll_next_shot_cd()
-
-    def _correct_rounding(self):
-        if self.x_change < 0:
-            self.x_change = self.x_change - 1
-        else:
-            self.x_change = self.x_change + 1
-
-        if self.y_change < 0:
-            self.y_change = self.y_change - 1
-        else:
-            self.y_change = self.y_change + 1
-
-    def correct_facing(self):
-        y_abs = abs(self.y_change)
-        x_abs = abs(self.x_change)
-
-        if(x_abs >= y_abs):
-            if self.x_change < 0:
-                self.facing = Directions.LEFT
-            else:
-                self.facing = Directions.RIGHT
-        else:
-            if self.y_change < 0:
-                self.facing = Directions.UP
-            else:
-                self.facing = Directions.DOWN 
-
-    def get_vector_distance(self, vector1, vector2):
-        return (vector1 - vector2).magnitude()
-
-    def collide_player(self):
-        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        if hits:
-            self.game.damage_player(self._collision_damage)
-            self.game.playing = False
 
     def collide_blocks(self, orientation:str):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
@@ -198,6 +157,43 @@ class Enemy(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
+
+    def _correct_rounding(self):
+        if self.x_change < 0:
+            self.x_change = self.x_change - 1
+        else:
+            self.x_change = self.x_change + 1
+
+        if self.y_change < 0:
+            self.y_change = self.y_change - 1
+        else:
+            self.y_change = self.y_change + 1
+
+    def roll_facing(self):
+        rand = random.randint(1, 4)
+        if rand == 1:
+            self.facing = self.facing.rotate_clockwise()
+
+        elif rand == 2:
+            self.facing = self.facing.rotate_counter_clockwise()
+           
+        elif rand == 3:
+            self.facing = self.facing.reverse()
+
+    def correct_facing(self):
+        y_abs = abs(self.y_change)
+        x_abs = abs(self.x_change)
+
+        if(x_abs >= y_abs):
+            if self.x_change < 0:
+                self.facing = Directions.LEFT
+            elif self.x_change > 0:
+                self.facing = Directions.RIGHT
+        else:
+            if self.y_change < 0:
+                self.facing = Directions.UP
+            elif self.y_change > 0:
+                self.facing = Directions.DOWN 
 
     def get_hit(self, dmg:int):
         self._health -= dmg
@@ -217,4 +213,5 @@ class Enemy(pygame.sprite.Sprite):
     def animate(self):
         pass
             
-        
+    def correct_layer(self):
+        self._layer = self.rect.bottom
