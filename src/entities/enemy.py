@@ -118,7 +118,7 @@ class Enemy(pygame.sprite.Sprite):
             self.game.playing = False
 
     def collide_blocks(self, orientation:str):
-        hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+        hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if hits:
             if orientation == 'x':
                 if self.x_change > 0:
