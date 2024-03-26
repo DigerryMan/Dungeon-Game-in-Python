@@ -35,7 +35,7 @@ class Room():
                     if col == 'E':
                         Enemy(game, x, y)
                     elif col == 'M':
-                        Mob1(game, x, y)
+                        Legs(game, x, y)
                     elif col == 'P':
                         Parasite(game, x, y)
 

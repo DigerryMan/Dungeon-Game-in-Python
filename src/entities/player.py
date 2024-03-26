@@ -3,7 +3,7 @@ from config import *
 from .bullet import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, name="Player1"):
+    def __init__(self, game, x, y):
         self.__health = 3
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
