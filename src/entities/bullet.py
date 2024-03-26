@@ -22,8 +22,13 @@ class Bullet(pygame.sprite.Sprite):
 
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks
-
         pygame.sprite.Sprite.__init__(self, self.groups)
+        
+        if self.direction == Directions.PLAYER:
+            self.speed_x = 0
+            self.speed_y = 0
+            self._calculate_speed_to_player()
+    
 
     def move(self):
         if(self.direction == Directions.UP):
@@ -37,7 +42,26 @@ class Bullet(pygame.sprite.Sprite):
 
         elif(self.direction == Directions.RIGHT):
             self.x_change += self.speed
-        pass
+        
+        elif(self.direction == Directions.PLAYER):
+            self.x_change += self.speed_x
+            self.y_change += self.speed_y
+
+    def _calculate_speed_to_player(self):
+        player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
+        bullet_vector = pygame.math.Vector2(self.rect.center)
+        distance = (player_vector - bullet_vector).magnitude()
+        direction = None
+        
+        if distance > 0:
+            direction = (player_vector - bullet_vector).normalize()
+        else:
+            direction = pygame.math.Vector2()
+        
+        velocity = direction * self.speed
+
+        self.speed_x = int(velocity.x)
+        self.speed_y = int(velocity.y)
 
     def update(self):
         self.move()

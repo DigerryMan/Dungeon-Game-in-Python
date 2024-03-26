@@ -5,7 +5,8 @@ from .door import *
 from .wall import *
 from entities.player import *
 from entities.enemy import *
-from entities.mobs.mob1 import *
+from entities.mobs.legs import *
+from entities.mobs.parasite import *
 
 class Room():    
     def __init__(self, room_type, player:Player, doors_to_spawn:Directions):
@@ -44,7 +45,9 @@ class Room():
                     if col == 'E':
                         Enemy(game, x, y)
                     elif col == 'M':
-                        Mob1(game, x, y)
+                        Legs(game, x, y)
+                    elif col == 'P':
+                        Parasite(game, x, y)
 
         self.spawn_player(entry_direction)
         
