@@ -53,7 +53,6 @@ class Bullet(pygame.sprite.Sprite):
         distance = (player_vector - bullet_vector).magnitude()
         direction = None
         
-        print(distance)
         if distance > 0:
             direction = (player_vector - bullet_vector).normalize()
         else:

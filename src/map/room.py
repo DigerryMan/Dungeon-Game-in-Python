@@ -4,7 +4,7 @@ from .block import *
 from .door import *
 from entities.player import *
 from entities.enemy import *
-from entities.mobs.mob1 import *
+from entities.mobs.legs import *
 from entities.mobs.parasite import *
 
 class Room():    
