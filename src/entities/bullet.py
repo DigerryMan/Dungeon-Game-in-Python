@@ -11,9 +11,7 @@ class Bullet(pygame.sprite.Sprite):
         self.is_friendly = is_friendly
         self.speed = speed
 
-        #POSITION / SIZE
-        self.x = x
-        self.y = y
+        #SIZE
         self.width = BULLET_WIDTH
         self.height = BULLET_HEIGHT
 
@@ -21,7 +19,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(BROWN)
 
-        #HITBOX
+        #HITBOX / POSITION
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
