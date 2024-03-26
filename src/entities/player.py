@@ -5,11 +5,9 @@ from .bullet import *
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, name="Player1"):
         self.__health = 3
-        self.__movement_speed = 100
-        self.__name = name
         self.x = x * TILE_SIZE
         self.y = y * TILE_SIZE
-        self.speed = 10
+        self.speed = 9
         self.width = TILE_SIZE
         self.height = TILE_SIZE
         self.facing = Directions.DOWN

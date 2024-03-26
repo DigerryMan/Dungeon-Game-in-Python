@@ -4,7 +4,7 @@ from .block import *
 from .door import *
 from entities.player import *
 from entities.enemy import *
-from entities.mob1 import *
+from entities.mobs.mob1 import *
 
 class Room():    
     def __init__(self, room_type, player:Player):
