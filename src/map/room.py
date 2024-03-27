@@ -1,5 +1,6 @@
 from config import *
 from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.fly import Fly
 from entities.mobs.maggot import Maggot
 from .room_types import rooms, special_rooms
 from .block import *
@@ -79,6 +80,8 @@ class Room():
                             self.enemies.append(Maggot(game, x, y))
                         elif col == 'A':
                             self.enemies.append(AlphaMaggot(game, x, y))
+                        elif col == 'F':
+                            self.enemies.append(Fly(game, x, y))
 
         self.spawn_player(entry_direction)
         self.drawn_once = True

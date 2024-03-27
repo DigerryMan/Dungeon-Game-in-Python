@@ -5,7 +5,8 @@ from entities.bullet import Bullet
 from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, is_wandering:bool=True):
+    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
+                 is_wandering:bool=True, bullet_decay_sec:float=0):
         #CHANGEABLE STATS
         self._health = 2
         self._damage = 1
@@ -49,6 +50,7 @@ class Enemy(pygame.sprite.Sprite):
         self._is_idling = self._is_wandering
         self._last_idle = pygame.time.get_ticks()
         self._last_wander = pygame.time.get_ticks()
+        self._bullet_decay_sec = bullet_decay_sec
 
         self.game = game
         self.groups = self.game.all_sprites, self.game.enemies
@@ -80,7 +82,7 @@ class Enemy(pygame.sprite.Sprite):
         if self._is_wandering:
             self.wander()
         else:
-            self.chase_player() 
+            self.move_because_of_player() 
         
     def wander(self):
         if self._is_idling:
@@ -96,12 +98,19 @@ class Enemy(pygame.sprite.Sprite):
             else:
                 if self.facing == Directions.LEFT:
                     self.x_change = -self._speed//2
+
                 elif self.facing == Directions.RIGHT:
                     self.x_change = self._speed//2
+                    self.correct_low_speed_enemies("x")
+
                 elif self.facing == Directions.UP:
                     self.y_change = -self._speed//2
+
                 elif self.facing == Directions.DOWN:
                     self.y_change = self._speed//2
+                    self.correct_low_speed_enemies("y")
+                
+                
 
     def idle(self):
         now = pygame.time.get_ticks()
@@ -111,7 +120,7 @@ class Enemy(pygame.sprite.Sprite):
             self.roll_facing()
             self._idle_time = self.roll_interval(self._idle_interval)
 
-    def chase_player(self):
+    def move_because_of_player(self, chase:bool=True):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         enemy_vector = pygame.math.Vector2(self.rect.center)
 
@@ -123,7 +132,12 @@ class Enemy(pygame.sprite.Sprite):
         else:
             direction = pygame.math.Vector2()
         
-        velocity = direction * self._speed
+        speed = self._speed
+        if not chase:
+            direction.rotate_ip(180)
+            speed = self._speed * 0.4
+
+        velocity = direction * speed
 
         self.x_change = velocity.x
         self.y_change = velocity.y
@@ -140,7 +154,8 @@ class Enemy(pygame.sprite.Sprite):
     def attack(self):
         now = pygame.time.get_ticks()
         if now > self._last_shot + self._shot_cd:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, 
+                   self._projectal_speed, False, self._damage, self._bullet_decay_sec)
             self._last_shot = now
             self.roll_next_shot_cd()
 
@@ -216,3 +231,10 @@ class Enemy(pygame.sprite.Sprite):
             
     def correct_layer(self):
         self._layer = self.rect.bottom
+
+    def correct_low_speed_enemies(self, axis:str):
+        if self._speed//2 == 0:
+            if axis == 'x':
+                self.x_change = self._speed
+            if axis == 'y':
+                self.y_change = self._speed
