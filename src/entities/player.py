@@ -4,36 +4,53 @@ from .bullet import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
+        #MAIN
+        self.game = game
         self.__health = 3
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
+        self.__dmg = 1
         self.speed = 9
+        self.__immortality_after_hit = 1000
+        self.__shooting_cooldown = 500
+
+        #SIZE
         self.width = TILE_SIZE
         self.height = TILE_SIZE
+
+        #SKIN
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(RED)
+        
+        #HITBOX / POSITION
+        self.rect = self.image.get_rect()
+        self.rect.x = x * TILE_SIZE
+        self.rect.y = y * TILE_SIZE
+        
+        #REST
+        self._layer = self.rect.bottom
+        self.__last_hit = pygame.time.get_ticks()
+        self.__last_shot = pygame.time.get_ticks()
         self.facing = Directions.DOWN
+        self.x_change = 0
+        self.y_change = 0
+
+        self.groups = self.game.all_sprites, self.game.player_sprite
+        pygame.sprite.Sprite.__init__(self, self.groups)
+    
+    def update(self):
+        self._user_input()
+        self._correct_diagonal_movement()
+
+        self.rect.x += self.x_change
+        self._collide_blocks('x')
+        self.rect.y += self.y_change
+        self._collide_blocks('y')
+
+        self._layer = self.rect.bottom
+        self.animate()
 
         self.x_change = 0
         self.y_change = 0
 
-        self.game = game
-        self.groups = self.game.all_sprites, self.game.player_sprite
-
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(RED)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
-        self._layer = self.rect.bottom
-        self.__last_hit = pygame.time.get_ticks()
-        self.__immortality_after_hit = 1000
-        self.__shooting_cooldown = 500
-        self.__last_shot = pygame.time.get_ticks()
-
-
-        pygame.sprite.Sprite.__init__(self, self.groups)
-    
     def _user_input(self):
         keys = pygame.key.get_pressed()
         self._move(keys)
@@ -63,25 +80,7 @@ class Player(pygame.sprite.Sprite):
             now = pygame.time.get_ticks()
             if now - self.__last_shot > self.__shooting_cooldown:
                 self.__last_shot = now
-                Bullet(self.game, self.rect.centerx, self.rect.centery, self.facing)
-            pass
-
-    def update(self):
-        self._user_input()
-        
-        self._correct_diagonal_movement()
-
-        self.rect.x += self.x_change
-        self._collide_blocks('x')
-        self.rect.y += self.y_change
-        self._collide_blocks('y')
-
-        self._layer = self.rect.bottom
-
-        self.x_change = 0
-        self.y_change = 0
-    
-
+                Bullet(self.game, self.rect.centerx, self.rect.centery, self.facing, dmg=self.__dmg)
 
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
@@ -92,7 +91,6 @@ class Player(pygame.sprite.Sprite):
             if self.y_change < 0:
                 self.y_change += 1
                 
-
     def _collide_blocks(self, direction:str):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if hits:
@@ -108,6 +106,9 @@ class Player(pygame.sprite.Sprite):
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
 
+    def animate(self):
+        pass
+
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect
         self.rect.y = y_rect
@@ -117,9 +118,12 @@ class Player(pygame.sprite.Sprite):
         if now - self.__last_hit > self.__immortality_after_hit:
             self.__health -= dmg
             self.__last_hit = now
-            if self.__health <= 0:
-                self.game.game_over()
-                print("KONIEC GRY!")
+            
+            self._check_is_dead()
             print(self.__health)
 
+    def _check_is_dead(self):
+        if self.__health <= 0:
+                self.game.game_over()
+                print("KONIEC GRY!")
     

@@ -5,30 +5,47 @@ from utils.directions import Directions
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, dmg=1):
+        #MAIN
         self.dmg = dmg
+        self.direction = direction
         self.is_friendly = is_friendly
-        self.width = 10
-        self.height = 10
+        self.speed = speed
+
+        #SIZE
+        self.width = BULLET_WIDTH
+        self.height = BULLET_HEIGHT
+
+        #SKIN
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(BROWN)
+
+        #HITBOX / POSITION
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.x = x
-        self.y = y
+
+        #REST
         self.x_change = 0
         self.y_change = 0
-        self.speed = speed
-        self.direction = direction
-
+        
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
-        
-        if self.direction == Directions.PLAYER:
+
+        if self.direction == Directions.PLAYER: #for shot to player position
             self.speed_x = 0
             self.speed_y = 0
             self._calculate_speed_to_player()
-    
+
+    def update(self):
+        self.move()
+        self.rect.x += self.x_change
+        self.rect.y += self.y_change
+        
+        self._collide()
+        self._layer = self.rect.bottom
+
+        self.x_change = 0
+        self.y_change = 0
 
     def move(self):
         if(self.direction == Directions.UP):
@@ -59,22 +76,8 @@ class Bullet(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         velocity = direction * self.speed
-
         self.speed_x = int(velocity.x)
         self.speed_y = int(velocity.y)
-
-    def update(self):
-        self.move()
-
-        self.rect.x += self.x_change
-        self.rect.y += self.y_change
-        
-        self._collide()
-
-        self._layer = self.rect.bottom
-
-        self.x_change = 0
-        self.y_change = 0
 
     def _collide(self):
         if self.is_friendly:       
