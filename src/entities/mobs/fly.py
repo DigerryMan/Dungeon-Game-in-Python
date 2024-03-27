@@ -7,9 +7,9 @@ class Fly(Enemy):
         super().__init__(game, x, y, check_block_colisions=True, 
                          is_wandering=True, bullet_decay_sec=2.0)
         #CHANGEABLE STATS
-        self._health = 2
+        self._health = 4
         self._speed = 1
-        self._projectal_speed = 2
+        self._projectal_speed = 4
         self._attack_speed = 2500
         
 

@@ -8,12 +8,13 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
                  is_wandering:bool=True, bullet_decay_sec:float=0):
         #CHANGEABLE STATS
-        self._health = 2
+        self._health = 4
         self._damage = 1
         self._collision_damage = 1
         self._attack_speed = 800
         
         self._speed = 3
+        self._chase_speed_debuff = 1
         self._projectal_speed = 10
         self._shot_cd = 2500
 
@@ -135,7 +136,7 @@ class Enemy(pygame.sprite.Sprite):
         speed = self._speed
         if not chase:
             direction.rotate_ip(180)
-            speed = self._speed * 0.4
+            speed = self._speed * self._chase_speed_debuff
 
         velocity = direction * speed
 
