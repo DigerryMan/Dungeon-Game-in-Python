@@ -94,9 +94,9 @@ class Game:
         for sprite in sprite_list:
             self.screen.blit(sprite.image, sprite.rect)
 
-        self.collidables.draw(self.screen)
         self.items.draw(self.screen)
-
+        self.collidables.draw(self.screen)
+        
         self.clock.tick(FPS)
         pygame.display.update()
 

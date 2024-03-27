@@ -9,11 +9,12 @@ class Lootable_item(pygame.sprite.Sprite):
         self.groups = self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        self.acceleration = 1
+        self.horizontal_velocity = random.uniform(-3, 3)
+        self.vertical_velocity = 10 - abs(self.horizontal_velocity) * 1.5
+        self.acceleration = 1.05 - abs(self.horizontal_velocity) / 6
         self.vertical_travel_time = 0
-        self.vertical_velocity = 10
-        self.horizontal_velocity = random.randint(-3, 3)
 
+        
         self.x = x
         self.y = y
         self.width = TILE_SIZE // 5
@@ -33,8 +34,10 @@ class Lootable_item(pygame.sprite.Sprite):
     def drop_animation(self):
         if self.vertical_travel_time < 22:
             self.vertical_velocity -= self.acceleration
-            self.rect.y -= self.vertical_velocity
-            self.rect.x += self.horizontal_velocity
+            self.y -= self.vertical_velocity
+            self.x += self.horizontal_velocity
+            self.rect.x = round(self.x)
+            self.rect.y = round(self.y)
             self.vertical_travel_time += 1
 
     def picked_up(self):

@@ -103,6 +103,10 @@ class Map():
 
         room = self.room_map[row][col]
         room.generate_room(self.game, direction)
+        
+
+    def get_current_room(self):
+        return self.room_map[self.current_position[0]][self.current_position[1]]
 
 
     def _change_position_on_map(self, direction:Directions):
@@ -145,8 +149,6 @@ class Map():
                 if row < 0 or col < 0 or row >= 15 or col >= 15:
                     row, col = row - d_row, col - d_col
 
-        #print_2d_array(arr)
-
 
     def fill_distances(self, arr, distance_array, row, col):
         q = deque()
@@ -168,8 +170,6 @@ class Map():
                     distance_array[new_row][new_col] = distance_array[row][col] + 1
                     q.append([new_row, new_col])
                     visited[new_row][new_col] = True
-
-        #print_2d_array(distance_array)
 
 
     def check_if_map_valid(self, arr, row_, col_):
@@ -247,6 +247,3 @@ class Map():
             return False, key_rooms
 
         return True, key_rooms
-    
-    def get_current_room(self):
-        return self.room_map[self.current_position[0]][self.current_position[1]]

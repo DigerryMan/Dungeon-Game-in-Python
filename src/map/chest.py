@@ -1,20 +1,18 @@
 import pygame
 import random
 from config import *
-from .lootables.lootable_item import Lootable_item
-
+from .lootables.silver_coin import Silver_coin
+from .lootables.golden_coin import Golden_coin
+from .lootables.health_potion import Health_potion
 
 class Chest(pygame.sprite.Sprite):
-    type = ["small", "medium", "large"]
-
     def __init__(self, game, x, y, type):
         self.game = game
         self._layer = BLOCK_LAYER
         self.type = type
         self.is_open = False
         self.opened_once = False
-        
-        #self.groups = self.game.all_sprites, self.game.blocks
+
         self.groups = self.game.chest, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -24,7 +22,7 @@ class Chest(pygame.sprite.Sprite):
         self.height = TILE_SIZE
 
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(ORANGE)
+        self.image.fill(DARK_BROWN)
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -35,7 +33,7 @@ class Chest(pygame.sprite.Sprite):
         if not self.opened_once:
             itmes = []
             self.is_open = True
-            self.image.fill(RED)
+            self.image.fill(GOLD)
             self.opened_once = True
 
             self.drop_loot(itmes)
@@ -46,21 +44,28 @@ class Chest(pygame.sprite.Sprite):
 
     def drop_loot(self, items_to_craft:list):
         if self.type == "small":
-            #silver coin
-            for _ in range(random.randint(5, 5)):
-                items_to_craft.append(Lootable_item(self.game, self.rect.centerx, self.rect.centery))
+            for _ in range(random.randint(2, 4)):
+                items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
 
+        elif self.type == "medium":
+            for _ in range(random.randint(3, 5)):
+                items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
 
-        #rest to implement
-        #elif self.type == "medium":
-        #    self.contents["silver_coin"] = random.randint(3, 5)
-        #    self.contents["golden_coin"] = random.randint(1, 2)
-        #    self.contents["health_potion"] = random.randint(0, 1)
+            for _ in range(random.randint(1, 2)):
+                items_to_craft.append(Golden_coin(self.game, self.rect.centerx, self.rect.centery))
 
-        #elif self.type == "large":
-        #    self.contents["silver_coin"] = random.randint(5, 10)
-        #    self.contents["golden_coin"] = random.randint(2, 5)
-        #    self.contents["health_potion"] = 1
+            for _ in range(random.randint(0, 1)):
+                items_to_craft.append(Health_potion(self.game, self.rect.centerx, self.rect.centery))
+
+        elif self.type == "large":
+            for _ in range(random.randint(5, 10)):
+                items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
+
+            for _ in range(random.randint(2, 5)):
+                items_to_craft.append(Golden_coin(self.game, self.rect.centerx, self.rect.centery))
+
+            for _ in range(1):
+                items_to_craft.append(Health_potion(self.game, self.rect.centerx, self.rect.centery))
 
 
     def animate_opening(self):

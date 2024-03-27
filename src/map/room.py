@@ -6,6 +6,7 @@ from .block import *
 from .door import *
 from .wall import *
 from .chest import *
+from .lootables.lootable_item import Lootable_item
 from entities.player import *
 from entities.enemy import *
 from entities.mobs.legs import *
@@ -62,7 +63,7 @@ class Room():
                         self.walls.append(Wall(game, x, y))
 
                     elif col == 'C':
-                        self.chest = Chest(game, x, y, "small")
+                        self.chest = Chest(game, x, y, "medium")
 
                     elif col == 'B':
                         self.blocks.append(Block(game, x, y))
