@@ -20,7 +20,7 @@ class AlphaMaggot(Maggot):
     def attack(self):
         now = pygame.time.get_ticks()
         if now > self._last_shot + self._shot_cd:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False)
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False, time_decay_in_seconds=1.5)
             self._last_shot = now
             self.roll_next_shot_cd()
 

@@ -135,6 +135,7 @@ class Enemy(pygame.sprite.Sprite):
         if hits:
             self.game.damage_player(self._collision_damage)
             self.game.playing = False
+            self._is_wandering = False
 
     def attack(self):
         now = pygame.time.get_ticks()

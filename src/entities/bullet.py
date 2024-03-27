@@ -4,12 +4,13 @@ from config import *
 from utils.directions import Directions
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, dmg=1):
+    def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, dmg=1, time_decay_in_seconds:float=0):
         #MAIN
         self.dmg = dmg
         self.direction = direction
         self.is_friendly = is_friendly
         self.speed = speed
+        self.time_decay = int(time_decay_in_seconds * 1000)
 
         #SIZE
         self.width = BULLET_WIDTH
@@ -26,7 +27,8 @@ class Bullet(pygame.sprite.Sprite):
         #REST
         self.x_change = 0
         self.y_change = 0
-        
+        self.spawn_time = pygame.time.get_ticks()
+
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -42,6 +44,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.y_change
         
         self._collide()
+        if self.time_decay:
+            self.decay()
         self._layer = self.rect.bottom
 
         self.x_change = 0
@@ -97,5 +101,8 @@ class Bullet(pygame.sprite.Sprite):
         if block_hits or door_hits:
             self.kill()
 
-
+    def decay(self):
+        now = pygame.time.get_ticks()
+        if now - self.spawn_time > self.time_decay :
+            self.kill()
             
