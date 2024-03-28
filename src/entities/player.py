@@ -54,33 +54,58 @@ class Player(pygame.sprite.Sprite):
     def _user_input(self):
         keys = pygame.key.get_pressed()
         self._move(keys)
-        self._shoot(keys)
+        self._shoot()
 
     def _move(self, keys):
         if keys[pygame.K_a]:
+            print("LEFT")
             self.x_change -= self.speed
             self.facing = Directions.LEFT
         
         if keys[pygame.K_d]:
+            print("RIGHT")
             self.x_change += self.speed
             self.facing = Directions.RIGHT
 
 
         if keys[pygame.K_w]: 
+            print("UP")
             self.y_change -= self.speed
             self.facing = Directions.UP
 
 
         if keys[pygame.K_s]:
+            print("DOWN")
             self.y_change += self.speed
             self.facing = Directions.DOWN
 
-    def _shoot(self, keys):
-        if keys[pygame.K_SPACE]:
-            now = pygame.time.get_ticks()
-            if now - self.__last_shot > self.__shooting_cooldown:
+    def _shoot(self):
+        now = pygame.time.get_ticks()
+        if now - self.__last_shot > self.__shooting_cooldown:
+            keys = pygame.key.get_pressed()
+            shot = False
+            direction = None
+            if keys[pygame.K_LEFT]:
+                direction = Directions.LEFT
+                shot = True
+
+            if keys[pygame.K_RIGHT]:
+                direction = Directions.RIGHT
+                shot = True
+
+            if keys[pygame.K_UP]:
+                direction = Directions.UP
+                shot = True
+
+            if keys[pygame.K_DOWN]:
+                direction = Directions.DOWN
+                shot = True
+            
+            if shot:
                 self.__last_shot = now
-                Bullet(self.game, self.rect.centerx, self.rect.centery, self.facing, dmg=self.__dmg)
+                Bullet(self.game, self.rect.centerx, self.rect.centery, direction, dmg=self.__dmg)
+
+            
 
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
