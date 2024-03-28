@@ -1,7 +1,9 @@
 from config import *
 from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.fly import Fly
+from entities.mobs.ghost import Ghost
 from entities.mobs.maggot import Maggot
+from entities.mobs.slime import Slime
 from .room_types import rooms, special_rooms
 from .block import *
 from .door import *
@@ -82,6 +84,10 @@ class Room():
                             self.enemies.append(AlphaMaggot(game, x, y))
                         elif col == 'F':
                             self.enemies.append(Fly(game, x, y))
+                        elif col == 'S':
+                            self.enemies.append(Slime(game, x, y))
+                        elif col == 'G':
+                            self.enemies.append(Ghost(game, x, y))
 
         self.spawn_player(entry_direction)
         self.drawn_once = True
@@ -135,3 +141,6 @@ class Room():
 
         if self.chest and not self.chest.is_open:
             self.items = self.chest.open()
+    
+    def get_block_layout(self):
+        return self.room
