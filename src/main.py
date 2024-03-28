@@ -1,21 +1,9 @@
-import pygame 
+import game
 
-WIDTH = 500
-HEIGHT = 500
- 
-background_colour = (234, 212, 252) 
+def main():
+    game_instance = game.Game()
+    game_instance.new()
+    game_instance.run_game()
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT)) 
-  
-pygame.display.set_caption('test') 
-   
-screen.fill(background_colour) 
-  
-pygame.display.flip() 
-  
-running = True
-   
-while running: 
-    for event in pygame.event.get():      
-        if event.type == pygame.QUIT: 
-            running = False
+if __name__ == "__main__":
+    main()
