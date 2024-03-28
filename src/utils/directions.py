@@ -43,3 +43,11 @@ class Directions(Enum):
             return Directions.UP
         
         return self
+    
+    def get_axis_tuple(self):
+        if self == Directions.UP or self == Directions.DOWN:
+            return ('y', 1)
+        elif self == Directions.LEFT or self == Directions.RIGHT:
+            return ('x', 0)
+        
+        return None

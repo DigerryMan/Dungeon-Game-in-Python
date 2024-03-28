@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = 9
         self.__immortality_after_hit = 1000
         self.__shooting_cooldown = 500
+        self.__shot_speed = 20
 
         #SIZE
         self.width = TILE_SIZE
@@ -53,38 +54,36 @@ class Player(pygame.sprite.Sprite):
 
     def _user_input(self):
         keys = pygame.key.get_pressed()
-        self._move(keys)
-        self._shoot()
+        x_y_vel = [0,0]
+        self._move(keys, x_y_vel)
+        self._shoot(keys, x_y_vel)
 
-    def _move(self, keys):
+    def _move(self, keys, x_y_vel):
         if keys[pygame.K_a]:
-            print("LEFT")
             self.x_change -= self.speed
             self.facing = Directions.LEFT
+            x_y_vel[0] -= 1
         
         if keys[pygame.K_d]:
-            print("RIGHT")
             self.x_change += self.speed
             self.facing = Directions.RIGHT
-
+            x_y_vel[0] += 1
 
         if keys[pygame.K_w]: 
-            print("UP")
             self.y_change -= self.speed
             self.facing = Directions.UP
-
+            x_y_vel[1] -= 1
 
         if keys[pygame.K_s]:
-            print("DOWN")
             self.y_change += self.speed
             self.facing = Directions.DOWN
+            x_y_vel[1] += 1
 
-    def _shoot(self):
+    def _shoot(self, keys, x_y_vel):
         now = pygame.time.get_ticks()
         if now - self.__last_shot > self.__shooting_cooldown:
-            keys = pygame.key.get_pressed()
             shot = False
-            direction = None
+            direction:Directions = None
             if keys[pygame.K_LEFT]:
                 direction = Directions.LEFT
                 shot = True
@@ -103,7 +102,15 @@ class Player(pygame.sprite.Sprite):
             
             if shot:
                 self.__last_shot = now
-                Bullet(self.game, self.rect.centerx, self.rect.centery, direction, dmg=self.__dmg)
+                additional_v = 0
+                
+                if PLAYER_SHOOT_DIAGONAL:
+                    other_axis, other_axis_index = direction.rotate_clockwise().get_axis_tuple()     
+                    if x_y_vel[other_axis_index]:
+                        additional_v = int(self.__shot_speed * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
+
+                Bullet(self.game, self.rect.centerx, self.rect.centery, direction, 
+                       dmg=self.__dmg, additional_speed=additional_v)
 
             
 
@@ -148,7 +155,7 @@ class Player(pygame.sprite.Sprite):
             print(self.__health)
 
     def _check_is_dead(self):
-        if self.__health <= 0:
-                self.game.game_over()
-                print("KONIEC GRY!")
+        if self.__health <= 0 and not GOD_MODE:
+            self.game.game_over()
+            print("KONIEC GRY!")
     

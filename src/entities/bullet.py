@@ -4,12 +4,14 @@ from config import *
 from utils.directions import Directions
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, dmg=1, time_decay_in_seconds:float=0):
+    def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, 
+                 dmg=1, time_decay_in_seconds:float=0, additional_speed=0):
         #MAIN
         self.dmg = dmg
         self.direction = direction
         self.is_friendly = is_friendly
         self.speed = speed
+        self.additional_speed = additional_speed
         self.time_decay = int(time_decay_in_seconds * 1000)
 
         #SIZE
@@ -33,13 +35,12 @@ class Bullet(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.attacks
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        if self.direction == Directions.PLAYER: #for shot to player position
-            self.speed_x = 0
-            self.speed_y = 0
+        if self.direction == Directions.PLAYER: 
             self._calculate_speed_to_player()
+        else:
+            self.calculate_speed()
 
     def update(self):
-        self.move()
         self.rect.x += self.x_change
         self.rect.y += self.y_change
         
@@ -48,26 +49,29 @@ class Bullet(pygame.sprite.Sprite):
             self.decay()
         self._layer = self.rect.bottom
 
-        self.x_change = 0
-        self.y_change = 0
-
-    def move(self):
+    def calculate_speed(self):
         if(self.direction == Directions.UP):
-            self.y_change -= self.speed
+            self.y_change = -self.speed
 
         elif(self.direction == Directions.DOWN):
-            self.y_change += self.speed
+            self.y_change = self.speed
 
         elif(self.direction == Directions.LEFT):
-            self.x_change -= self.speed
+            self.x_change = -self.speed
 
         elif(self.direction == Directions.RIGHT):
-            self.x_change += self.speed
+            self.x_change = self.speed
         
-        elif(self.direction == Directions.PLAYER):
-            self.x_change += self.speed_x
-            self.y_change += self.speed_y
+        self.calculate_angled_speed()
+        
 
+    def calculate_angled_speed(self):
+        axis, _ = self.direction.get_axis_tuple()
+        if axis == 'x':
+            self.y_change = self.additional_speed 
+        elif axis == 'y':
+            self.x_change = self.additional_speed
+            
     def _calculate_speed_to_player(self):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         bullet_vector = pygame.math.Vector2(self.rect.center)
@@ -80,8 +84,8 @@ class Bullet(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         velocity = direction * self.speed
-        self.speed_x = int(velocity.x)
-        self.speed_y = int(velocity.y)
+        self.x_change = int(velocity.x)
+        self.y_change = int(velocity.y)
 
     def _collide(self):
         if self.is_friendly:       
