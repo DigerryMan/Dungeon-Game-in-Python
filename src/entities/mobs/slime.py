@@ -31,10 +31,15 @@ class Slime(Enemy):
         self.is_jumping = False
         self.new_jump_x = x
         self.new_jump_y = y
+        self.old_jump_x = x
+        self.old_jump_y = y
         self.jump_time = 1000
         self.jump_cd = 1500
         self.jump_start_time = 0
         self.jump_end_time = -self.jump_cd - 1
+        self.jump_height = 0
+        self.horizontal_speed = 0
+        self.vertical_speed = 0
         self.prepare_atack = False
 
 
@@ -55,7 +60,15 @@ class Slime(Enemy):
             self.jump_end_time = now
             self.is_jumping = False
             self.prepare_atack = True
-            print(self.prepare_atack)
+        else:
+            elapsed_time = (now - self.jump_start_time) / 1000
+            y = self.old_jump_y + self.vertical_speed * elapsed_time - 0.5 * 9.81 * elapsed_time ** 2
+            x = self.old_jump_x + (elapsed_time * 1000 / self.jump_time) * (self.new_jump_x - self.old_jump_x)
+           
+            self.rect.x = int(x * TILE_SIZE)
+            self.rect.y = int(y * TILE_SIZE)
+    
+     
 
     def find_possible_moves(self, now):
         possible_moves = []
@@ -66,20 +79,24 @@ class Slime(Enemy):
                 possible_moves.append((new_x, new_y))
         
         if possible_moves:
+            self.old_jump_x, self.old_jump_y = self.new_jump_x, self.new_jump_y
             self.new_jump_x, self.new_jump_y = random.choice(possible_moves)
-            possible_moves.clear()
+            self.calculate_parabolic_jump()
         
         self.jump_start_time = now
         self.is_jumping = True
-        
+    
+    def calculate_parabolic_jump(self):
+        self.jump_height = abs(self.old_jump_y - self.new_jump_y)
+        self.vertical_speed = 2 * self.jump_height / self.jump_time / 1000
+        self.horizontal_speed = (self.new_jump_x - self.old_jump_x) / self.jump_time / 1000
 
     def is_valid_move(self, x, y):
         # '#' walls
         if x <= 0 or x >= MAP_WIDTH - 1 or y <= 0  or y >= MAP_HEIGHT - 1:
             return False
-        if self.room_layout[y][x] == 'B' or self.room_layout[y][x] == '#' or self.room_layout[y][x] == 'D': 
-            return False
-        return True
+        return not self.room_layout[y][x] in WALL_MARKS
+
     
     def attack(self):
         if self.prepare_atack:
