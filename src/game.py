@@ -1,5 +1,6 @@
 import pygame
 from map.map import *
+from menu.button import *
 from entities.player import *
 from config import *
 
@@ -9,10 +10,9 @@ class Game:
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.running = True
-
-
-    def new(self):
         self.playing = True
+        self.intro_background = pygame.image.load("resources/menu/intro-background.jpg")
+        self.font = pygame.font.Font(None, 50)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -30,7 +30,10 @@ class Game:
         self.player = Player(self, 0, 0)
         self.map = Map(self, self.player)
         self.map.render_initial_room()
-
+        
+    def run(self):
+        self.intro_screen()
+        self.run_game()
 
     def events(self):
         for event in pygame.event.get():
@@ -114,3 +117,31 @@ class Game:
 
     def game_over(self):
         pass
+
+    def intro_screen(self):
+        intro = True
+
+        title = self.font.render("Isaac Clone", True, PINK)
+        title_rect = title.get_rect(x = 10, y = 10)
+
+        #play_button = Button(WIN_WIDTH/2 - 100, WIN_HEIGHT/2 - 50, 200, 100, "Play", RED, pygame.font.Font(None, 50), 50)
+        play_button = Button(0, 200, 200, 100, "Play", RED, self.font, 50)
+
+
+        while intro:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    intro = False
+                    self.running = False
+
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+
+            if play_button.is_pressed(mouse_pos, mouse_pressed):
+                intro = False
+
+            self.screen.blit(self.intro_background, (0, 0))
+            self.screen.blit(title, title_rect)
+            self.screen.blit(play_button.image, play_button.rect)
+            self.clock.tick(FPS)
+            pygame.display.update()
