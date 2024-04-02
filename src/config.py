@@ -38,5 +38,5 @@ PINK = (255, 105, 180)
 GOLD = (255, 215, 0)
 SILVER = (192, 192, 192)
 
-ADMIN = False
+ADMIN = True
 GOD_MODE = False

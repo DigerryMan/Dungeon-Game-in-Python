@@ -7,7 +7,7 @@ from config import *
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), not ADMIN and pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.intro_playing = True
         self.menu_playing = False
