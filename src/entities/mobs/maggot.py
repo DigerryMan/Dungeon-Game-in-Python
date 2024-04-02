@@ -4,8 +4,6 @@ from config import *
 from entities.enemy import Enemy
 from utils.directions import Directions
 
-
-
 class Maggot(Enemy):
     def __init__(self, game, x, y, moving_clockwise=random.choice([True, False])):
         super().__init__(game, x, y, False)

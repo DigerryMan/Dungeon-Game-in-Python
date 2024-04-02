@@ -1,4 +1,3 @@
-import pygame
 from config import *
 from entities.enemy import Enemy
 
@@ -10,8 +9,7 @@ class Fly(Enemy):
         self._health = 4
         self._speed = 1
         self._projectal_speed = 4
-        self._attack_speed = 2500
-        
+        self._shot_cd = int(2.4 * FPS)
 
         #SKINS
         self.image.fill(GREY)

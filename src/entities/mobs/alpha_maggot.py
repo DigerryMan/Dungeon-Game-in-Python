@@ -1,6 +1,4 @@
 import random
-import pygame
-
 from config import *
 from entities.bullet import Bullet
 from entities.mobs.maggot import Maggot
