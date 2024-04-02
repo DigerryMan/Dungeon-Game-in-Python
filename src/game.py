@@ -7,11 +7,13 @@ from config import *
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
+        self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
+        self.intro_playing = True
         self.running = True
         self.playing = True
-        self.intro_background = pygame.image.load("resources/menu/intro-background.jpg")
+        self.intro_background = pygame.image.load("resources/menu/intro-background.png")
+        self.intro_background = pygame.transform.smoothscale(self.intro_background, self.screen.get_size())
         self.font = pygame.font.Font(None, 50)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
@@ -32,7 +34,6 @@ class Game:
         self.map.render_initial_room()
         
     def run(self):
-        self.intro_screen()
         self.run_game()
 
     def events(self):
@@ -40,7 +41,6 @@ class Game:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
-
 
     def update(self):
         self.all_sprites.update()
@@ -109,6 +109,8 @@ class Game:
     def run_game(self):
         while self.running:
             self.events()
+            if self.intro_playing:
+                self.intro_screen()
             self.update()
             self.draw()
 
@@ -119,29 +121,11 @@ class Game:
         pass
 
     def intro_screen(self):
-        intro = True
-
-        title = self.font.render("Isaac Clone", True, PINK)
-        title_rect = title.get_rect(x = 10, y = 10)
-
-        #play_button = Button(WIN_WIDTH/2 - 100, WIN_HEIGHT/2 - 50, 200, 100, "Play", RED, pygame.font.Font(None, 50), 50)
-        play_button = Button(0, 200, 200, 100, "Play", RED, self.font, 50)
-
-
-        while intro:
+        while self.intro_playing:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    intro = False
-                    self.running = False
-
-            mouse_pos = pygame.mouse.get_pos()
-            mouse_pressed = pygame.mouse.get_pressed()
-
-            if play_button.is_pressed(mouse_pos, mouse_pressed):
-                intro = False
+                if event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
+                    self.intro_playing = False
 
             self.screen.blit(self.intro_background, (0, 0))
-            self.screen.blit(title, title_rect)
-            self.screen.blit(play_button.image, play_button.rect)
             self.clock.tick(FPS)
             pygame.display.update()
