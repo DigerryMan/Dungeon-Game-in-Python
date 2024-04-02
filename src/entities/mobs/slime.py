@@ -102,15 +102,19 @@ class Slime(Enemy):
         if self.prepare_atack:
             self.prepare_atack = False
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, time_decay_in_seconds=2.5)
+                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                   time_decay_in_seconds=self._bullet_decay_sec)
             
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, time_decay_in_seconds=2.5)
+                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                   time_decay_in_seconds=self._bullet_decay_sec)
             
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.UP, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, time_decay_in_seconds=2.5)
+                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                   time_decay_in_seconds=self._bullet_decay_sec)
             
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.DOWN, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, time_decay_in_seconds=2.5)
+                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                   time_decay_in_seconds=self._bullet_decay_sec)
     
     

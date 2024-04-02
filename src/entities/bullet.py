@@ -12,7 +12,8 @@ class Bullet(pygame.sprite.Sprite):
         self.is_friendly = is_friendly
         self.speed = speed
         self.additional_speed = additional_speed
-        self.time_decay = int(time_decay_in_seconds * 1000)
+        self.time_decay = int(time_decay_in_seconds * FPS)
+        self.time_left = self.time_decay
 
         #SIZE
         self.width = BULLET_WIDTH
@@ -29,7 +30,6 @@ class Bullet(pygame.sprite.Sprite):
         #REST
         self.x_change = 0
         self.y_change = 0
-        self.spawn_time = pygame.time.get_ticks()
 
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks
@@ -106,7 +106,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
     def decay(self):
-        now = pygame.time.get_ticks()
-        if now - self.spawn_time > self.time_decay :
+        self.time_left -= 1
+        if self.time_left <= 0:
             self.kill()
             
