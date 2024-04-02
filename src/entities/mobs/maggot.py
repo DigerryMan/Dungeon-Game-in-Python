@@ -12,14 +12,15 @@ class Maggot(Enemy):
         #CHANGEABLE STATS
         self._health = 4
         self._speed = 3
-        self._random_dir_change_cd = 2000
+        self._random_dir_change_cd = int(2 * FPS)
         
         #SKIN
         self.image.fill(WHITE)
 
         #REST
         self.moving_clockwise = moving_clockwise
-        self._last_change_of_direction = pygame.time.get_ticks()
+        self._change_of_direction_time_left = self._random_dir_change_cd
+        
         
     def move(self):
         self.wall_collision()
@@ -58,9 +59,10 @@ class Maggot(Enemy):
             self.rotate_facing()
             
     def random_change_of_direction(self):
-        now = pygame.time.get_ticks()
-        if now - self._last_change_of_direction > self._random_dir_change_cd:
-            self._last_change_of_direction = now
+        self._change_of_direction_time_left -= 1
+        if self._change_of_direction_time_left <= 0:
+            self.roll_rotation_cd(int(0.4 * FPS), int(2.2 * FPS))
+            self._change_of_direction_time_left = self._random_dir_change_cd
             
             self.rotate_facing()
 
@@ -70,8 +72,6 @@ class Maggot(Enemy):
         else:
             self.facing = self.facing.rotate_counter_clockwise()
 
-        self.roll_rotation_cd(400, 2200)
-        self._last_change_of_direction = pygame.time.get_ticks()
         
     def roll_rotation_cd(self, mini:int, maxi:int):
         self._random_dir_change_cd = random.randint(mini, maxi)

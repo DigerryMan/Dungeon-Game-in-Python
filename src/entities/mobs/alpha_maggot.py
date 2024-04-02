@@ -18,11 +18,12 @@ class AlphaMaggot(Maggot):
         self.image.fill(DARK_RED)
 
     def attack(self):
-        now = pygame.time.get_ticks()
-        if now > self._last_shot + self._shot_cd:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, self._projectal_speed, False, time_decay_in_seconds=1.5)
-            self._last_shot = now
+        self._shot_time_left -= 1
+        if self._shot_time_left <= 0:
+            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, 
+                   self._projectal_speed, False, time_decay_in_seconds=1.5)
             self.roll_next_shot_cd()
+            self._shot_time_left = self._shot_cd
 
     def rotate_facing(self):
         rand = random.randint(1, 3)
@@ -34,7 +35,4 @@ class AlphaMaggot(Maggot):
         else:
             self.facing = self.facing.reverse()
             
-        self.roll_rotation_cd(300,1800)
-        self._last_change_of_direction = pygame.time.get_ticks()
-
-    
+        self.roll_rotation_cd(int(0.3 * FPS), int(1.8 * FPS))
