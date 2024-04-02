@@ -152,10 +152,7 @@ class Player(pygame.sprite.Sprite):
             self.__last_hit = now
             
             self._check_is_dead()
-            print(self.__health)
 
     def _check_is_dead(self):
         if self.__health <= 0 and not GOD_MODE:
             self.game.game_over()
-            print("KONIEC GRY!")
-    

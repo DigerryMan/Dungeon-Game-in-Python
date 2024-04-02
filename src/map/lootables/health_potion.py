@@ -14,5 +14,4 @@ class Health_potion(Lootable_item):
         if hits:
             current_room = self.game.map.get_current_room()
             current_room.remove_item(self)
-            print("Health potion picked up")
             self.kill()

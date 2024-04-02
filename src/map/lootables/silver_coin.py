@@ -14,5 +14,4 @@ class Silver_coin(Lootable_item):
         if hits:
             current_room = self.game.map.get_current_room()
             current_room.remove_item(self)
-            print("Silver coin picked up")
             self.kill()

@@ -46,5 +46,4 @@ class Lootable_item(pygame.sprite.Sprite):
         if hits:
             current_room = self.game.map.get_current_room()
             current_room.remove_item(self)
-            print("Item picked up")
             self.kill()
