@@ -46,12 +46,14 @@ class Game:
             self.events()
             self.main_menu()
 
-            if not self.paused:
+            if not self.paused and self.running:
                 self.update()
                 self.draw()
 
             if self.paused:
                 self.display_pause()
+
+        pygame.quit()
 
     def render_new_map(self):
         self.player_sprite = pygame.sprite.LayeredUpdates()
@@ -179,7 +181,7 @@ class Game:
                 self.menu_playing = False
                 self.running = False
 
-            self.screen.fill(BLACK)
+            self.screen.fill(DARK_GREY)
             self.screen.blit(self.menu_background, (0, 0))
             
             title_rect = self.main_title.get_rect(center=(WIN_WIDTH/2, WIN_HEIGHT/4))
