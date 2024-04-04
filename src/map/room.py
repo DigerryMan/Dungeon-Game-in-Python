@@ -56,11 +56,11 @@ class Room():
                     if (y, x) in doors_positions:
                         if(y == 0):
                             self.doors.append(Door(self.game, x, y, Directions.UP))
-                        elif(y == self.game.MAP_HEIGHT - 1):
+                        elif(y == self.game.settings.MAP_HEIGHT - 1):
                             self.doors.append(Door(self.game, x, y, Directions.DOWN))
                         elif(x == 0):
                             self.doors.append(Door(self.game, x, y, Directions.LEFT))
-                        elif(x == self.game.MAP_WIDTH - 1):
+                        elif(x == self.game.settings.MAP_WIDTH - 1):
                             self.doors.append(Door(self.game, x, y, Directions.RIGHT))
 
                     elif col == '#':
@@ -96,39 +96,39 @@ class Room():
     
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            self.player.set_rect_position(self.player.rect.x, (self.game.MAP_HEIGHT - 2)*self.game.TILE_SIZE)
+            self.player.set_rect_position(self.player.rect.x, (self.game.settings.MAP_HEIGHT - 2)*self.game.settings.TILE_SIZE)
 
         elif entry_direction == Directions.DOWN:
-            self.player.set_rect_position(self.player.rect.x, self.game.TILE_SIZE)
+            self.player.set_rect_position(self.player.rect.x, self.game.settings.TILE_SIZE)
 
         elif entry_direction == Directions.LEFT:
-            self.player.set_rect_position((self.game.MAP_WIDTH - 2) * self.game.TILE_SIZE, self.player.rect.y)
+            self.player.set_rect_position((self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE, self.player.rect.y)
 
         elif entry_direction == Directions.RIGHT:
-            self.player.set_rect_position(self.game.TILE_SIZE, self.player.rect.y)
+            self.player.set_rect_position(self.game.settings.TILE_SIZE, self.player.rect.y)
 
         elif entry_direction == Directions.CENTER:
-            self.player.set_rect_position((self.game.MAP_WIDTH / 2) * self.game.TILE_SIZE, (self.game.MAP_HEIGHT / 2) * self.game.TILE_SIZE)
+            self.player.set_rect_position((self.game.settings.MAP_WIDTH / 2) * self.game.settings.TILE_SIZE, (self.game.settings.MAP_HEIGHT / 2) * self.game.settings.TILE_SIZE)
 
 
     def get_doors_positions(self):
         doors_positions = []
         for i in range(len(self.doors_to_spawn)):
             if self.doors_to_spawn[i] == Directions.UP:
-                doors_positions.append((0, self.game.MAP_WIDTH / 2 - 1))
-                doors_positions.append((0, self.game.MAP_WIDTH / 2))
+                doors_positions.append((0, self.game.settings.MAP_WIDTH / 2 - 1))
+                doors_positions.append((0, self.game.settings.MAP_WIDTH / 2))
 
             elif self.doors_to_spawn[i] == Directions.DOWN:
-                doors_positions.append((self.game.MAP_HEIGHT - 1, self.game.MAP_WIDTH / 2 - 1))
-                doors_positions.append((self.game.MAP_HEIGHT - 1, self.game.MAP_WIDTH / 2))
+                doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2 - 1))
+                doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2))
 
             elif self.doors_to_spawn[i] == Directions.LEFT:
-                doors_positions.append((self.game.MAP_HEIGHT / 2 - 1, 0))
-                doors_positions.append((self.game.MAP_HEIGHT / 2, 0))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, 0))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2, 0))
 
             elif self.doors_to_spawn[i] == Directions.RIGHT:
-                doors_positions.append((self.game.MAP_HEIGHT / 2 - 1, self.game.MAP_WIDTH - 1))
-                doors_positions.append((self.game.MAP_HEIGHT / 2, self.game.MAP_WIDTH - 1))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, self.game.settings.MAP_WIDTH - 1))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2, self.game.settings.MAP_WIDTH - 1))
         
         return doors_positions
 

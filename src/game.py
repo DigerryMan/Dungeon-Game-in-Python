@@ -18,12 +18,6 @@ class Game:
 
         self.settings = Settings(window_size)
 
-        self.WIN_WIDTH = window_size[0]
-        self.WIN_HEIGHT = window_size[1]
-        self.TILE_SIZE = self.WIN_WIDTH // 32
-        self.MAP_WIDTH = self.WIN_WIDTH // self.TILE_SIZE
-        self.MAP_HEIGHT = self.WIN_HEIGHT // self.TILE_SIZE
-
         self.clock = pygame.time.Clock()
         self.intro_playing = True
         self.menu_playing = False
@@ -35,7 +29,7 @@ class Game:
         self.menu_background = pygame.image.load("resources/menu/menuoverlay.png")
         self.menu_background = pygame.transform.smoothscale(self.menu_background, self.screen.get_size())
         self.main_title = pygame.image.load("resources/menu/maintitle.png")
-        title_width = self.WIN_WIDTH // 2
+        title_width = self.settings.WIN_WIDTH // 2
         title_height = self.main_title.get_height() * (title_width // self.main_title.get_width())
         self.main_title = pygame.transform.scale(self.main_title, (title_width, title_height))
         self.font = pygame.font.SysFont("arialblack", 30)
@@ -53,9 +47,9 @@ class Game:
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
-        self.player = None
         self.map = None
-
+        self.player = None
+        
 
     def run(self):
         self.intro_screen()
@@ -181,9 +175,9 @@ class Game:
             pygame.display.update()
 
     def main_menu(self):
-        play_button = Button(self.WIN_WIDTH/2 - 100, (self.WIN_HEIGHT/2)*0.8, 200, 50, "Play", WHITE, self.font, 40)
-        settings_button = Button(self.WIN_WIDTH/2 - 100, self.WIN_HEIGHT/2, 200, 50, "Settings", WHITE, self.font, 40)
-        quit_button = Button(self.WIN_WIDTH/2 - 100, (self.WIN_HEIGHT/2)*1.2, 200, 50, "Quit", WHITE, self.font, 40)
+        play_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*0.8, 200, 50, "Play", WHITE, self.font, 40)
+        settings_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Settings", WHITE, self.font, 40)
+        quit_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*1.2, 200, 50, "Quit", WHITE, self.font, 40)
 
         while self.menu_playing:
             for event in pygame.event.get():
@@ -210,7 +204,7 @@ class Game:
             self.screen.fill(DARK_GREY)
             self.screen.blit(self.menu_background, (0, 0))
             
-            title_rect = self.main_title.get_rect(center=(self.WIN_WIDTH/2, self.WIN_HEIGHT/4))
+            title_rect = self.main_title.get_rect(center=(self.settings.WIN_WIDTH/2, self.settings.WIN_HEIGHT/4))
             self.screen.blit(self.main_title, title_rect)
             
             self.screen.blit(play_button.image, play_button.rect)
@@ -219,10 +213,10 @@ class Game:
 
             self.clock.tick(FPS)
             pygame.display.update()
-            
+
 
     def display_settings(self):
-        back_button = Button(self.WIN_WIDTH/2 - 100, self.WIN_HEIGHT/2 + 100, 200, 50, "Back", WHITE, self.font, 40)
+        back_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Back", WHITE, self.font, 40)
         settings_playing = True
 
         while settings_playing:
@@ -247,8 +241,8 @@ class Game:
 
 
     def display_pause(self):
-        resume_button = Button(self.WIN_WIDTH/2 - 100, self.WIN_HEIGHT/2, 200, 50, "Resume", WHITE, self.font, 40)
-        menu_button = Button(self.WIN_WIDTH/2 - 100, self.WIN_HEIGHT/2 + 100, 200, 50, "Menu", WHITE, self.font, 40)
+        resume_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Resume", WHITE, self.font, 40)
+        menu_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Menu", WHITE, self.font, 40)
 
         while self.paused:
             for event in pygame.event.get():

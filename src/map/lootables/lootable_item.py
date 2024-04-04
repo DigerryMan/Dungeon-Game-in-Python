@@ -17,8 +17,8 @@ class Lootable_item(pygame.sprite.Sprite):
         
         self.x = x
         self.y = y
-        self.width = game.TILE_SIZE // 5
-        self.height = game.TILE_SIZE // 10
+        self.width = game.settings.TILE_SIZE // 5
+        self.height = game.settings.TILE_SIZE // 10
 
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE)

@@ -46,13 +46,13 @@ class Maggot(Enemy):
                 self.rect.x = hits[0].rect.right 
 
             elif self.facing == Directions.RIGHT:
-                self.rect.x = hits[0].rect.left - self.game.TILE_SIZE
+                self.rect.x = hits[0].rect.left - self.game.settings.TILE_SIZE
 
             elif self.facing == Directions.UP:
                 self.rect.y = hits[0].rect.bottom
 
             elif self.facing == Directions.DOWN:
-                self.rect.y = hits[0].rect.top - self.game.TILE_SIZE
+                self.rect.y = hits[0].rect.top - self.game.settings.TILE_SIZE
 
             self.rotate_facing()
             

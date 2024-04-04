@@ -22,8 +22,8 @@ class Enemy(pygame.sprite.Sprite):
         self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
 
         #POSITION
-        self.width = game.TILE_SIZE
-        self.height = game.TILE_SIZE
+        self.width = game.settings.TILE_SIZE
+        self.height = game.settings.TILE_SIZE
         self.x_change = 0
         self.y_change = 0
         

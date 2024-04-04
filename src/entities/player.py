@@ -14,8 +14,8 @@ class Player(pygame.sprite.Sprite):
         self.__shot_speed = 20
 
         #SIZE
-        self.width = game.TILE_SIZE
-        self.height = game.TILE_SIZE
+        self.width = game.settings.TILE_SIZE
+        self.height = game.settings.TILE_SIZE
 
         #SKIN
         self.image = pygame.Surface([self.width, self.height])
@@ -23,8 +23,8 @@ class Player(pygame.sprite.Sprite):
         
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
-        self.rect.x = x * game.TILE_SIZE
-        self.rect.y = y * game.TILE_SIZE
+        self.rect.x = x * game.settings.TILE_SIZE
+        self.rect.y = y * game.settings.TILE_SIZE
         
         #REST
         self._layer = self.rect.bottom
