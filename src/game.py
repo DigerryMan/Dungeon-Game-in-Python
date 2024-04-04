@@ -76,7 +76,7 @@ class Game:
     def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                self.running = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -153,7 +153,8 @@ class Game:
         while self.intro_playing:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    self.intro_playing = False
+                    self.running = False
 
                 if event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.intro_playing = False
@@ -170,7 +171,8 @@ class Game:
         while self.menu_playing:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    self.menu_playing = False
+                    self.running = False
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_button.is_pressed(pygame.mouse.get_pos()):
@@ -202,7 +204,8 @@ class Game:
         while self.paused:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    self.paused = False
+                    self.running = False
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     self.paused = False
