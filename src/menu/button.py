@@ -22,7 +22,7 @@ class Button:
         self.text_rect = self.text.get_rect(center=(self.width/2, self.height/2))
         self.image.blit(self.text, self.text_rect)
 
-    def is_pressed(self, pos, pressed):
-        if self.rect.collidepoint(pos) and pressed[0]:
+    def is_pressed(self, pos):
+        if self.rect.collidepoint(pos):
             return True
         return False

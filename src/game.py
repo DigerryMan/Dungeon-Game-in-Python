@@ -172,14 +172,16 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
 
-            if play_button.is_pressed(pygame.mouse.get_pos(), pygame.mouse.get_pressed()):
-                self.menu_playing = False
-                self.paused = False
-                self.render_new_map()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if play_button.is_pressed(pygame.mouse.get_pos()):
+                        self.menu_playing = False
+                        self.render_new_map()
+                        self.paused = False
 
-            if quit_button.is_pressed(pygame.mouse.get_pos(), pygame.mouse.get_pressed()):
-                self.menu_playing = False
-                self.running = False
+                    if quit_button.is_pressed(pygame.mouse.get_pos()):
+                        self.menu_playing = False
+                        self.running = False
+                
 
             self.screen.fill(DARK_GREY)
             self.screen.blit(self.menu_background, (0, 0))
@@ -204,14 +206,14 @@ class Game:
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     self.paused = False
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if resume_button.is_pressed(pygame.mouse.get_pos()):
+                        self.paused = False
 
-            if resume_button.is_pressed(pygame.mouse.get_pos(), pygame.mouse.get_pressed()):
-                self.paused = False
-
-            if menu_button.is_pressed(pygame.mouse.get_pos(), pygame.mouse.get_pressed()):
-                self.paused = False
-                self.menu_playing = True
-                pygame.time.delay(100)
+                    if menu_button.is_pressed(pygame.mouse.get_pos()):
+                        self.paused = False
+                        self.menu_playing = True
 
             self.screen.blit(resume_button.image, resume_button.rect)
             self.screen.blit(menu_button.image, menu_button.rect)
