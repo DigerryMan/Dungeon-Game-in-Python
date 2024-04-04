@@ -76,25 +76,25 @@ class Map():
                         doors_to_spawn.append(door_directions[i])
 
                 if self.map_scheme[row][col] == 'S':
-                    self.room_map[row][col] = Room("shop", self.player, doors_to_spawn)
+                    self.room_map[row][col] = Room("shop", self.game, doors_to_spawn)
 
                 elif self.map_scheme[row][col] == 'B':
-                    self.room_map[row][col] = Room("boss", self.player, doors_to_spawn)
+                    self.room_map[row][col] = Room("boss", self.game, doors_to_spawn)
 
                 elif self.map_scheme[row][col] == 'T':
-                    self.room_map[row][col] = Room("start", self.player, doors_to_spawn)
+                    self.room_map[row][col] = Room("start", self.game, doors_to_spawn)
                     self.current_position = [row, col]
 
                 else:
                     room_random_type = random.randint(0, len(rooms) - 1)
-                    self.room_map[row][col] = Room(room_random_type, self.player, doors_to_spawn)
+                    self.room_map[row][col] = Room(room_random_type, self.game, doors_to_spawn)
 
 
     def render_initial_room(self):
         row, col = self.current_position
 
         room = self.room_map[row][col]
-        room.generate_room(self.game, Directions.CENTER)
+        room.generate_room(Directions.CENTER)
 
 
     def render_next_room(self, direction:Directions):
@@ -102,7 +102,7 @@ class Map():
         row, col = self.current_position
 
         room = self.room_map[row][col]
-        room.generate_room(self.game, direction)
+        room.generate_room(direction)
         
 
     def get_current_room(self):

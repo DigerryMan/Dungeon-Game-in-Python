@@ -54,8 +54,8 @@ class Slime(Enemy):
         if now - self.jump_start_time > self.jump_time:
             self.x = self.new_jump_x
             self.y = self.new_jump_y
-            self.rect.x = self.new_jump_x * TILE_SIZE
-            self.rect.y = self.new_jump_y * TILE_SIZE
+            self.rect.x = self.new_jump_x * self.game.TILE_SIZE
+            self.rect.y = self.new_jump_y * self.game.TILE_SIZE
             
             self.jump_end_time = now
             self.is_jumping = False
@@ -65,8 +65,8 @@ class Slime(Enemy):
             y = self.old_jump_y + self.vertical_speed * elapsed_time - 0.5 * 9.81 * elapsed_time ** 2
             x = self.old_jump_x + (elapsed_time * 1000 / self.jump_time) * (self.new_jump_x - self.old_jump_x)
            
-            self.rect.x = int(x * TILE_SIZE)
-            self.rect.y = int(y * TILE_SIZE)
+            self.rect.x = int(x * self.game.TILE_SIZE)
+            self.rect.y = int(y * self.game.TILE_SIZE)
     
      
 
@@ -93,7 +93,7 @@ class Slime(Enemy):
 
     def is_valid_move(self, x, y):
         # '#' walls
-        if x <= 0 or x >= MAP_WIDTH - 1 or y <= 0  or y >= MAP_HEIGHT - 1:
+        if x <= 0 or x >= self.game.MAP_WIDTH - 1 or y <= 0  or y >= self.game.MAP_HEIGHT - 1:
             return False
         return not self.room_layout[y][x] in WALL_MARKS
 
