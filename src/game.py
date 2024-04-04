@@ -166,7 +166,7 @@ class Game:
                     self.intro_playing = False
                     self.running = False
 
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
+                if event.type == pygame.MOUSEBUTTONDOWN or (event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN)):
                     self.intro_playing = False
                     self.menu_playing = True
 
