@@ -113,8 +113,6 @@ class Player(pygame.sprite.Sprite):
                 Bullet(self.game, self.rect.centerx, self.rect.centery, direction, 
                        dmg=self.__dmg, additional_speed=additional_v)
 
-            
-
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
             self.x_change //= 1.41
@@ -156,3 +154,6 @@ class Player(pygame.sprite.Sprite):
     def _check_is_dead(self):
         if self.__health <= 0 and not GOD_MODE:
             self.game.game_over()
+    
+    def get_center_position(self):
+        return self.rect.centerx, self.rect.centery

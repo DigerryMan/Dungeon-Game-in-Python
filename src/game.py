@@ -3,6 +3,7 @@ from map.map import *
 from menu.button import *
 from entities.player import *
 from config import *
+from utils.image_loader import ImageLoader
 from utils.settings import *
 
 class Game:
@@ -24,6 +25,8 @@ class Game:
         self.running = True
         self.paused = False
 
+        self.image_loader = ImageLoader()
+          
         self.intro_background = pygame.image.load("resources/menu/introbackground.png")
         self.intro_background = pygame.transform.smoothscale(self.intro_background, self.screen.get_size())
         self.menu_background = pygame.image.load("resources/menu/menuoverlay.png")
