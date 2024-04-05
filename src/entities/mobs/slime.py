@@ -16,7 +16,7 @@ class Slime(Enemy):
         self.t = random.random() * 0.5 + 0.8 #time of jump in sec
         self.jump_time = int(self.t * FPS) 
         self.jump_cd = int((random.random() * 0.8 + 1.2) * FPS)
-        self.jump_range = 4
+        self._jump_range = 3 # has to be min 2
 
         #SKINS
         self.image.fill(ORANGE)
@@ -27,9 +27,9 @@ class Slime(Enemy):
 
         #MOVES
         self.room_layout = self.game.map.get_current_room().get_block_layout()
-        self.possible_jumps = [(i,j) for i in range(-self.jump_range, self.jump_range + 1) 
-                               for j in range(-self.jump_range, self.jump_range)]
-        self.correct_possible_moves()
+        self.possible_jumps = [(x_i,y_j) for x_i in range(-self._jump_range, self._jump_range + 1) 
+                               for y_j in range(-self._jump_range, self._jump_range + 1)]
+        self.correct_possible_jumps()
 
         #JUMPING
         self.is_jumping = False
@@ -49,14 +49,18 @@ class Slime(Enemy):
         #REST
         self.prepare_atack = False
 
-    def correct_possible_moves(self):
-        for y in range(-1, 2):
-            for x in range(-1, 2):
-                self.possible_jumps.remove((y, x))
+    def correct_possible_jumps(self):
+        self.possible_jumps.remove((0, 0))
+         #remove diagonal jumps
+        for y in range(1, self._jump_range + 1):
+            self.possible_jumps.remove((0, y))
+            self.possible_jumps.remove((0, -y))
         
-        for y in range(2, self.jump_range + 1):
-            self.possible_jumps.remove((y, 0))
-            self.possible_jumps.remove((-y, 0))
+         #remove 1 block jumps
+        for y in range(-1, 2):
+            self.possible_jumps.remove((-1, y))
+            self.possible_jumps.remove((1, y))
+        
 
     def move(self):
         if self.is_jumping:
@@ -65,6 +69,7 @@ class Slime(Enemy):
             self.next_jump_time_left -= 1
             if self.next_jump_time_left <= 0:
                 self.find_possible_moves()
+                self.is_jumping = True
                 self.jump_time_left = self.jump_time
     
     def jump(self):
@@ -99,22 +104,19 @@ class Slime(Enemy):
             self.new_jump_x, self.new_jump_y = random.choice(possible_moves)
             self.calculate_parabolic_jump()
         
-        self.is_jumping = True
-    
     def calculate_parabolic_jump(self):
         self.z = self.new_jump_x - self.old_jump_x
         self.v_x = self.z / (self.t)
-        print(self.v_x, self.new_jump_x, self.old_jump_x)
-        self.tg = ((self.new_jump_y - self.old_jump_y) + 0.5 * 9.81 * (self.t) ** 2) / (self.v_x * (self.t))
+        self.tg = ((self.new_jump_y - self.old_jump_y) - 0.5 * 9.81 * (self.t) ** 2) / (self.v_x * (self.t))
 
     def calculate_current_y(self, t:float):
-        return self.old_jump_y + self.v_x * t * self.tg - 0.5 * 9.81 * t ** 2
+        return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t ** 2
 
     def is_valid_move(self, x, y):
         # '#' walls
         if x <= 0 or x >= self.game.settings.MAP_WIDTH - 1 or y <= 0  or y >= self.game.settings.MAP_HEIGHT - 1:
             return False
-        return not self.room_layout[y][x] in WALL_MARKS
+        return (self.room_layout[y][x] not in WALL_MARKS) and (self.room_layout[y][x] != 'C')
 
     def attack(self):
         if self.prepare_atack:
@@ -135,4 +137,8 @@ class Slime(Enemy):
                    speed=self._projectal_speed, is_friendly=False, dmg=1, 
                    time_decay_in_seconds=self._bullet_decay_sec)
     
-    
+    def correct_layer(self):
+        if self.is_jumping:
+            self._layer = self.rect.bottom + 400
+        else:
+            self._layer = self.rect.bottom
