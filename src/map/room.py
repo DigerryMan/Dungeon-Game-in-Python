@@ -77,7 +77,7 @@ class Room():
                         self.blocks.append(Block(self.game, x, y))
 
                     elif col == 'D':
-                        self.blocks.append(Destructable_Block(self.game, x, y))
+                        self.blocks.append(DestructableBlock(self.game, x, y))
 
                     if not self.room_cleared:
                         if col == 'E':
