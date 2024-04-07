@@ -25,6 +25,8 @@ class Game:
         self.running = True
         self.paused = False
 
+        self.e_pressed = False
+
         self.image_loader = ImageLoader()
           
         self.intro_background = pygame.image.load("resources/menu/introbackground.png")
@@ -96,8 +98,17 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.paused = not self.paused
 
+                if event.key == pygame.K_e:
+                    self.e_pressed = True
+
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_e:
+                    self.e_pressed = False
+
+
     def update(self):
         self.all_sprites.update()
+        self.blocks.update()
         self.items.update()
         if len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)

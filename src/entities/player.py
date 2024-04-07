@@ -12,6 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.__immortality_after_hit = int(1 * FPS)
         self.__shooting_cooldown = int(0.5 * FPS)
         self.__shot_speed = 20
+        self.coins = 100
 
         #SIZE
         self.width = game.settings.TILE_SIZE

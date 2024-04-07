@@ -7,6 +7,7 @@ from entities.mobs.slime import Slime
 from .room_types import rooms, special_rooms
 from .block import *
 from .destructable_block import *
+from .shop_stuff.shop_stand import *
 from .door import *
 from .wall import *
 from .chest import *
@@ -78,6 +79,9 @@ class Room():
 
                     elif col == 'D':
                         self.blocks.append(DestructableBlock(self.game, x, y))
+
+                    elif col == 's':
+                        self.blocks.append(ShopStand(self.game, x + .5, y + .5))
 
                     if not self.room_cleared:
                         if col == 'E':
