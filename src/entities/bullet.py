@@ -104,10 +104,16 @@ class Bullet(pygame.sprite.Sprite):
         block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
 
-        if block_hits or door_hits:
+        if door_hits:
             self.kill()
-            if block_hits and isinstance(block_hits[0], DestructableBlock):
-                block_hits[0].get_hit(self.dmg)
+
+        if block_hits:
+            self.kill()
+            for block_hit in block_hits:
+                if isinstance(block_hit, DestructableBlock):
+                    block_hit.get_hit(self.dmg)
+                   
+             
 
     def decay(self):
         self.time_left -= 1
