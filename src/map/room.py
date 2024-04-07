@@ -6,6 +6,7 @@ from entities.mobs.maggot import Maggot
 from entities.mobs.slime import Slime
 from .room_types import rooms, special_rooms
 from .block import *
+from .destructable_block import *
 from .door import *
 from .wall import *
 from .chest import *
@@ -48,6 +49,9 @@ class Room():
     def remove_item(self, item:Lootable_item):
         self.items.remove(item)
 
+    def remove_block(self, block:Block):
+        self.blocks.remove(block)
+
     def generate_room(self, entry_direction:Directions):
         if not self.drawn_once:
             doors_positions = self.get_doors_positions()
@@ -71,6 +75,9 @@ class Room():
 
                     elif col == 'B':
                         self.blocks.append(Block(self.game, x, y))
+
+                    elif col == 'D':
+                        self.blocks.append(Destructable_Block(self.game, x, y))
 
                     if not self.room_cleared:
                         if col == 'E':

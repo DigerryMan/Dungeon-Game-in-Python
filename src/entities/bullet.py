@@ -2,6 +2,7 @@ import pygame
 
 from config import *
 from utils.directions import Directions
+from map.destructable_block import Destructable_Block
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, 
@@ -102,8 +103,11 @@ class Bullet(pygame.sprite.Sprite):
             
         block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
+
         if block_hits or door_hits:
             self.kill()
+            if block_hits and isinstance(block_hits[0], Destructable_Block):
+                block_hits[0].get_hit(self.dmg)
 
     def decay(self):
         self.time_left -= 1
