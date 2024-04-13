@@ -4,6 +4,7 @@ from entities.mobs.fly import Fly
 from entities.mobs.ghost import Ghost
 from entities.mobs.maggot import Maggot
 from entities.mobs.slime import Slime
+from entities.mobs.wanderer import Wanderer
 from .room_types import rooms, special_rooms
 from .block import *
 from .destructable_block import *
@@ -85,7 +86,7 @@ class Room():
 
                     if not self.room_cleared:
                         if col == 'E':
-                            self.enemies.append(Enemy(self.game, x, y))
+                            self.enemies.append(Wanderer(self.game, x, y))
                         elif col == 'L':
                             self.enemies.append(Legs(self.game, x, y))
                         elif col == 'P':

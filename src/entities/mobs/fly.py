@@ -18,5 +18,10 @@ class Fly(Enemy):
     def move_because_of_player(self, chase:bool=False):
         super().move_because_of_player(chase)
     
-   
-    
+    @staticmethod
+    def check_group_attacked():
+        return Fly.is_group_attacked
+
+    @staticmethod
+    def group_attacked():
+        Fly.is_group_attacked = True

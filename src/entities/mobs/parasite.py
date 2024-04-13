@@ -18,11 +18,11 @@ class Parasite(Enemy):
         self.x_frame = 0
         self.img = game.image_loader.get_image("parasite")
         
-        self.TILE_SIZE = game.settings.TILE_SIZE
+        self.MOB_SIZE = game.settings.MOB_SIZE
 
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        scaled_frame = pygame.transform.scale(self.frame, (self.TILE_SIZE, self.TILE_SIZE))
-        self.image.blit(scaled_frame, (0, 0, self.TILE_SIZE, self.TILE_SIZE))
+        scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.image.blit(scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
 
         #REST
         self.is_dig = True
@@ -84,11 +84,11 @@ class Parasite(Enemy):
     def nextFrame(self, player_shoot_frame=False):
         self.x_frame = (self.x_frame + 32) % (8 * 32)
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        scaled_frame = pygame.transform.scale(self.frame, (self.TILE_SIZE, self.TILE_SIZE))
+        scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
         
         if player_shoot_frame:
             x_p, _ = self.game.player.get_center_position()
             if x_p < self.rect.centerx:
                 scaled_frame = pygame.transform.flip(scaled_frame, True, False)
 
-        self.image.blit(scaled_frame, (0, 0, self.TILE_SIZE, self.TILE_SIZE))
+        self.image.blit(scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))

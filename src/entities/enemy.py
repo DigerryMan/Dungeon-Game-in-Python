@@ -5,6 +5,7 @@ from entities.bullet import Bullet
 from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
+    is_group_attacked:bool = False
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
                  is_wandering:bool=True, bullet_decay_sec:float=0):
         #CHANGEABLE STATS
@@ -22,8 +23,8 @@ class Enemy(pygame.sprite.Sprite):
         self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
 
         #POSITION
-        self.width = game.settings.TILE_SIZE
-        self.height = game.settings.TILE_SIZE
+        self.width = game.settings.MOB_SIZE
+        self.height = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
         
@@ -87,7 +88,11 @@ class Enemy(pygame.sprite.Sprite):
         
     def wander(self):
         if self._is_idling:
-            self.idle()
+            if not self.check_group_attacked():
+                self.idle()
+            else:
+                self._is_idling = False
+                self._is_wandering = False
         
         else:
             self._wander_time_left -= 1
@@ -213,6 +218,7 @@ class Enemy(pygame.sprite.Sprite):
     def get_hit(self, dmg:int):
         self._health -= dmg
         self._is_wandering = False
+        self.group_attacked()
         self.check_if_dead()
     
     def check_if_dead(self):
@@ -237,3 +243,11 @@ class Enemy(pygame.sprite.Sprite):
                 self.x_change = self._speed
             if axis == 'y':
                 self.y_change = self._speed
+    
+    @staticmethod
+    def check_group_attacked():
+        return Enemy.is_group_attacked
+
+    @staticmethod
+    def group_attacked():
+        Enemy.is_group_attacked = True

@@ -7,7 +7,7 @@ from utils.directions import Directions
 class Slime(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y, check_block_colisions=False, 
-                         is_wandering=False,bullet_decay_sec=3)
+                         is_wandering=False, bullet_decay_sec=3)
 
         #CHANGEABLE STATS
         self._health = 6
@@ -27,7 +27,7 @@ class Slime(Enemy):
 
         #MOVES
         self.room_layout = self.game.map.get_current_room().get_block_layout()
-        self.possible_jumps = [(x_i,y_j) for x_i in range(-self._jump_range, self._jump_range + 1) 
+        self.possible_jumps = [(x_i, y_j) for x_i in range(-self._jump_range, self._jump_range + 1) 
                                for y_j in range(-self._jump_range, self._jump_range + 1)]
         self.correct_possible_jumps()
 
