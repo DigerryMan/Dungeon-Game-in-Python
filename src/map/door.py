@@ -12,10 +12,10 @@ class Door(pygame.sprite.Sprite):
 
         self.direction = direction
 
-        self.x = x * TILE_SIZE
-        self.y = y * TILE_SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        self.x = x * game.settings.TILE_SIZE
+        self.y = y * game.settings.TILE_SIZE
+        self.width = game.settings.TILE_SIZE
+        self.height = game.settings.TILE_SIZE
 
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(YELLOW)

@@ -9,13 +9,14 @@ class Player(pygame.sprite.Sprite):
         self.__health = 3
         self.__dmg = 1
         self.speed = 9
-        self.__immortality_after_hit = 1000
-        self.__shooting_cooldown = 500
+        self.__immortality_after_hit = int(1 * FPS)
+        self.__shooting_cooldown = int(0.5 * FPS)
         self.__shot_speed = 20
+        self.coins = 100
 
         #SIZE
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        self.width = game.settings.PLAYER_SIZE
+        self.height = game.settings.PLAYER_SIZE
 
         #SKIN
         self.image = pygame.Surface([self.width, self.height])
@@ -23,13 +24,13 @@ class Player(pygame.sprite.Sprite):
         
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
-        self.rect.x = x * TILE_SIZE
-        self.rect.y = y * TILE_SIZE
+        self.rect.x = x * self.width
+        self.rect.y = y * self.height
         
         #REST
         self._layer = self.rect.bottom
-        self.__last_hit = pygame.time.get_ticks()
-        self.__last_shot = pygame.time.get_ticks()
+        self.____immortality_time_left = 0
+        self.__shot_time_left = 0
         self.facing = Directions.DOWN
         self.x_change = 0
         self.y_change = 0
@@ -49,6 +50,7 @@ class Player(pygame.sprite.Sprite):
         self._layer = self.rect.bottom
         self.animate()
 
+        self.____immortality_time_left -= 1
         self.x_change = 0
         self.y_change = 0
 
@@ -80,8 +82,8 @@ class Player(pygame.sprite.Sprite):
             x_y_vel[1] += 1
 
     def _shoot(self, keys, x_y_vel):
-        now = pygame.time.get_ticks()
-        if now - self.__last_shot > self.__shooting_cooldown:
+        self.__shot_time_left -= 1
+        if self.__shot_time_left <= 0:
             shot = False
             direction:Directions = None
             if keys[pygame.K_LEFT]:
@@ -101,18 +103,16 @@ class Player(pygame.sprite.Sprite):
                 shot = True
             
             if shot:
-                self.__last_shot = now
+                self.__shot_time_left = self.__shooting_cooldown
                 additional_v = 0
                 
                 if PLAYER_SHOOT_DIAGONAL:
-                    other_axis, other_axis_index = direction.rotate_clockwise().get_axis_tuple()     
+                    _, other_axis_index = direction.rotate_clockwise().get_axis_tuple()     
                     if x_y_vel[other_axis_index]:
                         additional_v = int(self.__shot_speed * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
                 Bullet(self.game, self.rect.centerx, self.rect.centery, direction, 
                        dmg=self.__dmg, additional_speed=additional_v)
-
-            
 
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
@@ -146,16 +146,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y_rect
 
     def get_hit(self, dmg:int):
-        now = pygame.time.get_ticks()
-        if now - self.__last_hit > self.__immortality_after_hit:
+        if self.____immortality_time_left <= 0:
             self.__health -= dmg
-            self.__last_hit = now
-            
-            self._check_is_dead()
+            self.____immortality_time_left = self.__immortality_after_hit
             print(self.__health)
+            self._check_is_dead()
 
     def _check_is_dead(self):
         if self.__health <= 0 and not GOD_MODE:
             self.game.game_over()
-            print("KONIEC GRY!")
     
+    def get_center_position(self):
+        return self.rect.centerx, self.rect.centery

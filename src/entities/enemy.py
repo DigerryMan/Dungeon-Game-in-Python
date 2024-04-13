@@ -5,25 +5,26 @@ from entities.bullet import Bullet
 from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
+    is_group_attacked:bool = False
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
                  is_wandering:bool=True, bullet_decay_sec:float=0):
         #CHANGEABLE STATS
         self._health = 4
         self._damage = 1
         self._collision_damage = 1
-        self._attack_speed = 800
         
         self._speed = 3
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
-        self._shot_cd = 2500
+        self._shot_cd = int(2.5 * FPS)
+        self._shot_time_left = self._shot_cd
 
-        self._wander_interval = [700,1700]
-        self._idle_interval = [1200,2500]
+        self._wander_interval = [int(0.7 * FPS), int(1.7 * FPS)]
+        self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
 
         #POSITION
-        self.width = TILE_SIZE
-        self.height = TILE_SIZE
+        self.width = game.settings.MOB_SIZE
+        self.height = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
         
@@ -43,14 +44,14 @@ class Enemy(pygame.sprite.Sprite):
         self._check_block_colisions = check_block_colisions
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
-        self._last_attack = pygame.time.get_ticks()
-        self._last_shot = pygame.time.get_ticks()
         self._is_wandering = is_wandering
         self._wander_time = self.roll_interval(self._wander_interval)
+        self._wander_time_left = self._wander_time
+        
         self._idle_time = self.roll_interval(self._idle_interval)
         self._is_idling = self._is_wandering
-        self._last_idle = pygame.time.get_ticks()
-        self._last_wander = pygame.time.get_ticks()
+        self._idle_time_left = self._idle_time
+
         self._bullet_decay_sec = bullet_decay_sec
 
         self.game = game
@@ -87,14 +88,18 @@ class Enemy(pygame.sprite.Sprite):
         
     def wander(self):
         if self._is_idling:
-            self.idle()
+            if not self.check_group_attacked():
+                self.idle()
+            else:
+                self._is_idling = False
+                self._is_wandering = False
         
         else:
-            now = pygame.time.get_ticks()
-            if now - self._last_idle > self._wander_time:
-                self._last_wander = now
+            self._wander_time_left -= 1
+            if self._wander_time_left <= 0:
                 self._is_idling = True
                 self._wander_time = self.roll_interval(self._wander_interval)
+                self._wander_time_left = self._wander_time
             
             else:
                 if self.facing == Directions.LEFT:
@@ -111,15 +116,13 @@ class Enemy(pygame.sprite.Sprite):
                     self.y_change = self._speed//2
                     self.correct_low_speed_enemies("y")
                 
-                
-
     def idle(self):
-        now = pygame.time.get_ticks()
-        if now - self._last_wander > self._idle_time:
-            self._last_idle = now
+        self._idle_time_left -= 1
+        if self._idle_time_left <= 0:
             self._is_idling = False
             self.roll_facing()
             self._idle_time = self.roll_interval(self._idle_interval)
+            self._idle_time_left = self._idle_time
 
     def move_because_of_player(self, chase:bool=True):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
@@ -153,12 +156,12 @@ class Enemy(pygame.sprite.Sprite):
             self._is_wandering = False
 
     def attack(self):
-        now = pygame.time.get_ticks()
-        if now > self._last_shot + self._shot_cd:
+        self._shot_time_left -= 1
+        if self._shot_time_left <= 0:
             Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, 
                    self._projectal_speed, False, self._damage, self._bullet_decay_sec)
-            self._last_shot = now
             self.roll_next_shot_cd()
+            self._shot_time_left = self._shot_cd
 
     def collide_blocks(self, orientation:str):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
@@ -215,6 +218,7 @@ class Enemy(pygame.sprite.Sprite):
     def get_hit(self, dmg:int):
         self._health -= dmg
         self._is_wandering = False
+        self.group_attacked()
         self.check_if_dead()
     
     def check_if_dead(self):
@@ -225,7 +229,7 @@ class Enemy(pygame.sprite.Sprite):
         return random.randint(interval[0], interval[1])
 
     def roll_next_shot_cd(self):
-        self._shot_cd = random.randint(1500, 3000)
+        self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
 
     def animate(self):
         pass
@@ -239,3 +243,11 @@ class Enemy(pygame.sprite.Sprite):
                 self.x_change = self._speed
             if axis == 'y':
                 self.y_change = self._speed
+    
+    @staticmethod
+    def check_group_attacked():
+        return Enemy.is_group_attacked
+
+    @staticmethod
+    def group_attacked():
+        Enemy.is_group_attacked = True

@@ -2,6 +2,7 @@ import pygame
 
 from config import *
 from utils.directions import Directions
+from map.destructable_block import DestructableBlock
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction:Directions, speed=20, is_friendly=True, 
@@ -12,7 +13,8 @@ class Bullet(pygame.sprite.Sprite):
         self.is_friendly = is_friendly
         self.speed = speed
         self.additional_speed = additional_speed
-        self.time_decay = int(time_decay_in_seconds * 1000)
+        self.time_decay = int(time_decay_in_seconds * FPS)
+        self.time_left = self.time_decay
 
         #SIZE
         self.width = BULLET_WIDTH
@@ -29,7 +31,6 @@ class Bullet(pygame.sprite.Sprite):
         #REST
         self.x_change = 0
         self.y_change = 0
-        self.spawn_time = pygame.time.get_ticks()
 
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks
@@ -102,11 +103,20 @@ class Bullet(pygame.sprite.Sprite):
             
         block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
-        if block_hits or door_hits:
+
+        if door_hits:
             self.kill()
 
+        if block_hits:
+            self.kill()
+            for block_hit in block_hits:
+                if isinstance(block_hit, DestructableBlock):
+                    block_hit.get_hit(self.dmg)
+                   
+             
+
     def decay(self):
-        now = pygame.time.get_ticks()
-        if now - self.spawn_time > self.time_decay :
+        self.time_left -= 1
+        if self.time_left <= 0:
             self.kill()
             

@@ -4,22 +4,21 @@ from config import *
 from entities.enemy import Enemy
 from utils.directions import Directions
 
-
-
 class Maggot(Enemy):
     def __init__(self, game, x, y, moving_clockwise=random.choice([True, False])):
         super().__init__(game, x, y, False)
         #CHANGEABLE STATS
         self._health = 4
         self._speed = 3
-        self._random_dir_change_cd = 2000
+        self._random_dir_change_cd = int(2 * FPS)
         
         #SKIN
         self.image.fill(WHITE)
 
         #REST
         self.moving_clockwise = moving_clockwise
-        self._last_change_of_direction = pygame.time.get_ticks()
+        self._change_of_direction_time_left = self._random_dir_change_cd
+        
         
     def move(self):
         self.wall_collision()
@@ -47,20 +46,21 @@ class Maggot(Enemy):
                 self.rect.x = hits[0].rect.right 
 
             elif self.facing == Directions.RIGHT:
-                self.rect.x = hits[0].rect.left - TILE_SIZE
+                self.rect.x = hits[0].rect.left - self.game.settings.MOB_SIZE
 
             elif self.facing == Directions.UP:
                 self.rect.y = hits[0].rect.bottom
 
             elif self.facing == Directions.DOWN:
-                self.rect.y = hits[0].rect.top - TILE_SIZE
+                self.rect.y = hits[0].rect.top - self.game.settings.MOB_SIZE
 
             self.rotate_facing()
             
     def random_change_of_direction(self):
-        now = pygame.time.get_ticks()
-        if now - self._last_change_of_direction > self._random_dir_change_cd:
-            self._last_change_of_direction = now
+        self._change_of_direction_time_left -= 1
+        if self._change_of_direction_time_left <= 0:
+            self.roll_rotation_cd(int(0.4 * FPS), int(2.2 * FPS))
+            self._change_of_direction_time_left = self._random_dir_change_cd
             
             self.rotate_facing()
 
@@ -70,8 +70,6 @@ class Maggot(Enemy):
         else:
             self.facing = self.facing.rotate_counter_clockwise()
 
-        self.roll_rotation_cd(400, 2200)
-        self._last_change_of_direction = pygame.time.get_ticks()
         
     def roll_rotation_cd(self, mini:int, maxi:int):
         self._random_dir_change_cd = random.randint(mini, maxi)
