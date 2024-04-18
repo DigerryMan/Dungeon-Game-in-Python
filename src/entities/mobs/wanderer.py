@@ -3,6 +3,7 @@ from entities.enemy import Enemy
 class Wanderer(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
+        Wanderer.is_group_attacked = False
 
     @staticmethod
     def check_group_attacked():
