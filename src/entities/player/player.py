@@ -1,18 +1,21 @@
 import pygame
 from config import *
-from .bullet import *
+from entities.player.equipment import Equipment
+from ..bullet import *
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         #MAIN
         self.game = game
-        self.__health = 3
-        self.__dmg = 1
-        self.speed = 9
-        self.__immortality_after_hit = int(1 * FPS)
-        self.__shooting_cooldown = int(0.5 * FPS)
-        self.__shot_speed = 20
+        self.__max_health = BASE_HEALTH
+        self.__health = BASE_HEALTH
+        self.__dmg = BASE_DMG
+        self.__speed = BASE_SPEED
+        self.__immortality_after_hit = int(BASE_IMMORTALITY_AFTER_HIT * FPS)
+        self.__shooting_cooldown = int(BASE_SHOOTING_COOLDOWN * FPS)
+        self.__shot_speed = BASE_SHOT_SPEED
         self.coins = 100
+        self.eq = Equipment()
 
         #SIZE
         self.width = game.settings.PLAYER_SIZE
@@ -34,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         self.facing = Directions.DOWN
         self.x_change = 0
         self.y_change = 0
-
+        self.update_player_stats()
         self.groups = self.game.all_sprites, self.game.player_sprite
         pygame.sprite.Sprite.__init__(self, self.groups)
     
@@ -62,22 +65,22 @@ class Player(pygame.sprite.Sprite):
 
     def _move(self, keys, x_y_vel):
         if keys[pygame.K_a]:
-            self.x_change -= self.speed
+            self.x_change -= self.__speed
             self.facing = Directions.LEFT
             x_y_vel[0] -= 1
         
         if keys[pygame.K_d]:
-            self.x_change += self.speed
+            self.x_change += self.__speed
             self.facing = Directions.RIGHT
             x_y_vel[0] += 1
 
         if keys[pygame.K_w]: 
-            self.y_change -= self.speed
+            self.y_change -= self.__speed
             self.facing = Directions.UP
             x_y_vel[1] -= 1
 
         if keys[pygame.K_s]:
-            self.y_change += self.speed
+            self.y_change += self.__speed
             self.facing = Directions.DOWN
             x_y_vel[1] += 1
 
@@ -112,7 +115,7 @@ class Player(pygame.sprite.Sprite):
                         additional_v = int(self.__shot_speed * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
                 Bullet(self.game, self.rect.centerx, self.rect.centery, direction, 
-                       dmg=self.__dmg, additional_speed=additional_v)
+                       self.__shot_speed, dmg=self.__dmg, additional_speed=additional_v)
 
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
@@ -147,7 +150,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_hit(self, dmg:int):
         if self.____immortality_time_left <= 0:
-            self.__health -= dmg
+            self.__health -= dmg * (1 - self.eq.dmg_reduction)
             self.____immortality_time_left = self.__immortality_after_hit
             print(self.__health)
             self._check_is_dead()
@@ -158,3 +161,13 @@ class Player(pygame.sprite.Sprite):
     
     def get_center_position(self):
         return self.rect.centerx, self.rect.centery
+    
+    def update_player_stats(self):
+        self.__max_health = BASE_HEALTH + self.eq.health
+        self.__health = min(self.__max_health, self.__health)
+        self.__dmg = BASE_DMG + self.eq.dmg
+        self.__speed = BASE_SPEED + self.eq.speed
+        self.__immortality_after_hit = int((BASE_IMMORTALITY_AFTER_HIT + self.eq.extra_immortality) * FPS) 
+        self.__shooting_cooldown = int((BASE_SHOOTING_COOLDOWN - self.eq.shooting_cd_decrease) * FPS)
+        self.__shot_speed = BASE_SHOT_SPEED + self.eq.shot_speed
+        

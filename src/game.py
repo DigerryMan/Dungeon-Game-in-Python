@@ -1,7 +1,7 @@
 import pygame
 from map.map import *
 from menu.button import *
-from entities.player import *
+from entities.player.player import *
 from config import *
 from utils.image_loader import ImageLoader
 from utils.settings import *

@@ -1,7 +1,7 @@
 from config import *
 from .room_types import rooms, special_rooms
 from .room import Room
-from entities.player import *
+from entities.player.player import *
 import random
 from math import inf
 from collections import deque
