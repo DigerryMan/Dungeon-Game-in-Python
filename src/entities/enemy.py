@@ -36,8 +36,8 @@ class Enemy(pygame.sprite.Sprite):
 
         #HITBOX
         self.rect = self.image.get_rect()
-        self.rect.x = x * self.width
-        self.rect.y = y * self.height
+        self.rect.x = x * game.settings.TILE_SIZE
+        self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
      
         #REST
@@ -152,8 +152,9 @@ class Enemy(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
             self.game.damage_player(self._collision_damage)
-            self.game.playing = False
-            self._is_wandering = False
+            if self._is_wandering:
+                self._is_wandering = False
+                self.group_attacked()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -251,3 +252,5 @@ class Enemy(pygame.sprite.Sprite):
     @staticmethod
     def group_attacked():
         Enemy.is_group_attacked = True
+    
+        
