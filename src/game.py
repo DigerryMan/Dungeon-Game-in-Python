@@ -34,6 +34,10 @@ class Game:
         self.intro_background = pygame.transform.smoothscale(self.intro_background, self.screen.get_size())
         self.menu_background = pygame.image.load("resources/menu/menuoverlay.png")
         self.menu_background = pygame.transform.smoothscale(self.menu_background, self.screen.get_size())
+        self.pause_card = pygame.image.load("resources/menu/pausecard2.png")
+        self.pause_card = pygame.transform.smoothscale(self.pause_card, (self.pause_card.get_height() * self.settings.SCALE, self.pause_card.get_width() * self.settings.SCALE))
+        self.arrow = pygame.image.load("resources/menu/arrow2.png")
+        self.arrow = pygame.transform.smoothscale(self.arrow, (self.arrow.get_width() * self.settings.SCALE, self.arrow.get_height()* self.settings.SCALE))
         self.main_title = pygame.image.load("resources/menu/maintitle.png")
         title_width = self.settings.WIN_WIDTH // 2
         title_height = self.main_title.get_height() * (title_width // self.main_title.get_width())
@@ -256,8 +260,8 @@ class Game:
 
 
     def display_pause(self):
-        resume_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Resume", WHITE, self.font, 40)
-        menu_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Menu", WHITE, self.font, 40)
+        arrow_positions = [(self.settings.WIN_WIDTH//3, self.settings.WIN_HEIGHT//1.58), (self.settings.WIN_WIDTH//2.8, self.settings.WIN_HEIGHT//1.4)]
+        current_arrow = 0
 
         while self.paused:
             for event in pygame.event.get():
@@ -265,19 +269,22 @@ class Game:
                     self.paused = False
                     self.running = False
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.paused = False
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if resume_button.is_pressed(pygame.mouse.get_pos()):
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
                         self.paused = False
+                    
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
+                        current_arrow = current_arrow + 1 if current_arrow == 0 else 0
 
-                    if menu_button.is_pressed(pygame.mouse.get_pos()):
-                        self.paused = False
-                        self.menu_playing = True
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.paused = False
+                        elif current_arrow == 1:
+                            self.paused = False
+                            self.menu_playing = True
 
-            self.screen.blit(resume_button.image, resume_button.rect)
-            self.screen.blit(menu_button.image, menu_button.rect)
+            self.screen.blit(self.pause_card, (self.settings.WIN_WIDTH//4, self.settings.WIN_HEIGHT//20))
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.clock.tick(FPS)
             pygame.display.update()

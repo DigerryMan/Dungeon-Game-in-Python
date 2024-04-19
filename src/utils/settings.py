@@ -10,3 +10,5 @@ class Settings():
         self.MAP_WIDTH = self.WIN_WIDTH // self.TILE_SIZE
         self.MAP_HEIGHT = self.WIN_HEIGHT // self.TILE_SIZE
         self.DIFFICULTY = None
+
+        self.SCALE = 1920 // self.WIN_WIDTH
