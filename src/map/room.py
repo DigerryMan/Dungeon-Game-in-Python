@@ -12,7 +12,7 @@ from .shop_stuff.shop_stand import *
 from .door import *
 from .wall import *
 from .chest import *
-from .lootables.lootable_item import Lootable_item
+from items.lootable_item import Lootable_item
 from entities.player.player import *
 from entities.enemy import *
 from entities.mobs.legs import *
