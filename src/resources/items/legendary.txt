@@ -1,0 +1,3 @@
+(col, row)
+
+totem of undying(18, 17) - po otrzymaniu śmiertelnych obrażeń niszczy się i zostawia graczowi 1 hp

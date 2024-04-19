@@ -1,0 +1,7 @@
+(col, row)
+
+serce(3, 2) - boost do hp +1 hp
+armor(3, 21) - boost do armora +0.1
+mały miecz(5, 10) - zwiększa obrażenia o 0.2
+celownik(9, 19) - zwiększa czas lecenia pocisku o 1s
+strzykawa(11, 24) - zwiększa prędkość pocisku

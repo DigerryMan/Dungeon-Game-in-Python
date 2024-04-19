@@ -14,8 +14,7 @@ class Game:
         #self.screen = pygame.display.set_mode((0, 0))
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
-        #window_size = (1920, 1080)
-        window_size = (1280, 720)
+        window_size = (1920, 1080)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
