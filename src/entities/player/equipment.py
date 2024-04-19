@@ -1,3 +1,6 @@
+import pygame
+import config
+
 class Equipment():
     def __init__(self):
         self.health = 0                  #[0-9]      +300%
@@ -8,6 +11,9 @@ class Equipment():
         self.shooting_cd_decrease = 0.0  #[0-0.3]    -50%
         self.shot_speed = 10             #[0-10]     +50%
         self.items = []
+
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(config.RED)
 
     
     def pick_up_item(self, item):
