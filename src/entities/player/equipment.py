@@ -1,8 +1,9 @@
 import pygame
 import config
 
+
 class Equipment():
-    def __init__(self):
+    def __init__(self, player):
         self.health = 0                  #[0-9]      +300%
         self.dmg_reduction = 0           #[0-0.6]    -60%
         self.dmg = 0                     #[0-2]      +200%
@@ -12,9 +13,14 @@ class Equipment():
         self.shot_speed = 10             #[0-10]     +50%
         self.items = []
 
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(config.RED)
+        self.player = player
+        self.image = pygame.image.load("resources/other/eq-background.png")
+        self.width, self.height = self.image.get_size()
+        self.x = (player.game.settings.WIN_WIDTH - self.width) // 2
+        self.y = (player.game.settings.WIN_HEIGHT - self.height) // 2
 
+    def draw(self, screen):
+        screen.blit(self.image, (self.x, self.y))
     
     def pick_up_item(self, item):
         self.items.append(item)

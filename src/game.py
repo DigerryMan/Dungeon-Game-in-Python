@@ -14,8 +14,8 @@ class Game:
         #self.screen = pygame.display.set_mode((0, 0))
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
-        #window_size = (1920, 1080)
-        window_size = (1280, 720)
+        window_size = (1920, 1080)
+        #window_size = (1280, 720)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
@@ -88,6 +88,9 @@ class Game:
 
             if self.paused:
                 self.display_pause()
+            
+            if self.player.eq_opened:
+                self.display_eq()
 
         pygame.quit()
 
@@ -120,6 +123,9 @@ class Game:
 
                 if event.key == pygame.K_e:
                     self.e_pressed = True
+
+                if event.key == pygame.K_TAB:
+                    self.player.eq_opened = not self.player.eq_opened
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_e:
@@ -336,5 +342,32 @@ class Game:
             self.screen.blit(self.pause_card, (self.settings.WIN_WIDTH//4, self.settings.WIN_HEIGHT//20))
             self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
+            self.clock.tick(FPS)
+            pygame.display.update()
+
+    def display_eq(self):
+        while(self.player.eq_opened):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    self.player.eq_opened = False
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB:
+                        self.player.eq_opened = False
+
+                    if event.key == pygame.K_DOWN:
+                        pass
+                    
+                    if event.key == pygame.K_UP:
+                        pass
+                    
+                    if event.key == pygame.K_LEFT:
+                        pass
+                    
+                    if event.key == pygame.K_RIGHT:
+                        pass
+
+            self.player.eq.draw(self.screen)
             self.clock.tick(FPS)
             pygame.display.update()

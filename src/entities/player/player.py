@@ -30,10 +30,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y * self.height
         
         #EQ
-        self.eq = Equipment()
+        self.eq = Equipment(self)
         self.eq_opened = False
-        self._eq_cooldown = int(0.5 * FPS)
-        self.__eq_time_left = 0
         
         #REST
         self._layer = self.rect.bottom
@@ -67,7 +65,6 @@ class Player(pygame.sprite.Sprite):
         x_y_vel = [0,0]
         self._move(keys, x_y_vel)
         self._shoot(keys, x_y_vel)
-        self.use_eq(keys)
 
     def _move(self, keys, x_y_vel):
         if keys[pygame.K_a]:
@@ -122,16 +119,6 @@ class Player(pygame.sprite.Sprite):
 
                 Bullet(self.game, self.rect.centerx, self.rect.centery, direction, 
                        self.__shot_speed, dmg=self.__dmg, additional_speed=additional_v)
-
-    def use_eq(self, keys):
-        self.__eq_time_left -= 1
-        if keys[pygame.K_TAB] and self.__eq_time_left <= 0:
-            self.__eq_time_left = self._eq_cooldown
-            self.eq_opened = not self.eq_opened
-            if self.eq_opened:
-                print("eq opened")
-            else:
-                print("eq closed")
     
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
