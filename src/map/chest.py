@@ -1,9 +1,9 @@
 import pygame
 import random
 from config import *
-from .lootables.silver_coin import Silver_coin
-from .lootables.golden_coin import Golden_coin
-from .lootables.health_potion import Health_potion
+from items.lootables.silver_coin import Silver_coin
+from items.lootables.golden_coin import Golden_coin
+from items.lootables.health_potion import Health_potion
 
 class Chest(pygame.sprite.Sprite):
     def __init__(self, game, x, y, type):
