@@ -14,7 +14,8 @@ class Game:
         #self.screen = pygame.display.set_mode((0, 0))
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
-        window_size = (1920, 1080)
+        #window_size = (1920, 1080)
+        window_size = (1280, 720)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
@@ -30,18 +31,20 @@ class Game:
 
         self.image_loader = ImageLoader()
           
-        self.intro_background = pygame.image.load("resources/menu/introbackground.png")
-        self.intro_background = pygame.transform.smoothscale(self.intro_background, self.screen.get_size())
-        self.menu_background = pygame.image.load("resources/menu/menuoverlay.png")
-        self.menu_background = pygame.transform.smoothscale(self.menu_background, self.screen.get_size())
-        self.pause_card = pygame.image.load("resources/menu/pausecard2.png")
-        self.pause_card = pygame.transform.smoothscale(self.pause_card, (self.pause_card.get_height() * self.settings.SCALE, self.pause_card.get_width() * self.settings.SCALE))
-        self.arrow = pygame.image.load("resources/menu/arrow2.png")
-        self.arrow = pygame.transform.smoothscale(self.arrow, (self.arrow.get_width() * self.settings.SCALE, self.arrow.get_height()* self.settings.SCALE))
-        self.main_title = pygame.image.load("resources/menu/maintitle.png")
-        title_width = self.settings.WIN_WIDTH // 2
-        title_height = self.main_title.get_height() * (title_width // self.main_title.get_width())
-        self.main_title = pygame.transform.scale(self.main_title, (title_width, title_height))
+        self.const_intro_background = pygame.image.load("resources/menu/introbackground.png")
+        self.intro_background = pygame.transform.smoothscale(self.const_intro_background, self.screen.get_size())
+        self.const_menu_card = pygame.image.load("resources/menu/menucard.png")
+        self.menu_card = pygame.transform.smoothscale(self.const_menu_card, self.screen.get_size())
+        self.const_settings_card = pygame.image.load("resources/menu/settingscard.png")
+        self.settings_card = pygame.transform.smoothscale(self.const_settings_card, self.screen.get_size())
+        self.const_menu_background = pygame.image.load("resources/menu/menuoverlay.png")
+        self.menu_background = pygame.transform.smoothscale(self.const_menu_background, self.screen.get_size())
+        self.const_pause_card = pygame.image.load("resources/menu/pausecard2.png")
+        self.pause_card = pygame.transform.smoothscale(self.const_pause_card, (self.const_pause_card.get_height() * self.settings.SCALE, self.const_pause_card.get_width() * self.settings.SCALE))
+        self.const_arrow = pygame.image.load("resources/menu/arrow2.png")
+        self.arrow = pygame.transform.smoothscale(self.const_arrow, (self.const_arrow.get_width() * 0.7 * self.settings.SCALE, self.const_arrow.get_height() * 0.7 * self.settings.SCALE))
+        self.const_main_title = pygame.image.load("resources/menu/maintitle.png")
+        self.main_title = pygame.transform.scale(self.const_main_title, (self.const_main_title.get_width() * 2.8 * self.settings.SCALE, self.const_main_title.get_height() * 2.8 * self.settings.SCALE))
         self.font = pygame.font.SysFont("arialblack", 30)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
@@ -59,7 +62,19 @@ class Game:
 
         self.map = None
         self.player = None
-        
+
+
+    def handle_resolution_change(self, window_size):
+        self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
+        self.settings = Settings(window_size)
+
+        self.intro_background = pygame.transform.smoothscale(self.const_intro_background, self.screen.get_size())
+        self.menu_card = pygame.transform.smoothscale(self.const_menu_card, self.screen.get_size())
+        self.settings_card = pygame.transform.smoothscale(self.const_settings_card, self.screen.get_size())
+        self.menu_background = pygame.transform.smoothscale(self.const_menu_background, self.screen.get_size())
+        self.pause_card = pygame.transform.smoothscale(self.const_pause_card, (self.const_pause_card.get_height() * self.settings.SCALE, self.const_pause_card.get_width() * self.settings.SCALE))
+        self.arrow = pygame.transform.smoothscale(self.const_arrow, (self.const_arrow.get_width() * 0.7 * self.settings.SCALE, self.const_arrow.get_height() * 0.7 * self.settings.SCALE))
+        self.main_title = pygame.transform.scale(self.const_main_title, (self.const_main_title.get_width() * 2.8 * self.settings.SCALE, self.const_main_title.get_height() * 2.8 * self.settings.SCALE))
 
     def run(self):
         self.intro_screen()
@@ -194,9 +209,10 @@ class Game:
             pygame.display.update()
 
     def main_menu(self):
-        play_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*0.8, 200, 50, "Play", WHITE, self.font, 40)
-        settings_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Settings", WHITE, self.font, 40)
-        quit_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*1.2, 200, 50, "Quit", WHITE, self.font, 40)
+        arrow_positions = [(self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//3.15), 
+                           (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.2), 
+                           (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.67)]
+        current_arrow = 0
 
         while self.menu_playing:
             for event in pygame.event.get():
@@ -204,39 +220,48 @@ class Game:
                     self.menu_playing = False
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if play_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.render_new_map()
-                        self.paused = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
 
-                    if quit_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.running = False
+                    if event.key == pygame.K_UP:
+                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
 
-                    if settings_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.settings_playing = True
-                        self.display_settings()
-                
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.menu_playing = False
+                            self.render_new_map()
+                            self.paused = False
 
-            self.screen.fill(DARK_GREY)
+                        elif current_arrow == 1:
+                            self.menu_playing = False
+                            self.settings_playing = True
+                            self.display_settings()
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//3.15), 
+                                            (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.2), 
+                                            (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.67)]
+
+                        elif current_arrow == 2:
+                            self.menu_playing = False
+                            self.running = False
+
+            self.screen.blit(self.menu_card, (0, 0))
             self.screen.blit(self.menu_background, (0, 0))
-            
-            title_rect = self.main_title.get_rect(center=(self.settings.WIN_WIDTH/2, self.settings.WIN_HEIGHT/4))
-            self.screen.blit(self.main_title, title_rect)
-            
-            self.screen.blit(play_button.image, play_button.rect)
-            self.screen.blit(settings_button.image, settings_button.rect)
-            self.screen.blit(quit_button.image, quit_button.rect)
+            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
+
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.clock.tick(FPS)
             pygame.display.update()
 
 
     def display_settings(self):
-        back_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Back", WHITE, self.font, 40)
         settings_playing = True
+
+        arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
+                    (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
+                    (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+        current_arrow = 0
 
         while settings_playing:
             for event in pygame.event.get():
@@ -244,23 +269,48 @@ class Game:
                     settings_playing = False
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if back_button.is_pressed(pygame.mouse.get_pos()):
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
+
+                    if event.key == pygame.K_UP:
+                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
+
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.handle_resolution_change((1920, 1080))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
+                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
+                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+                        elif current_arrow == 1:
+                            self.handle_resolution_change((1600, 900))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
+                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
+                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+                        elif current_arrow == 2:
+                            self.handle_resolution_change((1280, 720))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
+                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
+                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+
+                    if event.key == pygame.K_ESCAPE:
                         settings_playing = False
                         self.menu_playing = True
-                    
 
-            self.screen.fill(DARK_GREY)
+
+            self.screen.blit(self.settings_card, (0, 0))
             self.screen.blit(self.menu_background, (0, 0))
+            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
 
-            self.screen.blit(back_button.image, back_button.rect)
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.clock.tick(FPS)
             pygame.display.update()
 
 
     def display_pause(self):
-        arrow_positions = [(self.settings.WIN_WIDTH//3, self.settings.WIN_HEIGHT//1.58), (self.settings.WIN_WIDTH//2.8, self.settings.WIN_HEIGHT//1.4)]
+        arrow_positions = [(self.settings.WIN_WIDTH//2.82, self.settings.WIN_HEIGHT//1.55),
+                           (self.settings.WIN_WIDTH//2.62, self.settings.WIN_HEIGHT//1.38)]
         current_arrow = 0
 
         while self.paused:

@@ -11,4 +11,4 @@ class Settings():
         self.MAP_HEIGHT = self.WIN_HEIGHT // self.TILE_SIZE
         self.DIFFICULTY = None
 
-        self.SCALE = 1920 // self.WIN_WIDTH
+        self.SCALE = self.WIN_WIDTH / 1920
