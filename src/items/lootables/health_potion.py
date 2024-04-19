@@ -1,6 +1,6 @@
 import pygame
 from config import *
-from .lootable_item import Lootable_item
+from ..lootable_item import Lootable_item
 
 class Health_potion(Lootable_item):
     def __init__(self, game, x, y):
