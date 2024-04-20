@@ -22,7 +22,7 @@ class Equipment():
         self.y = (player.game.settings.WIN_HEIGHT - self.height) // 2
 
         #items
-        self.items = [1,2,3,4,5,1,1,1,1,1,1,1,1,3] #dla testu dane
+        self.items = [] #dla testu dane
         self.first_item_x = self.x + 22
         self.first_item_y = self.y + 22
         self.item_distance = 73
@@ -33,12 +33,12 @@ class Equipment():
         self.items_y = [i for i in range(self.first_item_y, self.first_item_y + self.item_distance * self.item_in_col, self.item_distance )]
         
         #cursor
-        self.cursor_size = 3
-        self.cursor_image = pygame.transform.scale(pygame.image.load("resources/other/eq-cursor.png"), 
-                            (self.item_size + 2 * self.cursor_size, self.item_size + 2 * self.cursor_size))
+        self.cursor_size = 4
+        self.cursor_image = pygame.image.load("resources/other/eq-cursor.png")
         
+        self.cursor_y_offset = 2
         self.cursor_x = self.first_item_x - self.cursor_size
-        self.cursor_y = self.first_item_y - self.cursor_size
+        self.cursor_y = self.first_item_y - self.cursor_size - self.cursor_y_offset
 
         self.highlighted_item_row = 0
         self.highlighted_item_col = 0
@@ -108,7 +108,7 @@ class Equipment():
     
     def set_cursor_and_big_item(self):
         self.cursor_x = self.items_x[self.highlighted_item_row] - self.cursor_size
-        self.cursor_y = self.items_y[self.highlighted_item_col] - self.cursor_size
+        self.cursor_y = self.items_y[self.highlighted_item_col] - self.cursor_size - self.cursor_y_offset 
         self.highlighted_item_index = self.highlighted_item_col * self.item_in_row + self.highlighted_item_row
 
         if self.highlighted_item_index >= len(self.items):
