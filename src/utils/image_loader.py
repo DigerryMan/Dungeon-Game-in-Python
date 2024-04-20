@@ -6,7 +6,7 @@ class ImageLoader:
         self._mobs = ["alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
         self.rooms = ["basement", "catacombs", "caves", "controls", "depths", "necropolis", "shading", "shop", "utero", "womb"]
         self.doors = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
-        self.blocks = ["rocks"]
+        self.blocks = ["rocks2"]
         self.images_dict = {}
         self.__load_images_to_dict()
 

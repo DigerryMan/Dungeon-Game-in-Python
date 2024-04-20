@@ -13,8 +13,9 @@ class Block(pygame.sprite.Sprite):
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
 
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(BLUE)
+        self.img = game.image_loader.get_image("rocks2")
+        self.image = self.img.subsurface(pygame.Rect(5, 5, 51, 55))
+        self.image = pygame.transform.smoothscale(self.image, (self.game.settings.TILE_SIZE, self.game.settings.TILE_SIZE))
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x

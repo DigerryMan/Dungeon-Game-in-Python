@@ -78,7 +78,7 @@ class Game:
             if self.paused:
                 self.display_pause()
             
-            if self.player.eq_opened:
+            if self.player is not None and self.player.eq_opened:
                 self.display_eq()
 
         pygame.quit()
@@ -239,6 +239,9 @@ class Game:
                             arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
                                             (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
                                             (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
+                            
+                            if not self.menu_playing:
+                                return
 
                         elif current_arrow == 2:
                             self.menu_playing = False
