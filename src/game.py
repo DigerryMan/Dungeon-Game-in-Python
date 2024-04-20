@@ -353,20 +353,10 @@ class Game:
                     self.player.eq_opened = False
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_TAB:
+                    if event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE:
                         self.player.eq_opened = False
 
-                    if event.key == pygame.K_DOWN:
-                        pass
-                    
-                    if event.key == pygame.K_UP:
-                        pass
-                    
-                    if event.key == pygame.K_LEFT:
-                        pass
-                    
-                    if event.key == pygame.K_RIGHT:
-                        pass
+                    self.player.eq.user_eq_input(event.key)
 
             self.player.eq.draw(self.screen)
             self.clock.tick(FPS)
