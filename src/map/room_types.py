@@ -11,7 +11,6 @@ Other letters - mobs (for now)
 """
 
 
-"""
 STARTING_ROOM = [
   '################################',
   '#.......B.B......B.............#',
@@ -33,8 +32,7 @@ STARTING_ROOM = [
   '################################'
 ]
 
-"""
-STARTING_ROOM = [
+"""STARTING_ROOM = [
   '################################',
   '#..............................#',
   '#..............................#',
@@ -53,7 +51,7 @@ STARTING_ROOM = [
   '#..............................#',
   '#..............................#',
   '################################'
-]
+]"""
 
 
 SHOP_ROOM = [
@@ -310,7 +308,8 @@ HARD_ROOM_2 = [
 
 
 #rooms = [ROOM_1, ROOM_2]
-rooms = [EASY_ROOM_1, EASY_ROOM_2, EASY_ROOM_3, EASY_ROOM_4, MEDIUM_ROOM_1, MEDIUM_ROOM_2, HARD_ROOM_1, HARD_ROOM_2]
+#rooms = [EASY_ROOM_1, EASY_ROOM_2, EASY_ROOM_3, EASY_ROOM_4, MEDIUM_ROOM_1, MEDIUM_ROOM_2, HARD_ROOM_1, HARD_ROOM_2]
+rooms = [EASY_ROOM_1]
 
 special_rooms = {
   "start": STARTING_ROOM,
