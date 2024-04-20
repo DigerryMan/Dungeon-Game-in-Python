@@ -215,9 +215,9 @@ class Game:
             pygame.display.update()
 
     def main_menu(self):
-        arrow_positions = [(self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//3.15), 
-                           (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.2), 
-                           (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.67)]
+        arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
+                           (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
+                           (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
         current_arrow = 0
 
         while self.menu_playing:
@@ -243,9 +243,9 @@ class Game:
                             self.menu_playing = False
                             self.settings_playing = True
                             self.display_settings()
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//3.15), 
-                                            (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.2), 
-                                            (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.67)]
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
+                                            (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
+                                            (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
 
                         elif current_arrow == 2:
                             self.menu_playing = False
@@ -264,15 +264,16 @@ class Game:
     def display_settings(self):
         settings_playing = True
 
-        arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
-                    (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
-                    (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+        arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                    (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                    (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
         current_arrow = 0
 
         while settings_playing:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     settings_playing = False
+                    self.menu_playing = False
                     self.running = False
 
                 if event.type == pygame.KEYDOWN:
@@ -285,19 +286,19 @@ class Game:
                     if event.key == pygame.K_RETURN:
                         if current_arrow == 0:
                             self.handle_resolution_change((1920, 1080))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
-                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
-                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
                         elif current_arrow == 1:
                             self.handle_resolution_change((1600, 900))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
-                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
-                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
                         elif current_arrow == 2:
                             self.handle_resolution_change((1280, 720))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.55, self.settings.WIN_HEIGHT//3.1), 
-                                            (self.settings.WIN_WIDTH//2.5, self.settings.WIN_HEIGHT//2.35), 
-                                            (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//1.91)]
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
 
                     if event.key == pygame.K_ESCAPE:
                         settings_playing = False
