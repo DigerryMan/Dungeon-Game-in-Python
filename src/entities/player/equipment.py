@@ -5,14 +5,15 @@ import config
 class Equipment():
     def __init__(self, player):
         #stats
-        self.health = 0                  #[0-9]      +300%     together 12
-        self.dmg_reduction = 0           #[0-0.6]    -60%      
-        self.dmg = 0                     #[0-2]      +200%     together 3
-        self.speed = 0                   #[0-3]      +37.5%    together 11
-        self.extra_immortality = 0       #[0-1.25]   +125%     together 2.25 
-        self.shooting_cd_decrease = 0.0  #[0-0.3]    -50%      AS 1/0.6 - 1/0.3 
-        self.shot_speed = 10             #[0-10]     +50%      together 30
-        
+        #health                   #[0-9]      +300%     together 12
+        #dmg_reduction            #[0-0.6]    -60%      
+        #dmg                      #[0-2]      +200%     together 3
+        #speed                    #[0-3]      +37.5%    together 11
+        #extra_immortality        #[0-1.25]   +125%     together 2.25 
+        #shooting_cd_decrease     #[0-0.3]    -50%      AS 1/0.6 - 1/0.3 
+        #shot_speed               #[0-10]     +50%      together 30
+        #luck                     #[0-0.5]    +50%      together 50%
+
         self.stats = {
             "health": 0,
             "dmg_reduction": 0,
@@ -21,7 +22,8 @@ class Equipment():
             "extra_immortality": 0,
             "shooting_cd_decrease": 0,
             "shot_speed": 0,
-            "bullet_fly_time": 0
+            "bullet_fly_time": 0,
+            "luck": 0
         }
 
         self.max_stats = {
@@ -32,7 +34,8 @@ class Equipment():
             "extra_immortality": 1.25,
             "shooting_cd_decrease": 0.3,
             "shot_speed": 10,
-            "bullet_fly_time": 10
+            "bullet_fly_time": 10,
+            "luck": 0.5
         }
 
 
@@ -162,12 +165,18 @@ class Equipment():
 
     def unpack_item(self, item):
         stats = item["stats"]
+        healValue = 0
         for key, value in stats.items():
             if self.stats.get(key) is not None:
                 self.stats[key] += value
                 if self.stats[key] > self.max_stats[key]:
                     self.stats[key] = self.max_stats[key]
+                elif key == "health":
+                    healValue = value
         
+        self.player.update_player_stats()
+        if healValue:
+            self.player.heal(healValue)
         print(self.stats)  
 
 
