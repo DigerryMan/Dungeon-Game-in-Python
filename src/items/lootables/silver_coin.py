@@ -7,11 +7,6 @@ class Silver_coin(LootableItem):
         super().__init__(game, x, y)
         self.image.fill(SILVER)
         
-
     def picked_up(self):
-        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        
-        if hits:
-            current_room = self.game.map.get_current_room()
-            current_room.remove_item(self)
-            self.kill()
+        self.clean_up()
+        return 1

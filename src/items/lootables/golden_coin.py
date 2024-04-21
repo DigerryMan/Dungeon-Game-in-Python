@@ -9,9 +9,5 @@ class Golden_coin(LootableItem):
         
 
     def picked_up(self):
-        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        
-        if hits:
-            current_room = self.game.map.get_current_room()
-            current_room.remove_item(self)
-            self.kill()
+        self.clean_up()
+        return 3

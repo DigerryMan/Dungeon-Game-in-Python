@@ -53,6 +53,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.y_change
         self._collide_blocks('y')
 
+        self._check_items_pick_up()
+        
         self._layer = self.rect.bottom
         self.animate()
 
@@ -143,6 +145,16 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
+
+    def _check_items_pick_up(self):
+        hits = pygame.sprite.spritecollide(self, self.game.items, False)
+        for item in hits:
+            item_info = item.picked_up()
+            
+            if isinstance(item_info, int): #coins
+                self.coins += item_info
+            else:                          #items
+                self.eq.add_item(item_info)
 
     def animate(self):
         pass

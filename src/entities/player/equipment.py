@@ -32,7 +32,7 @@ class Equipment():
         self.y = (player.game.settings.WIN_HEIGHT - self.height) // 2
 
         #items
-        self.items = [1, 2 , 3, 3,4,5 , 5,6, 5] #dla testu dane
+        self.items = [] #dla testu dane
         self.first_item_x = self.x + 22
         self.first_item_y = self.y + 22
         self.item_distance = 73
@@ -144,6 +144,7 @@ class Equipment():
         self.licznik %= 3
 
 
-    def pick_up_item(self, item):
+    def add_item(self, item):
         self.items.append(item)
+
     

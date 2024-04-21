@@ -29,7 +29,6 @@ class LootableItem(pygame.sprite.Sprite):
 
     def update(self):
         self.drop_animation()
-        self.picked_up()
 
     def drop_animation(self):
         if self.vertical_travel_time < 26:
@@ -41,9 +40,10 @@ class LootableItem(pygame.sprite.Sprite):
             self.vertical_travel_time += 1
 
     def picked_up(self):
-        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        
-        if hits:
-            current_room = self.game.map.get_current_room()
-            current_room.remove_item(self)
-            self.kill()
+        self.clean_up()
+        return None
+    
+    def clean_up(self):
+        current_room = self.game.map.get_current_room()
+        current_room.remove_item(self)
+        self.kill()

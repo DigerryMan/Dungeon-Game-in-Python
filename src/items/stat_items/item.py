@@ -14,3 +14,7 @@ class Item(LootableItem):
 
     def roll_item(self, category):
         self.item = self.game.items_list.commons[0]
+
+    def picked_up(self):
+        self.clean_up()
+        return self.item
