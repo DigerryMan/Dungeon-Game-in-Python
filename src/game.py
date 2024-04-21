@@ -356,6 +356,8 @@ class Game:
 
 
     def display_eq(self):
+        self.player.eq.user_eq_input(None) #show big_item first time
+        
         while(self.player.eq_opened):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
