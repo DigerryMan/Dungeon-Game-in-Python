@@ -34,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.__immortality_time_left = 0
         self.__shot_time_left = 0
         self.facing = Directions.DOWN
+        self.last_horizontall_facing = Directions.RIGHT
         self.x_change = 0
         self.y_change = 0
         
@@ -68,11 +69,13 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_a]:
             self.x_change -= self.__speed
             self.facing = Directions.LEFT
+            self.last_horizontall_facing = Directions.LEFT
             x_y_vel[0] -= 1
         
         if keys[pygame.K_d]:
             self.x_change += self.__speed
             self.facing = Directions.RIGHT
+            self.last_horizontall_facing = Directions.RIGHT
             x_y_vel[0] += 1
 
         if keys[pygame.K_w]: 

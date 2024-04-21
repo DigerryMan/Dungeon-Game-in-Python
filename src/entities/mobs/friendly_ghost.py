@@ -28,39 +28,36 @@ class FriendlyGhost(Ghost):
             self._shot_time_left = self._shot_cd
     
     def move_because_of_player(self, chase:bool=True):
-        player_facing = self.game.player.facing
+        player_horizontal_facing = self.game.player.last_horizontall_facing
         player_rect = self.game.get_player_rect()
+        enemy_vector = pygame.math.Vector2(self.rect.center)
         player_vector = None
 
-        if player_facing == Directions.LEFT:
+        if player_horizontal_facing == Directions.LEFT:
             player_vector = pygame.math.Vector2(player_rect.left, player_rect.top)
-        elif player_facing == Directions.RIGHT:
+        else:
             player_vector = pygame.math.Vector2(player_rect.right, player_rect.top)
-        else:
-            player_vector = pygame.math.Vector2(random.choice([player_rect.topleft, player_rect.topright]))
-
-
-        enemy_vector = pygame.math.Vector2(self.rect.center)
-
+     
         distance = (player_vector - enemy_vector).magnitude()
-        direction = None
+        if distance > 3:
+            direction = None
 
-        if distance > 0:
-            direction = (player_vector - enemy_vector).normalize()
-        else:
-            direction = pygame.math.Vector2()
-        
-        speed = self._speed
-        if not chase:
-            direction.rotate_ip(180)
-            speed = self._speed * self._chase_speed_debuff
+            if distance > 0:
+                direction = (player_vector - enemy_vector).normalize()
+            else:
+                direction = pygame.math.Vector2()
+            
+            speed = self._speed
+            if not chase:
+                direction.rotate_ip(180)
+                speed = self._speed * self._chase_speed_debuff
 
-        velocity = direction * speed
+            velocity = direction * speed
 
-        self.x_change = velocity.x
-        self.y_change = velocity.y
-        self._correct_rounding()
-        self.correct_facing()
-    
+            self.x_change = velocity.x
+            self.y_change = velocity.y
+            self._correct_rounding()
+            self.correct_facing()
+
     def collide_player(self):
         pass

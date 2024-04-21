@@ -1,5 +1,4 @@
 import pygame
-
 from config import *
 from utils.directions import Directions
 from map.destructable_block import DestructableBlock
@@ -66,7 +65,6 @@ class Bullet(pygame.sprite.Sprite):
             self.x_change = self.speed
         
         self.calculate_angled_speed()
-        
 
     def calculate_angled_speed(self):
         axis, _ = self.direction.get_axis_tuple()
@@ -112,7 +110,6 @@ class Bullet(pygame.sprite.Sprite):
         if self.is_friendly:       
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if mob_hits and mob_hits[0] not in self.game.not_voulnerable:
-                print(mob_hits)
                 mob_hits[0].get_hit(self.dmg)
                 self.kill()
             
@@ -134,10 +131,7 @@ class Bullet(pygame.sprite.Sprite):
                 if isinstance(block_hit, DestructableBlock):
                     block_hit.get_hit(self.dmg)
                    
-             
-
     def decay(self):
         self.time_left -= 1
         if self.time_left <= 0:
-            self.kill()
-            
+            self.kill()       

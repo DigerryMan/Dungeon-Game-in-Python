@@ -129,24 +129,25 @@ class Enemy(pygame.sprite.Sprite):
         enemy_vector = pygame.math.Vector2(self.rect.center)
 
         distance = (player_vector - enemy_vector).magnitude()
-        direction = None
+        if distance > 3:
+            direction = None
 
-        if distance > 0:
-            direction = (player_vector - enemy_vector).normalize()
-        else:
-            direction = pygame.math.Vector2()
-        
-        speed = self._speed
-        if not chase:
-            direction.rotate_ip(180)
-            speed = self._speed * self._chase_speed_debuff
+            if distance > 0:
+                direction = (player_vector - enemy_vector).normalize()
+            else:
+                direction = pygame.math.Vector2()
+            
+            speed = self._speed
+            if not chase:
+                direction.rotate_ip(180)
+                speed = self._speed * self._chase_speed_debuff
 
-        velocity = direction * speed
-
-        self.x_change = velocity.x
-        self.y_change = velocity.y
-        self._correct_rounding()
-        self.correct_facing()
+            velocity = direction * speed
+            
+            self.x_change = velocity.x
+            self.y_change = velocity.y
+            self._correct_rounding()
+            self.correct_facing()
 
     def collide_player(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
