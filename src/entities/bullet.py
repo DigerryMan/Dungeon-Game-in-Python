@@ -33,7 +33,7 @@ class Bullet(pygame.sprite.Sprite):
         self.y_change = 0
 
         self.game = game
-        self.groups = self.game.all_sprites, self.game.attacks
+        self.groups = self.game.all_sprites, self.game.attacks, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         if self.direction == Directions.PLAYER: 

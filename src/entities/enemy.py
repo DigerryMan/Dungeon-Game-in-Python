@@ -55,7 +55,7 @@ class Enemy(pygame.sprite.Sprite):
         self._bullet_decay_sec = bullet_decay_sec
 
         self.game = game
-        self.groups = self.game.all_sprites, self.game.enemies
+        self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
    
 
