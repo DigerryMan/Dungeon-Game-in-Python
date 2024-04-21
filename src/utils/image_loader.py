@@ -1,30 +1,39 @@
 import pygame
 
 class ImageLoader:
-    def __init__(self):
-        self.menu = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
-        self._mobs = ["alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
-        self.rooms = ["basement", "catacombs", "caves", "controls", "depths", "necropolis", "shading", "shop", "utero", "womb"]
-        self.doors = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
-        self.blocks = ["rocks2"]
+    def __init__(self, settings):
+        self.settings = settings
+
+        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
+        self.mobs_ = ["alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
+        self.rooms_ = ["basement", "catacombs", "caves", "controls", "depths", "necropolis", "shading", "shop", "utero", "womb"]
+        self.doors_ = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
+        self.blocks_ = ["rocks2"]
+
         self.images_dict = {}
         self.__load_images_to_dict()
 
+        self.blocks = {}
+        self.load_blocks()
+
     def __load_images_to_dict(self):
-        for menu_element in self.menu:
+        for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
 
-        for mob in self._mobs:
+        for mob in self.mobs_:
             self.images_dict[mob] = pygame.image.load("resources/mobs/" + mob + ".png")
 
-        for room in self.rooms:
+        for room in self.rooms_:
             self.images_dict[room] = pygame.image.load("resources/rooms/" + room + ".png")
 
-        for door in self.doors:
+        for door in self.doors_:
             self.images_dict[door] = pygame.image.load("resources/doors/" + door + ".png")
 
-        for block in self.blocks:
+        for block in self.blocks_:
             self.images_dict[block] = pygame.image.load("resources/blocks/" + block + ".png")
+
+    def load_blocks(self):
+        self.blocks["bright_rock1"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
 
     def get_image(self, name: str):
         return self.images_dict[name]

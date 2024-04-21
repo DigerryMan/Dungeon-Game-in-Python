@@ -1,6 +1,6 @@
 import pygame
 from map.map import *
-from menu.button import *
+#from menu.button import *
 from entities.player.player import *
 from config import *
 from utils.image_loader import ImageLoader
@@ -20,6 +20,7 @@ class Game:
         
 
         self.settings = Settings(window_size)
+        self.image_loader = ImageLoader(self.settings)
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
@@ -28,8 +29,6 @@ class Game:
         self.paused = False
 
         self.e_pressed = False
-
-        self.image_loader = ImageLoader()
 
         self.handle_resolution_change(window_size)  
                 

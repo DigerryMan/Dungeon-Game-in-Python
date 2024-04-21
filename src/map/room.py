@@ -57,22 +57,10 @@ class Room():
     def generate_room(self, entry_direction:Directions):
         if not self.drawn_once:
             doors_positions = self.get_doors_positions()
+
             for y, row in enumerate(self.room):
                 for x, col in enumerate(row):
-                    if (y, x) in doors_positions:
-                        if(y == 0):
-                            self.doors.append(Door(self.game, x, y, Directions.UP))
-                        elif(y == self.game.settings.MAP_HEIGHT - 1):
-                            self.doors.append(Door(self.game, x, y, Directions.DOWN))
-                        elif(x == 0):
-                            self.doors.append(Door(self.game, x, y, Directions.LEFT))
-                        elif(x == self.game.settings.MAP_WIDTH - 1):
-                            self.doors.append(Door(self.game, x, y, Directions.RIGHT))
-
-                    elif col == '#':
-                        self.walls.append(Wall(self.game, x, y))
-
-                    elif col == 'C':
+                    if col == 'C':
                         self.chest = Chest(self.game, x, y, "medium")
 
                     elif col == 'B':
@@ -102,13 +90,63 @@ class Room():
                         elif col == 'G':
                             self.enemies.append(Ghost(self.game, x, y))
 
+            for (y, x) in doors_positions:
+                if(y == 0):
+                    self.doors.append(Door(self.game, x, y, Directions.UP))
+                elif(y == self.game.settings.MAP_HEIGHT - 1):
+                    self.doors.append(Door(self.game, x, y, Directions.DOWN))
+                elif(x == 0):
+                    self.doors.append(Door(self.game, x, y, Directions.LEFT))
+                elif(x == self.game.settings.MAP_WIDTH - 1):
+                    self.doors.append(Door(self.game, x, y, Directions.RIGHT))
+
+            #top wall
+            x = 0
+            while x < self.game.settings.MAP_WIDTH:
+                if((0, x + 0.5) not in doors_positions):
+                    self.walls.append(Wall(self.game, x, 0))
+                else:
+                    self.walls.append(Wall(self.game, x - 0.5, 0))
+                    self.walls.append(Wall(self.game, x + 1.5, 0))
+                    x += 1
+
+                x += 1
+
+            #bottom wall
+            x = 0
+            while x < self.game.settings.MAP_WIDTH:
+                if((self.game.settings.MAP_HEIGHT - 1, x + 0.5) not in doors_positions):
+                    self.walls.append(Wall(self.game, x, self.game.settings.MAP_HEIGHT - 1))
+                else:
+                    self.walls.append(Wall(self.game, x - 0.5, self.game.settings.MAP_HEIGHT - 1))
+                    self.walls.append(Wall(self.game, x + 1.5, self.game.settings.MAP_HEIGHT - 1))
+                    x += 1
+
+                x += 1
+            
+            #left wall
+            y = 0
+            while y < self.game.settings.MAP_HEIGHT:
+                if((y, 0) not in doors_positions):
+                    self.walls.append(Wall(self.game, 0, y))
+
+                y += 1
+
+            #right wall
+            y = 0
+            while y < self.game.settings.MAP_HEIGHT:
+                if((y, self.game.settings.MAP_WIDTH - 1) not in doors_positions):
+                    self.walls.append(Wall(self.game, self.game.settings.MAP_WIDTH - 1, y))
+
+                y += 1
+
         self.spawn_player(entry_direction)
         self.drawn_once = True
         
     
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            self.player.set_rect_position(self.player.rect.x, (self.game.settings.MAP_HEIGHT - 2)*self.game.settings.TILE_SIZE)
+            self.player.set_rect_position(self.player.rect.x, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE)
 
         elif entry_direction == Directions.DOWN:
             self.player.set_rect_position(self.player.rect.x, self.game.settings.TILE_SIZE)
@@ -120,27 +158,23 @@ class Room():
             self.player.set_rect_position(self.game.settings.TILE_SIZE, self.player.rect.y)
 
         elif entry_direction == Directions.CENTER:
-            self.player.set_rect_position((self.game.settings.MAP_WIDTH / 2) * self.game.settings.TILE_SIZE, (self.game.settings.MAP_HEIGHT / 2) * self.game.settings.TILE_SIZE)
+            self.player.set_rect_position((self.game.settings.MAP_WIDTH / 2 - 0.5) * self.game.settings.TILE_SIZE, (self.game.settings.MAP_HEIGHT / 2 - 0.5) * self.game.settings.TILE_SIZE)
 
 
     def get_doors_positions(self):
         doors_positions = []
         for i in range(len(self.doors_to_spawn)):
             if self.doors_to_spawn[i] == Directions.UP:
-                doors_positions.append((0, self.game.settings.MAP_WIDTH / 2 - 1))
-                doors_positions.append((0, self.game.settings.MAP_WIDTH / 2))
+                doors_positions.append((0, self.game.settings.MAP_WIDTH / 2 - 0.5))
 
             elif self.doors_to_spawn[i] == Directions.DOWN:
-                doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2 - 1))
-                doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2))
+                doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2 - 0.5))
 
             elif self.doors_to_spawn[i] == Directions.LEFT:
-                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, 0))
-                doors_positions.append((self.game.settings.MAP_HEIGHT / 2, 0))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, 0))
 
             elif self.doors_to_spawn[i] == Directions.RIGHT:
-                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, self.game.settings.MAP_WIDTH - 1))
-                doors_positions.append((self.game.settings.MAP_HEIGHT / 2, self.game.settings.MAP_WIDTH - 1))
+                doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, self.game.settings.MAP_WIDTH - 1))
         
         return doors_positions
 
