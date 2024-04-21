@@ -14,8 +14,8 @@ class Game:
         #self.screen = pygame.display.set_mode((0, 0))
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
-        #window_size = (1920, 1080)
-        window_size = (1280, 720)
+        window_size = (1920, 1080)
+        #window_size = (1280, 720)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
@@ -56,6 +56,7 @@ class Game:
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
+        self.items_list = ItemsList(self)
 
         self.intro_background = pygame.transform.smoothscale(self.image_loader.get_image("introbackground"), self.screen.get_size())
         self.menu_card = pygame.transform.smoothscale(self.image_loader.get_image("menucard"), self.screen.get_size())
