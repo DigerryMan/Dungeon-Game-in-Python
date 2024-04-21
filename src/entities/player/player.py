@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.facing = Directions.DOWN
         self.x_change = 0
         self.y_change = 0
-        self.update_player_stats()
+        
         self.groups = self.game.all_sprites, self.game.player_sprite
         pygame.sprite.Sprite.__init__(self, self.groups)
     
@@ -155,6 +155,7 @@ class Player(pygame.sprite.Sprite):
                 self.coins += item_info
             else:                          #items
                 self.eq.add_item(item_info)
+                self.update_player_stats()
 
     def animate(self):
         pass
@@ -165,7 +166,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_hit(self, dmg:int):
         if self.__immortality_time_left <= 0:
-            self.__health -= dmg * (1 - self.eq.dmg_reduction)
+            self.__health -= dmg * (1 - self.eq.stats["dmg_reduction"])
             self.__immortality_time_left = self.__immortality_after_hit
             print(self.__health)
             self._check_is_dead()
@@ -178,11 +179,11 @@ class Player(pygame.sprite.Sprite):
         return self.rect.centerx, self.rect.centery
     
     def update_player_stats(self):
-        self.__max_health = BASE_HEALTH + self.eq.health
+        self.__max_health = BASE_HEALTH + self.eq.stats["health"]
         self.__health = min(self.__max_health, self.__health)
-        self.__dmg = BASE_DMG + self.eq.dmg
-        self.__speed = BASE_SPEED + self.eq.speed
-        self.__immortality_after_hit = int((BASE_IMMORTALITY_AFTER_HIT + self.eq.extra_immortality) * FPS) 
-        self.__shooting_cooldown = int((BASE_SHOOTING_COOLDOWN - self.eq.shooting_cd_decrease) * FPS)
-        self.__shot_speed = BASE_SHOT_SPEED + self.eq.shot_speed
+        self.__dmg = BASE_DMG + self.eq.stats["dmg"]
+        self.__speed = BASE_SPEED + self.eq.stats["speed"]
+        self.__immortality_after_hit = int((BASE_IMMORTALITY_AFTER_HIT + self.eq.stats["extra_immortality"]) * FPS) 
+        self.__shooting_cooldown = int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cd_decrease"]) * FPS)
+        self.__shot_speed = BASE_SHOT_SPEED + self.eq.stats["shot_speed"]
         

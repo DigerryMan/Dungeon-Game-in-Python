@@ -20,8 +20,21 @@ class Equipment():
             "speed": 0,
             "extra_immortality": 0,
             "shooting_cd_decrease": 0,
-            "shot_speed": 0
+            "shot_speed": 0,
+            "bullet_fly_time": 0
         }
+
+        self.max_stats = {
+            "health": 9,
+            "dmg_reduction": 0.6,
+            "dmg": 2,
+            "speed": 3,
+            "extra_immortality": 1.25,
+            "shooting_cd_decrease": 0.3,
+            "shot_speed": 10,
+            "bullet_fly_time": 10
+        }
+
 
         self.player = player
 
@@ -143,8 +156,19 @@ class Equipment():
         self.licznik += 1
         self.licznik %= 3
 
-
     def add_item(self, item):
         self.items.append(item)
+        self.unpack_item(item)
+
+    def unpack_item(self, item):
+        stats = item["stats"]
+        for key, value in stats.items():
+            if self.stats.get(key) is not None:
+                self.stats[key] += value
+                if self.stats[key] > self.max_stats[key]:
+                    self.stats[key] = self.max_stats[key]
+        
+        print(self.stats)  
+
 
     
