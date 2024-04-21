@@ -16,26 +16,26 @@ class Equipment():
 
         self.stats = {
             "health": 0,
-            "dmg_reduction": 0,
             "dmg": 0,
-            "speed": 0,
-            "extra_immortality": 0,
+            "dmg_reduction": 0,
             "shooting_cd_decrease": 0,
-            "shot_speed": 0,
             "bullet_fly_time": 0,
-            "luck": 0
+            "shot_speed": 0,
+            "speed": 0,
+            "luck": 0,
+            "extra_immortality": 0
         }
 
         self.max_stats = {
             "health": 9,
-            "dmg_reduction": 0.6,
             "dmg": 2,
-            "speed": 3,
-            "extra_immortality": 1.25,
+            "dmg_reduction": 0.6,
             "shooting_cd_decrease": 0.3,
-            "shot_speed": 10,
             "bullet_fly_time": 10,
-            "luck": 0.5
+            "shot_speed": 10,
+            "speed": 3,
+            "luck": 0.5,
+            "extra_immortality": 1.25
         }
 
         self.player = player
@@ -75,11 +75,21 @@ class Equipment():
         self.big_item_size = 137
         self.big_item_image = None
 
+        #font
+        self.font_path = 'resources/fonts/LuckiestGuy-Regular.ttf'
+        self.font_color = (54, 47, 45)
+
+        #stats
+        self.stats_x = self.x + 430
+        self.stats_y = self.y + 46
+        self.stats_y_change = 58
+
     def draw(self, screen):
         self.draw_background(screen)
         self.draw_items(screen)
         self.draw_item_cursor(screen)
         self.draw_big_item(screen)
+        self.draw_player_stats(screen)
     
     def draw_background(self, screen):
         screen.blit(self.image, (self.x, self.y)) 
@@ -103,6 +113,53 @@ class Equipment():
     def draw_big_item(self, screen):
         if self.big_item_image:
             screen.blit(self.big_item_image, (self.big_item_x, self.big_item_y))
+            self.draw_item_stats(screen)
+
+    def draw_item_stats(self, screen):
+        item = self.items[self.highlighted_item_index]
+        x = self.big_item_x + self.big_item_size//2
+        y = self.big_item_y + self.big_item_size + self.big_item_size//4
+        
+        big_font = pygame.font.Font(self.font_path, 33)
+        font = pygame.font.Font(self.font_path, 26)
+        small_font = pygame.font.Font(self.font_path, 20)
+
+        #item_name
+        name = big_font.render(item["name"], True, self.font_color)
+        name_rect = name.get_rect(center=(x, y))
+        screen.blit(name, name_rect)
+
+        #item_amount
+        amount = small_font.render(str(item["amount"]), True, self.font_color)
+        amount_x = self.big_item_x + int(0.9*self.big_item_size) 
+        amount_y = self.big_item_y + 10
+        amount_rect = amount.get_rect(center=(amount_x, amount_y))
+        screen.blit(amount, amount_rect)
+
+        #item_stats
+        for key, value in item["stats"].items():
+            y += self.big_item_size//4
+            stat = font.render(f"{key}: +{value}", True, self.font_color)
+            stat_rect = stat.get_rect(center=(x, y))
+            screen.blit(stat, stat_rect)
+        
+        #y += self.big_item_size//4
+
+    def draw_player_stats(self, screen):
+        x = self.stats_x
+        y = self.stats_y
+
+        big_font = pygame.font.Font(self.font_path, 33)
+        font = pygame.font.Font(self.font_path, 33)
+        small_font = pygame.font.Font(self.font_path, 20)
+
+        
+        for key, value in self.stats.items():
+            stat = font.render(f"{value} / {self.max_stats[key]}", True, self.font_color)
+            stat_rect = stat.get_rect(midleft=(x, y))
+            screen.blit(stat, stat_rect)
+            y += self.stats_y_change
+
 
     def user_eq_input(self, event_key):
         if event_key is not None:

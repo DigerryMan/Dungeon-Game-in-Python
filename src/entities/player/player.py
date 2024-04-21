@@ -7,8 +7,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         #MAIN
         self.game = game
-        self.__max_health = BASE_HEALTH
-        self.__health = BASE_HEALTH
+        self.max_health = BASE_HEALTH
+        self.health = BASE_HEALTH
         self.__speed = BASE_SPEED
         self.coins = 100
 
@@ -162,23 +162,23 @@ class Player(pygame.sprite.Sprite):
 
     def get_hit(self, dmg:int):
         if self.__immortality_time_left <= 0:
-            self.__health -= dmg * (1 - self.eq.stats["dmg_reduction"])
+            self.health -= dmg * (1 - self.eq.stats["dmg_reduction"])
             self.__immortality_time_left = self.get_immortality_time()
-            print(self.__health)
+            print(self.health)
             self._check_is_dead()
 
     def _check_is_dead(self):
-        if self.__health <= 0 and not GOD_MODE:
+        if self.health <= 0 and not GOD_MODE:
             self.game.game_over()
     
     def get_center_position(self):
         return self.rect.centerx, self.rect.centery
     
     def heal(self, amount:int):
-        self.__health = min(self.__max_health, self.__health + amount)
+        self.health = min(self.max_health, self.health + amount)
 
     def update_player_stats(self):
-        self.__max_health = BASE_HEALTH + self.eq.stats["health"]
+        self.max_health = BASE_HEALTH + self.eq.stats["health"]
         self.__speed = BASE_SPEED + self.eq.stats["speed"]
     
     def get_shooting_cooldown(self):
