@@ -1,6 +1,6 @@
 import pygame
+from items.stat_items.items_list import ItemsList
 from map.map import *
-#from menu.button import *
 from entities.player.player import *
 from config import *
 from utils.image_loader import ImageLoader
@@ -14,13 +14,14 @@ class Game:
         #self.screen = pygame.display.set_mode((0, 0))
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
-        window_size = (1920, 1080)
-        #window_size = (1280, 720)
+        #window_size = (1920, 1080)
+        window_size = (1280, 720)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
+        self.items_list = ItemsList(self)
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True

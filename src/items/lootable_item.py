@@ -2,7 +2,7 @@ import pygame
 import random
 from config import *
 
-class Lootable_item(pygame.sprite.Sprite):
+class LootableItem(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
         self._layer = 0

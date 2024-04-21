@@ -1,8 +1,8 @@
 import pygame
 from config import *
-from ..lootable_item import Lootable_item
+from ..lootable_item import LootableItem
 
-class Health_potion(Lootable_item):
+class Health_potion(LootableItem):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         self.image.fill(RED)

@@ -12,7 +12,7 @@ from .shop_stuff.shop_stand import *
 from .door import *
 from .wall import *
 from .chest import *
-from items.lootable_item import Lootable_item
+from items.lootable_item import LootableItem
 from entities.player.player import *
 from entities.enemy import *
 from entities.mobs.legs import *
@@ -48,7 +48,7 @@ class Room():
             "items": self.items
         }
     
-    def remove_item(self, item:Lootable_item):
+    def remove_item(self, item:LootableItem):
         self.items.remove(item)
 
     def remove_block(self, block:Block):
@@ -61,7 +61,7 @@ class Room():
             for y, row in enumerate(self.room):
                 for x, col in enumerate(row):
                     if col == 'C':
-                        self.chest = Chest(self.game, x, y, "medium")
+                        self.chest = Chest(self.game, x, y, "small")
 
                     elif col == 'B':
                         self.blocks.append(Block(self.game, x, y))

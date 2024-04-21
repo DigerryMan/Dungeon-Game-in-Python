@@ -4,6 +4,7 @@ from config import *
 from items.lootables.silver_coin import Silver_coin
 from items.lootables.golden_coin import Golden_coin
 from items.lootables.health_potion import Health_potion
+from items.stat_items.item import Item
 
 class Chest(pygame.sprite.Sprite):
     def __init__(self, game, x, y, type):
@@ -31,14 +32,14 @@ class Chest(pygame.sprite.Sprite):
 
     def open(self):
         if not self.opened_once:
-            itmes = []
+            items = []
             self.is_open = True
             self.image.fill(GOLD)
             self.opened_once = True
 
-            self.drop_loot(itmes)
+            self.drop_loot(items)
 
-            return itmes
+            return items
 
 
 
@@ -46,6 +47,8 @@ class Chest(pygame.sprite.Sprite):
         if self.type == "small":
             for _ in range(random.randint(2, 4)):
                 items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
+
+            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, "common"))
 
         elif self.type == "medium":
             for _ in range(random.randint(3, 5)):
