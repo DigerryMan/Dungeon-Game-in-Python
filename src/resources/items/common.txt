@@ -2,6 +2,6 @@
 
 serce(3, 2) - boost do hp +1 hp
 armor(3, 21) - boost do armora +0.1
-mały miecz(5, 10) - zwiększa obrażenia o 0.2
-celownik(9, 19) - zwiększa czas lecenia pocisku o 1s
-strzykawa(11, 24) - zwiększa prędkość pocisku
+mały miecz(15, 19) - zwiększa obrażenia o 0.2
+okulary(12, 3) - zwiększa czas lecenia pocisku o 1s
+strzykawa(13, 0) - zwiększa prędkość pocisku
