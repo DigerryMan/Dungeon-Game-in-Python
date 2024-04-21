@@ -19,7 +19,8 @@ class Item(LootableItem):
         
 
     def roll_item(self, category):
-        self.item = self.game.items_list.commons[0]
+        #self.item = self.game.items_list.get_random_item(category)
+        self.item = self.game.items_list.epics["holy_cross"]
 
     def picked_up(self):
         self.clean_up()

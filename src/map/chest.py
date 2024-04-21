@@ -4,6 +4,7 @@ from config import *
 from items.lootables.silver_coin import Silver_coin
 from items.lootables.golden_coin import Golden_coin
 from items.lootables.health_potion import Health_potion
+from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 
 class Chest(pygame.sprite.Sprite):
@@ -48,7 +49,7 @@ class Chest(pygame.sprite.Sprite):
             for _ in range(random.randint(2, 4)):
                 items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
 
-            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, "common"))
+            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
 
         elif self.type == "medium":
             for _ in range(random.randint(3, 5)):
