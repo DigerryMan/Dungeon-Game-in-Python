@@ -13,7 +13,7 @@ class Chest(pygame.sprite.Sprite):
         self.is_open = False
         self.opened_once = False
 
-        self.groups = self.game.chest, self.game.collidables
+        self.groups = self.game.all_sprites, self.game.chest, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * game.settings.TILE_SIZE

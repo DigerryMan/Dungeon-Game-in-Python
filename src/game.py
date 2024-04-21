@@ -54,6 +54,7 @@ class Game:
     def handle_resolution_change(self, window_size):
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         self.settings = Settings(window_size)
+        self.image_loader = ImageLoader(self.settings)
 
         self.intro_background = pygame.transform.smoothscale(self.image_loader.get_image("introbackground"), self.screen.get_size())
         self.menu_card = pygame.transform.smoothscale(self.image_loader.get_image("menucard"), self.screen.get_size())
@@ -138,7 +139,7 @@ class Game:
 
 
     def _clear_sprites(self):
-        self.all_sprites.remove(self.blocks, self.doors, self.enemies, self.attacks)
+        self.all_sprites.empty()
         self.blocks.empty()
         self.doors.empty()
         self.attacks.empty()
@@ -150,17 +151,19 @@ class Game:
      
 
     def _get_new_sprites(self, room):
+        self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
-        self.blocks.add(objects["blocks"])
+        self.blocks.add(objects["blocks"], objects["walls"])
         self.doors.add(objects["doors"])
         if objects["chest"]:
             self.chest.add(objects["chest"])
             self.collidables.add(objects["chest"])
+            self.all_sprites.add(self.chest)
         self.items.add(objects["items"])
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
-        self.all_sprites.add(self.blocks, self.doors, self.enemies, self.attacks)
+        self.all_sprites.add(self.collidables, self.doors, self.enemies, self.attacks, self.items)
 
 
     def damage_player(self, enemy_dmg:int):

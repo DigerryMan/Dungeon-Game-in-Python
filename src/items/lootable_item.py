@@ -6,7 +6,7 @@ class Lootable_item(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
         self._layer = 0
-        self.groups = self.game.items
+        self.groups = self.game.all_sprites, self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.horizontal_velocity = random.uniform(-5, 5)

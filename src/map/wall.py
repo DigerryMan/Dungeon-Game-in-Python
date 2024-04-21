@@ -5,7 +5,7 @@ class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
         self._layer = WALL_LAYER
-        self.groups = self.game.blocks, self.game.collidables
+        self.groups = self.game.all_sprites, self.game.blocks, self.game.collidables
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * game.settings.TILE_SIZE
