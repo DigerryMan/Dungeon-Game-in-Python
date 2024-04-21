@@ -37,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         
-        self.groups = self.game.all_sprites, self.game.player_sprite
+        self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
     
     def update(self):

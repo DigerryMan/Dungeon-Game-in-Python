@@ -36,6 +36,7 @@ class Game:
         self.font = pygame.font.SysFont("arialblack", 30)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
+        self.entities = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
@@ -89,6 +90,7 @@ class Game:
     def render_new_map(self):
         self.player_sprite = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.entities = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
@@ -150,12 +152,13 @@ class Game:
         self.not_voulnerable.empty()
         self.chest.empty()
         self.items.empty()
+        self.entities.empty()
      
 
     def _get_new_sprites(self, room):
         self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
-        self.blocks.add(objects["blocks"], objects["walls"])
+        self.blocks.add(objects["blocks"])
         self.doors.add(objects["doors"])
         if objects["chest"]:
             self.chest.add(objects["chest"])
@@ -166,6 +169,7 @@ class Game:
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
         self.all_sprites.add(self.collidables, self.doors, self.enemies, self.attacks, self.items)
+        self.entities.add(self.enemies, self.player_sprite)
 
 
     def damage_player(self, enemy_dmg:int):
@@ -179,16 +183,20 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
 
-        self.collidables.draw(self.screen)
+        self.screen.blit(self.map.get_current_room().room_background, (0, 0))
+
+        self.blocks.draw(self.screen)
+        self.doors.draw(self.screen)
+        self.chest.draw(self.screen)
         self.items.draw(self.screen)
         
-        sprite_list = sorted(self.all_sprites, key=lambda sprite: sprite._layer)
+        sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             self.screen.blit(sprite.image, sprite.rect)
 
         
         self.clock.tick(FPS)
-        pygame.display.update()
+        pygame.display.flip()
 
 
     def game_over(self):

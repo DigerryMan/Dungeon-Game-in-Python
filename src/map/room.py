@@ -31,6 +31,10 @@ class Room():
         self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
 
+        self.room_background = None
+
+        self.select_graphics()
+
         self.doors = []
         self.chest:Chest = None
         self.enemies = []
@@ -191,3 +195,9 @@ class Room():
     
     def get_block_layout(self):
         return self.room
+    
+
+    def select_graphics(self):
+        #if self.room == special_rooms["shop"]:
+        #    print("shop")
+        self.room_background = self.game.image_loader.get_image("shop_room")
