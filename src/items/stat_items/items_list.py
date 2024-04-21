@@ -64,7 +64,7 @@ class ItemsList():
             "name": "Angel",
             "category": Categories.EPIC,
             "stats": {
-                "extra_immortality": 0.5
+                "immortality_after_hit": 0.5
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(5 * 32, 19 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }

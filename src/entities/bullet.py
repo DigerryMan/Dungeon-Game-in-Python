@@ -38,6 +38,8 @@ class Bullet(pygame.sprite.Sprite):
 
         if self.direction == Directions.PLAYER: 
             self._calculate_speed_to_player()
+        elif self.direction == Directions.ENEMY:
+            self._calculate_speed_to_enemy()
         else:
             self.calculate_speed()
 
@@ -88,10 +90,30 @@ class Bullet(pygame.sprite.Sprite):
         self.x_change = int(velocity.x)
         self.y_change = int(velocity.y)
 
+    def _calculate_speed_to_enemy(self):
+        self.enemies = self.game.enemies.sprites()
+        closest_enemy = min(self.enemies, key=lambda enemy: pygame.math.Vector2(enemy.rect.center).distance_to(pygame.math.Vector2(self.rect.center)))
+        print(closest_enemy)
+        enemy_vector = pygame.math.Vector2(closest_enemy.rect.center)
+        bullet_vector = pygame.math.Vector2(self.rect.center)
+        distance = (enemy_vector - bullet_vector).magnitude()
+        direction = None
+
+        if distance > 0:
+            direction = (enemy_vector - bullet_vector).normalize()
+        else:
+            direction = pygame.math.Vector2()
+
+        velocity = direction * self.speed
+        self.x_change = int(velocity.x)
+        self.y_change = int(velocity.y)
+
     def _collide(self):
         if self.is_friendly:       
+            
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if mob_hits and mob_hits[0] not in self.game.not_voulnerable:
+                print(mob_hits)
                 mob_hits[0].get_hit(self.dmg)
                 self.kill()
             

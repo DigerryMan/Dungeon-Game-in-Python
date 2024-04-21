@@ -182,10 +182,10 @@ class Player(pygame.sprite.Sprite):
         self.__speed = BASE_SPEED + self.eq.stats["speed"]
     
     def get_shooting_cooldown(self):
-        return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cd_decrease"]) * FPS)
+        return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
 
     def get_immortality_time(self):
-        return int((BASE_IMMORTALITY_AFTER_HIT + self.eq.stats["extra_immortality"]) * FPS)
+        return int((BASE_IMMORTALITY_AFTER_HIT + self.eq.stats["immortality_after_hit"]) * FPS)
 
     def get_shot_speed(self):
         return BASE_SHOT_SPEED + self.eq.stats["shot_speed"]

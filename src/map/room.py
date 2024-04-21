@@ -1,6 +1,7 @@
 from config import *
 from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.fly import Fly
+from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.mobs.ghost import Ghost
 from entities.mobs.maggot import Maggot
 from entities.mobs.slime import Slime
@@ -93,6 +94,8 @@ class Room():
                             self.enemies.append(Slime(self.game, x, y))
                         elif col == 'G':
                             self.enemies.append(Ghost(self.game, x, y))
+                        elif col == 'H':
+                            self.enemies.append(FriendlyGhost(self.game, x, y))
 
             for (y, x) in doors_positions:
                 if(y == 0):

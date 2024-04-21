@@ -1,41 +1,42 @@
 import pygame
-import config
 
+from config import BASE_BULLET_FLY_TIME, BASE_DMG, BASE_HEALTH, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, BASE_SPEED
 
 class Equipment():
     def __init__(self, player):
         #stats
         #health                   #[0-9]      +300%     together 12
-        #dmg_reduction            #[0-0.6]    -60%      
         #dmg                      #[0-2]      +200%     together 3
-        #speed                    #[0-3]      +37.5%    together 11
-        #extra_immortality        #[0-1.25]   +125%     together 2.25 
-        #shooting_cd_decrease     #[0-0.3]    -50%      AS 1/0.6 - 1/0.3 
+        #dmg_reduction            #[0-0.6]    -60%      
+        #shooting_cooldown        #[0-0.3]    -50%      AS 1/0.6 - 1/0.3 
+        #bullet_fly_time          #[0-10]     +2000%    together 10.5s
         #shot_speed               #[0-10]     +50%      together 30
+        #speed                    #[0-3]      +37.5%    together 11
         #luck                     #[0-0.5]    +50%      together 50%
+        #immortality_after_hit    #[0-1.25]   +125%     together 2.25 
 
         self.stats = {
             "health": 0,
             "dmg": 0,
             "dmg_reduction": 0,
-            "shooting_cd_decrease": 0,
+            "shooting_cooldown": 0,
             "bullet_fly_time": 0,
             "shot_speed": 0,
             "speed": 0,
             "luck": 0,
-            "extra_immortality": 0
+            "immortality_after_hit": 0
         }
 
         self.max_stats = {
             "health": 9,
             "dmg": 2,
             "dmg_reduction": 0.6,
-            "shooting_cd_decrease": 0.3,
-            "bullet_fly_time": 10,
+            "shooting_cooldown": 0.3,
+            "bullet_fly_time": 9.5,
             "shot_speed": 10,
-            "speed": 3,
+            "speed": 4,
             "luck": 0.5,
-            "extra_immortality": 1.25
+            "immortality_after_hit": 1.25
         }
 
         self.player = player
@@ -136,26 +137,45 @@ class Equipment():
         amount_rect = amount.get_rect(center=(amount_x, amount_y))
         screen.blit(amount, amount_rect)
 
-        #item_stats
-        for key, value in item["stats"].items():
-            y += self.big_item_size//4
-            stat = font.render(f"{key}: +{value}", True, self.font_color)
-            stat_rect = stat.get_rect(center=(x, y))
-            screen.blit(stat, stat_rect)
+        y += self.big_item_size//4
+        if "description" in item["stats"].keys():
+            description = font.render(item["stats"]["description"], True, self.font_color)
+            description_rect = description.get_rect(center=(x, y))
+            screen.blit(description, description_rect)
         
-        #y += self.big_item_size//4
+        else:
+            for key, value in item["stats"].items():
+                stat = font.render(f"{key}: +{value}", True, self.font_color)
+                stat_rect = stat.get_rect(center=(x, y))
+                screen.blit(stat, stat_rect)
+                y += self.big_item_size//4
+        
+
 
     def draw_player_stats(self, screen):
         x = self.stats_x
         y = self.stats_y
 
-        big_font = pygame.font.Font(self.font_path, 33)
         font = pygame.font.Font(self.font_path, 33)
-        small_font = pygame.font.Font(self.font_path, 20)
 
-        
         for key, value in self.stats.items():
-            stat = font.render(f"{value} / {self.max_stats[key]}", True, self.font_color)
+            stat = font.render(f"{value + BASE_HEALTH} / {self.max_stats[key] + BASE_HEALTH}", True, self.font_color)
+            if key == "dmg":
+                stat = font.render(f"{(value + BASE_DMG):.1f} / {(self.max_stats[key] + BASE_DMG):.1f}", True, self.font_color)
+            elif key == "dmg_reduction":
+                stat = font.render(f"{value * 100} / {self.max_stats[key] * 100} %", True, self.font_color)
+            elif key == "shooting_cooldown":
+                stat = font.render(f"{1/(BASE_SHOOTING_COOLDOWN - value):.2f} / {1/(BASE_SHOOTING_COOLDOWN - self.max_stats[key]):.2f}", True, self.font_color)
+            elif key == "bullet_fly_time":
+                stat = font.render(f"{value + BASE_BULLET_FLY_TIME} / {int(self.max_stats[key] + BASE_BULLET_FLY_TIME)} s", True, self.font_color)
+            elif key == "shot_speed":
+                stat = font.render(f"{value + BASE_SHOT_SPEED} / {self.max_stats[key] + BASE_SHOT_SPEED}", True, self.font_color)
+            elif key == "speed":
+                stat = font.render(f"{value + BASE_SPEED} / {self.max_stats[key] + BASE_SPEED}", True, self.font_color)
+            elif key == "luck":
+                stat = font.render(f"{value * 100} / {self.max_stats[key] * 100} %", True, self.font_color)
+            elif key == "immortality_after_hit":
+                stat = font.render(f"{value + BASE_IMMORTALITY_AFTER_HIT} / {self.max_stats[key] + BASE_IMMORTALITY_AFTER_HIT} s", True, self.font_color)
             stat_rect = stat.get_rect(midleft=(x, y))
             screen.blit(stat, stat_rect)
             y += self.stats_y_change
