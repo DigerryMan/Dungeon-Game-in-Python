@@ -33,7 +33,12 @@ class ImageLoader:
             self.images_dict[block] = pygame.image.load("resources/blocks/" + block + ".png")
 
     def load_blocks(self):
-        self.blocks["bright_rock1"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock1"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock2"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(67, 5, 55, 57)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock3"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(131, 1, 55, 63)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock4"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 69, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock5"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 133, 51, 56)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
+        self.blocks["rock6"] = pygame.transform.smoothscale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 135, 53, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE))
 
     def get_image(self, name: str):
         return self.images_dict[name]

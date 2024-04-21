@@ -1,4 +1,5 @@
 import pygame
+import random
 from config import *
 
 class Block(pygame.sprite.Sprite):
@@ -13,10 +14,7 @@ class Block(pygame.sprite.Sprite):
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
 
-        #self.img = game.image_loader.get_image("rocks2")
-        #self.image = self.img.subsurface(pygame.Rect(5, 5, 51, 55))
-        #self.image = pygame.transform.smoothscale(self.image, (self.game.settings.TILE_SIZE, self.game.settings.TILE_SIZE))
-        self.image = game.image_loader.blocks["bright_rock1"]
+        self.image = game.image_loader.blocks["rock" + str(random.randint(1, 6))]
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x
