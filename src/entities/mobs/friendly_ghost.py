@@ -6,12 +6,13 @@ from utils.directions import Directions
 import pygame
 
 class FriendlyGhost(Ghost):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, reversed_moves=False):
         super().__init__(game, x, y)
         self._health = 3333
         self.damage = 1
         self.speed = 1
         self._projectal_speed = 10
+        self.reversed_moves = reversed_moves
 
         #SKINS
         self.image.fill(LIGHT_GREEN)
@@ -33,11 +34,16 @@ class FriendlyGhost(Ghost):
         enemy_vector = pygame.math.Vector2(self.rect.center)
         player_vector = None
 
+        left = player_rect.left
+        right = player_rect.right
+        if self.reversed_moves:
+            left, right = right, left
+
         if player_horizontal_facing == Directions.LEFT:
-            player_vector = pygame.math.Vector2(player_rect.left, player_rect.top)
+            player_vector = pygame.math.Vector2(left, player_rect.top)
         else:
-            player_vector = pygame.math.Vector2(player_rect.right, player_rect.top)
-     
+            player_vector = pygame.math.Vector2(right, player_rect.top)
+            
         distance = (player_vector - enemy_vector).magnitude()
         if distance > 3:
             direction = None

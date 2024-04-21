@@ -94,8 +94,6 @@ class Room():
                             self.enemies.append(Slime(self.game, x, y))
                         elif col == 'G':
                             self.enemies.append(Ghost(self.game, x, y))
-                        elif col == 'H':
-                            self.enemies.append(FriendlyGhost(self.game, x, y))
 
             for (y, x) in doors_positions:
                 if(y == 0):
@@ -148,6 +146,7 @@ class Room():
                 y += 1
 
         self.spawn_player(entry_direction)
+        self.player.spawn_pets()
         self.drawn_once = True
         
     

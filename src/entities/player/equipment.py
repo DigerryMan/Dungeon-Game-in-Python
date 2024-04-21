@@ -24,7 +24,15 @@ class Equipment():
             "shot_speed": 0,
             "speed": 0,
             "luck": 0,
-            "immortality_after_hit": 0
+            "immortality_after_hit": 0,
+        }
+
+        self.extra_stats = {
+            "friendly_ghost": 0
+        }
+
+        self.extra_stats_max = {
+            "friendly_ghost": 2
         }
 
         self.max_stats = {
@@ -224,14 +232,24 @@ class Equipment():
     def unpack_item(self, item):
         stats = item["stats"]
         healValue = 0
-        for key, value in stats.items():
-            if self.stats.get(key) is not None:
-                self.stats[key] += value
-                if self.stats[key] > self.max_stats[key]:
-                    self.stats[key] = self.max_stats[key]
-                elif key == "health":
-                    healValue = value
-        
-        self.player.update_player_stats()
-        if healValue:
-            self.player.heal(healValue)
+
+        if stats.get("description") is not None:
+            for key, value in stats.items():
+                if key != "description" and self.extra_stats.get(key) is not None:
+                    self.extra_stats[key] += value
+                    if self.extra_stats[key] > self.extra_stats_max[key]:
+                        self.extra_stats[key] = self.extra_stats_max[key]
+                    elif key == "friendly_ghost":
+                        self.player.spawn_pets(False)
+        else:
+            for key, value in stats.items():
+                if self.stats.get(key) is not None:
+                    self.stats[key] += value
+                    if self.stats[key] > self.max_stats[key]:
+                        self.stats[key] = self.max_stats[key]
+                    elif key == "health":
+                        healValue = value
+            
+            self.player.update_player_stats()
+            if healValue:
+                self.player.heal(healValue)

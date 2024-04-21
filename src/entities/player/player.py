@@ -1,5 +1,6 @@
 import pygame
 from config import *
+from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
 from ..bullet import *
 
@@ -195,3 +196,14 @@ class Player(pygame.sprite.Sprite):
     
     def get_luck(self):
         return BASE_LUCK + self.eq.stats["luck"]
+    
+    def spawn_pets(self, is_in_new_room:bool=True):
+        pets_to_spawn = self.eq.extra_stats.get("friendly_ghost")
+        if not is_in_new_room:
+            FriendlyGhost(self.game, self.rect.centerx//self.game.settings.TILE_SIZE, 
+                          self.rect.centery//self.game.settings.TILE_SIZE, pets_to_spawn%2!=1)
+        else:
+            for i in range(pets_to_spawn):
+                FriendlyGhost(self.game, self.rect.centerx//self.game.settings.TILE_SIZE, 
+                              self.rect.centery//self.game.settings.TILE_SIZE, i%2==1)
+     

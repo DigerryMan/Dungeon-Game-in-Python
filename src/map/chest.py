@@ -49,7 +49,7 @@ class Chest(pygame.sprite.Sprite):
             for _ in range(random.randint(2, 4)):
                 items_to_craft.append(Silver_coin(self.game, self.rect.centerx, self.rect.centery))
 
-            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
+            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
 
         elif self.type == "medium":
             for _ in range(random.randint(3, 5)):

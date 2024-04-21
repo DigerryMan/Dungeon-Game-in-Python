@@ -86,8 +86,18 @@ class ItemsList():
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(36 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
-    
 
+
+        #DOBRAC IKONKE
+        self.legendaries["friendly_ghost"] = {
+            "name": "friendly_ghost",
+            "category": Categories.LEGENDARY,
+            "stats": {
+                "description": "It's so cute! It will follow you and give you a lot of love! <3",
+                "friendly_ghost": 1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(36 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
 
     def get_random_item(self, category):
         if category == Categories.COMMON:
