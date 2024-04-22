@@ -151,9 +151,13 @@ class Equipment():
 
         y += self.big_item_size//4
         if "description" in item["stats"].keys():
-            description = font.render(item["stats"]["description"], True, self.font_color)
-            description_rect = description.get_rect(center=(x, y))
-            screen.blit(description, description_rect)
+            description = item["stats"]["description"]
+            description_lines = []
+            self.prepare_desc_lines(description, description_lines)
+            for i, line in enumerate(description_lines):
+                description_text = font.render(line, True, self.font_color)
+                description_rect = description_text.get_rect(center=(x, y + i * self.big_item_size // 4))
+                screen.blit(description_text, description_rect)
         
 
         else:
@@ -163,6 +167,17 @@ class Equipment():
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
                 y += self.big_item_size//4
+
+    def prepare_desc_lines(self, description, description_lines):
+        line = ""
+        for word in description.split():
+            if len(line) + len(word) <= 25:
+                line += word + " "
+            else:
+                description_lines.append(line.strip())
+                line = word + " "
+        if line:
+            description_lines.append(line.strip())
         
 
 
