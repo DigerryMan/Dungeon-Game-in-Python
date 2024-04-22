@@ -24,7 +24,7 @@ class Maggot(Enemy):
         self.img = game.image_loader.get_image("maggot")
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
         self.scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image.blit(self.scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
+        #self.image.blit(self.scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
 
         #REST
         self.moving_clockwise = moving_clockwise
@@ -91,9 +91,15 @@ class Maggot(Enemy):
         if self.reversed_frame:
             self.frame = pygame.transform.flip(self.frame, True, False)
         
-        self.image = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.remove_transparency_from_frame()
+       
 
-
+    def remove_transparency_from_frame(self):
+        bounding_rect = self.frame.get_bounding_rect() 
+        self.image = self.frame.subsurface(bounding_rect)
+        self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height
+    
     def set_y_frame(self):
         self.reversed_frame = False
         if self.facing == Directions.LEFT:
