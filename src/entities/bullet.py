@@ -23,9 +23,11 @@ class Bullet(pygame.sprite.Sprite):
         #self.image = pygame.Surface([self.width, self.height])
         #self.image.fill(BROWN)
         if self.is_friendly:
-            self.image = game.image_loader.tears["blue_tear"].copy()
+            self.color = "blue"
         else:
-            self.image = game.image_loader.tears["red_tear"].copy()
+            self.color = "red"
+            
+        self.image = game.image_loader.tears[self.color + "_tear"].copy()
 
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
@@ -155,13 +157,13 @@ class Bullet(pygame.sprite.Sprite):
         if self.animation_time == 60:
             self.rect.x -= BULLET_WIDTH
             self.rect.y -= BULLET_HEIGHT
-            self.image = self.game.image_loader.tears["blue_tear_pop" + str(self.frame)].copy()
+            self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
 
         self.animation_time -= 1
 
         if self.animation_time % self.time_per_frame == 0:
             self.frame += 1
-            self.image = self.game.image_loader.tears["blue_tear_pop" + str(self.frame)].copy()
+            self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
 
         if self.animation_time <= 0:
             self.kill()
