@@ -248,7 +248,7 @@ class Equipment():
                         self.extra_stats[key] *= value
                     else:
                         self.extra_stats[key] += value
-                        
+
                     if self.extra_stats[key] > self.extra_stats_max[key]:
                         self.extra_stats[key] = self.extra_stats_max[key]
                     elif key == "friendly_ghost":
