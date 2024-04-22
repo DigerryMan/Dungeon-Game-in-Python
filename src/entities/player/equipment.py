@@ -9,11 +9,11 @@ class Equipment():
         #dmg                      #[0-2]      +200%     together 3
         #dmg_reduction            #[0-0.6]    -60%      
         #shooting_cooldown        #[0-0.3]    -50%      AS 1/0.6 - 1/0.3 
-        #bullet_fly_time          #[0-10]     +2000%    together 10.5s
+        #bullet_fly_time          #[0-9.5]     +2000%   together 10.0s
         #shot_speed               #[0-10]     +50%      together 30
         #speed                    #[0-3]      +37.5%    together 11
         #luck                     #[0-0.5]    +50%      together 50%
-        #immortality_after_hit    #[0-1.25]   +125%     together 2.25 
+        #immortality              #[0-1.25]   +125%     together 2.25 
 
         self.stats = {
             "health": 0,
@@ -24,15 +24,7 @@ class Equipment():
             "shot_speed": 0,
             "speed": 0,
             "luck": 0,
-            "immortality_after_hit": 0,
-        }
-
-        self.extra_stats = {
-            "friendly_ghost": 0
-        }
-
-        self.extra_stats_max = {
-            "friendly_ghost": 2
+            "immortality": 0,
         }
 
         self.max_stats = {
@@ -44,7 +36,19 @@ class Equipment():
             "shot_speed": 10,
             "speed": 4,
             "luck": 0.5,
-            "immortality_after_hit": 1.25
+            "immortality": 1.25
+        }
+
+        self.extra_stats = {
+            "friendly_ghost": 0,
+            "dmg_multiplier": 1,
+            "dmg_taken_multiplier": 1
+        }
+
+        self.extra_stats_max = {
+            "friendly_ghost": 2,
+            "dmg_multiplier": 3,
+            "dmg_taken_multiplier": 3
         }
 
         self.player = player
@@ -130,7 +134,7 @@ class Equipment():
         y = self.big_item_y + self.big_item_size + self.big_item_size//4
         
         big_font = pygame.font.Font(self.font_path, 33)
-        font = pygame.font.Font(self.font_path, 26)
+        font = pygame.font.Font(self.font_path, 23)
         small_font = pygame.font.Font(self.font_path, 20)
 
         #item_name
@@ -151,9 +155,11 @@ class Equipment():
             description_rect = description.get_rect(center=(x, y))
             screen.blit(description, description_rect)
         
+
         else:
             for key, value in item["stats"].items():
-                stat = font.render(f"{key}: +{value}", True, self.font_color)
+                char = "+" if key != "shooting_cooldown" else "-"
+                stat = font.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
                 y += self.big_item_size//4
@@ -171,9 +177,9 @@ class Equipment():
             if key == "dmg":
                 stat = font.render(f"{(value + BASE_DMG):.1f} / {(self.max_stats[key] + BASE_DMG):.1f}", True, self.font_color)
             elif key == "dmg_reduction":
-                stat = font.render(f"{value * 100} / {self.max_stats[key] * 100} %", True, self.font_color)
+                stat = font.render(f"{int(value * 100)} / {int(self.max_stats[key] * 100)} %", True, self.font_color)
             elif key == "shooting_cooldown":
-                stat = font.render(f"{1/(BASE_SHOOTING_COOLDOWN - value):.2f} / {1/(BASE_SHOOTING_COOLDOWN - self.max_stats[key]):.2f}", True, self.font_color)
+                stat = font.render(f"{(1/(BASE_SHOOTING_COOLDOWN - value)):.2f} / {(1/(BASE_SHOOTING_COOLDOWN - self.max_stats[key])):.2f}", True, self.font_color)
             elif key == "bullet_fly_time":
                 stat = font.render(f"{value + BASE_BULLET_FLY_TIME} / {int(self.max_stats[key] + BASE_BULLET_FLY_TIME)} s", True, self.font_color)
             elif key == "shot_speed":
@@ -181,8 +187,8 @@ class Equipment():
             elif key == "speed":
                 stat = font.render(f"{value + BASE_SPEED} / {self.max_stats[key] + BASE_SPEED}", True, self.font_color)
             elif key == "luck":
-                stat = font.render(f"{value * 100} / {self.max_stats[key] * 100} %", True, self.font_color)
-            elif key == "immortality_after_hit":
+                stat = font.render(f"{int(value * 100)} / {int(self.max_stats[key] * 100)} %", True, self.font_color)
+            elif key == "immortality":
                 stat = font.render(f"{value + BASE_IMMORTALITY_AFTER_HIT} / {self.max_stats[key] + BASE_IMMORTALITY_AFTER_HIT} s", True, self.font_color)
             stat_rect = stat.get_rect(midleft=(x, y))
             screen.blit(stat, stat_rect)
@@ -233,10 +239,16 @@ class Equipment():
         stats = item["stats"]
         healValue = 0
 
+        "halo".find
+
         if stats.get("description") is not None:
             for key, value in stats.items():
                 if key != "description" and self.extra_stats.get(key) is not None:
-                    self.extra_stats[key] += value
+                    if key.find("multiplier") != -1:
+                        self.extra_stats[key] *= value
+                    else:
+                        self.extra_stats[key] += value
+
                     if self.extra_stats[key] > self.extra_stats_max[key]:
                         self.extra_stats[key] = self.extra_stats_max[key]
                     elif key == "friendly_ghost":

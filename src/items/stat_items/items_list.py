@@ -64,7 +64,7 @@ class ItemsList():
             "name": "Angel",
             "category": Categories.EPIC,
             "stats": {
-                "immortality_after_hit": 0.5
+                "immortality": 0.5
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(5 * 32, 19 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -120,7 +120,7 @@ class ItemsList():
                 "shot_speed": 2,
                 "bullet_fly_time": 0.5,
                 "luck": 0.1,
-                "immortality_after_hit": 0.5,
+                "immortality": 0.5,
                 "shooting_cooldown": 0.1,
                 "speed": 0.5
             },
