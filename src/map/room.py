@@ -32,7 +32,7 @@ class Room():
         self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
 
-        self.room_background = None
+        self.room_background = {}
 
         self.select_graphics()
 
@@ -202,4 +202,10 @@ class Room():
     def select_graphics(self):
         #if self.room == special_rooms["shop"]:
         #    print("shop")
-        self.room_background = self.game.image_loader.get_image("shop_room")
+        self.room_background["background_image"] = self.game.image_loader.get_image("shop_room")
+        self.room_background["shading"] = self.game.image_loader.get_image("shading")
+
+
+    def draw(self, screen):
+        screen.blit(self.room_background["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
