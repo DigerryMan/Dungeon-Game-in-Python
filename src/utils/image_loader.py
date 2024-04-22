@@ -31,6 +31,10 @@ class ImageLoader:
 
         room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.08)
         for room in self.rooms_:
+            if room == "controls":
+                self.images_dict[room] = pygame.image.load("resources/rooms/" + room + ".png").convert_alpha()
+                continue
+
             self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
             #self.images_dict[room] = pygame.image.load("resources/rooms/" + room + ".png").convert()
 
@@ -59,7 +63,7 @@ class ImageLoader:
 
         for i in range(16):
             self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (BULLET_WIDTH*3, BULLET_HEIGHT*3)).convert_alpha()
-            self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (BULLET_WIDTH*2, BULLET_HEIGHT)).convert_alpha()
+            self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (BULLET_WIDTH*3, BULLET_HEIGHT*3)).convert_alpha()
 
     def get_image(self, name: str):
         return self.images_dict[name]

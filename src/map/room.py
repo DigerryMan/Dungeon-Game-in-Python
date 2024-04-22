@@ -200,8 +200,9 @@ class Room():
     
 
     def select_graphics(self):
-        #if self.room == special_rooms["shop"]:
-        #    print("shop")
+        if self.room == special_rooms["start"]:
+            self.room_background["controls"] = self.game.image_loader.get_image("controls")
+        
         self.room_background["background_image"] = self.game.image_loader.get_image("shop_room")
         self.room_background["shading"] = self.game.image_loader.get_image("shading")
 
@@ -209,3 +210,6 @@ class Room():
     def draw(self, screen):
         screen.blit(self.room_background["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
         screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+        if self.room == special_rooms["start"]:
+            controls_rect = self.room_background["controls"].get_rect()
+            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
