@@ -183,9 +183,7 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
 
-        #self.screen.blit(self.map.get_current_room().room_background, (-self.settings.WIN_WIDTH * 0.04, -self.settings.WIN_HEIGHT * 0.04))
         self.map.get_current_room().draw(self.screen)
-
 
         self.blocks.draw(self.screen)
         self.doors.draw(self.screen)
