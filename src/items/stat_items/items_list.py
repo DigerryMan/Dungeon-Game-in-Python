@@ -90,13 +90,30 @@ class ItemsList():
 
         #DOBRAC IKONKE
         self.legendaries["friendly_ghost"] = {
-            "name": "friendly_ghost",
+            "name": "Friendly ghost",
             "category": Categories.LEGENDARY,
             "stats": {
                 "description": "It's so cute! It will follow you and give you a lot of love! <3",
                 "friendly_ghost": 1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(36 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.legendaries["eye_of_horus"] = {
+            "name": "Eye of Horus",
+            "category": Categories.LEGENDARY,
+            "stats": {
+                "health": 2,
+                "dmg": 1,
+                "dmg_reduction": 0.2,
+                "shot_speed": 2,
+                "bullet_fly_time": 0.5,
+                "luck": 0.1,
+                "immortality_after_hit": 0.5,
+                "shooting_cooldown": 0.1,
+                "speed": 0.5
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
     def get_random_item(self, category):

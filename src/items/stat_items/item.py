@@ -20,7 +20,7 @@ class Item(LootableItem):
 
     def roll_item(self, category):
         #self.item = self.game.items_list.get_random_item(category)
-        self.item = self.game.items_list.legendaries["friendly_ghost"]
+        self.item = self.game.items_list.legendaries["eye_of_horus"]
 
     def picked_up(self):
         self.clean_up()
