@@ -13,13 +13,23 @@ class Maggot(Enemy):
         self._random_dir_change_cd = int(2 * FPS)
         
         #SKIN
-        self.image.fill(WHITE)
+        self.x_frame = 0
+        self.y_frame = 0
+        self.reversed_frame = False
+        
+        self.next_frame_ticks_cd = 5
+        self.time = self.next_frame_ticks_cd
+
+        self.MOB_SIZE = game.settings.MOB_SIZE
+        self.img = game.image_loader.get_image("maggot")
+        self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
+        self.scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.image.blit(self.scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
 
         #REST
         self.moving_clockwise = moving_clockwise
         self._change_of_direction_time_left = self._random_dir_change_cd
-        
-        
+                
     def move(self):
         self.wall_collision()
         self.random_change_of_direction()
@@ -73,3 +83,32 @@ class Maggot(Enemy):
         
     def roll_rotation_cd(self, mini:int, maxi:int):
         self._random_dir_change_cd = random.randint(mini, maxi)
+
+    def next_frame(self):
+        self.x_frame = (self.x_frame + 1) % 4
+        self.set_y_frame() 
+        self.frame = self.img.subsurface(pygame.Rect(self.x_frame * 32, self.y_frame * 32, 32, 32))
+        if self.reversed_frame:
+            self.frame = pygame.transform.flip(self.frame, True, False)
+        
+        self.image = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+
+
+    def set_y_frame(self):
+        self.reversed_frame = False
+        if self.facing == Directions.LEFT:
+            self.y_frame = 0
+            self.reversed_frame = True
+        elif self.facing == Directions.RIGHT:
+            self.y_frame = 0
+        elif self.facing == Directions.UP:
+            self.y_frame = 1
+        elif self.facing == Directions.DOWN:
+            self.y_frame = 2
+    
+    def animate(self):
+        self.time -= 1
+        if self.time <= 0:
+            self.time = self.next_frame_ticks_cd
+            self.next_frame()
+    
