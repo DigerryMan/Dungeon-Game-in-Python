@@ -87,6 +87,17 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(36 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
+        self.epics["glass_cannon"] = {
+            "name": "Glass cannon",
+            "category": Categories.EPIC,
+            "stats": {
+                "description": "You deal a lot of damage, but you are very fragile!",
+                "dmg multiplier": 2,
+                "dmg taken multiplier": 0.5
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(7 * 32, 17 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
 
         #DOBRAC IKONKE
         self.legendaries["friendly_ghost"] = {
@@ -115,6 +126,8 @@ class ItemsList():
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
+
+
 
     def get_random_item(self, category):
         if category == Categories.COMMON:

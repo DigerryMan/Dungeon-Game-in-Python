@@ -20,8 +20,12 @@ class Bullet(pygame.sprite.Sprite):
         self.height = BULLET_HEIGHT
 
         #SKIN
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(BROWN)
+        #self.image = pygame.Surface([self.width, self.height])
+        #self.image.fill(BROWN)
+        if self.is_friendly:
+            self.image = game.image_loader.tears["blue_tear"].copy()
+        else:
+            self.image = game.image_loader.tears["red_tear"].copy()
 
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
@@ -30,6 +34,12 @@ class Bullet(pygame.sprite.Sprite):
         #REST
         self.x_change = 0
         self.y_change = 0
+
+        #DEATH ANIMATION
+        self.is_alive = True
+        self.frame = 0
+        self.animation_time = int(1 * FPS)
+        self.time_per_frame = self.animation_time // 15
 
         self.game = game
         self.groups = self.game.all_sprites, self.game.attacks, self.game.entities
@@ -43,13 +53,17 @@ class Bullet(pygame.sprite.Sprite):
             self.calculate_speed()
 
     def update(self):
-        self.rect.x += self.x_change
-        self.rect.y += self.y_change
+        if self.is_alive:
+            self.rect.x += self.x_change
+            self.rect.y += self.y_change
+            
+            self._collide()
+            if self.time_decay:
+                self.decay()
+            self._layer = self.rect.bottom
         
-        self._collide()
-        if self.time_decay:
-            self.decay()
-        self._layer = self.rect.bottom
+        else:
+            self.animate_and_destroy()
 
     def calculate_speed(self):
         if(self.direction == Directions.UP):
@@ -111,22 +125,22 @@ class Bullet(pygame.sprite.Sprite):
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if mob_hits and mob_hits[0] not in self.game.not_voulnerable:
                 mob_hits[0].get_hit(self.dmg)
-                self.kill()
+                self.is_alive = False
             
         else:
             player_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
             if player_hits:
                 player_hits[0].get_hit(self.dmg)
-                self.kill()
+                self.is_alive = False
             
         block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
 
         if door_hits:
-            self.kill()
+            self.is_alive = False
 
         if block_hits:
-            self.kill()
+            self.is_alive = False
             for block_hit in block_hits:
                 if isinstance(block_hit, DestructableBlock):
                     block_hit.get_hit(self.dmg)
@@ -134,4 +148,21 @@ class Bullet(pygame.sprite.Sprite):
     def decay(self):
         self.time_left -= 1
         if self.time_left <= 0:
-            self.kill()       
+            self.is_alive = False
+
+        
+    def animate_and_destroy(self):
+        if self.animation_time == 60:
+            self.rect.x -= BULLET_WIDTH
+            self.rect.y -= BULLET_HEIGHT
+            self.image = self.game.image_loader.tears["blue_tear_pop" + str(self.frame)].copy()
+
+        self.animation_time -= 1
+
+        if self.animation_time % self.time_per_frame == 0:
+            self.frame += 1
+            self.image = self.game.image_loader.tears["blue_tear_pop" + str(self.frame)].copy()
+
+        if self.animation_time <= 0:
+            self.kill()
+            return
