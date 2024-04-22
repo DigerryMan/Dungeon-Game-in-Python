@@ -23,10 +23,9 @@ class Maggot(Enemy):
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("maggot")
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        self.scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
         self.head_frame = None
         self.body_frame = None
-        #self.image.blit(self.scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
 
         #REST
         self.moving_clockwise = moving_clockwise

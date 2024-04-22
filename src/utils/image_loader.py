@@ -6,7 +6,7 @@ class ImageLoader:
         self.settings = settings
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
-        self.mobs_ = ["alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
+        self.mobs_ = ["player", "alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
         self.rooms_ = ["basement", "catacombs", "caves", "controls", "depths", "necropolis", "shading", "shop_room", "utero", "womb"]
         self.doors_ = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
         self.blocks_ = ["rocks2"]
