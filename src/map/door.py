@@ -18,11 +18,11 @@ class Door(pygame.sprite.Sprite):
         self.height = game.settings.TILE_SIZE
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = self.x
         self.rect.y = self.y
 
         self.image = game.image_loader.doors["basement_door1"].copy()
+        self.mask = pygame.mask.from_surface(self.image)
 
         if direction == Directions.UP:
             x = self.rect.centerx
@@ -45,7 +45,6 @@ class Door(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.draw()
         if self.is_open:
             self.collide()
 

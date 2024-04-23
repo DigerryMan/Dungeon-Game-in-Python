@@ -139,6 +139,6 @@ class Slime(Enemy):
     
     def correct_layer(self):
         if self.is_jumping:
-            self._layer = self.rect.bottom + 400
+            self._layer = self.rect.bottom + 2500
         else:
             self._layer = self.rect.bottom

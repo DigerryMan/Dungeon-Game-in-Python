@@ -22,6 +22,7 @@ class Bullet(pygame.sprite.Sprite):
         #SKIN
         #self.image = pygame.Surface([self.width, self.height])
         #self.image.fill(BROWN)
+        self._layer = 2000
         if self.is_friendly:
             self.color = "blue"
         else:
@@ -63,7 +64,7 @@ class Bullet(pygame.sprite.Sprite):
             self._collide()
             if self.time_decay:
                 self.decay()
-            self._layer = self.rect.bottom
+            self._layer = self.rect.bottom + 2000
         
         else:
             self.animate_and_destroy()
