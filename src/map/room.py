@@ -6,6 +6,7 @@ from entities.mobs.ghost import Ghost
 from entities.mobs.maggot import Maggot
 from entities.mobs.slime import Slime
 from entities.mobs.wanderer import Wanderer
+from map.trap_door import TrapDoor
 from .room_types import rooms, special_rooms
 from .block import *
 from .destructable_block import *
@@ -43,6 +44,7 @@ class Room():
         self.blocks = []
         self.walls = []
         self.items = []
+        self.trap_door = None
 
     def get_objects(self):
         return {
@@ -51,7 +53,8 @@ class Room():
             "enemies": self.enemies,
             "blocks": self.blocks,
             "walls": self.walls,
-            "items": self.items
+            "items": self.items,
+            "trap_door": self.trap_door
         }
     
     def remove_item(self, item:LootableItem):
@@ -77,6 +80,9 @@ class Room():
 
                     elif col == 's':
                         self.blocks.append(ShopStand(self.game, x + .5, y + .5))
+
+                    elif col == 'T':
+                        self.trap_door = TrapDoor(self.game, x, y)
 
                     if not self.room_cleared:
                         if col == 'E':
@@ -195,6 +201,10 @@ class Room():
 
         if self.chest and not self.chest.is_open:
             self.items = self.chest.open()
+
+        if self.trap_door:
+            self.trap_door.open()
+            
     
     def get_block_layout(self):
         return self.room

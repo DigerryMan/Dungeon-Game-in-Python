@@ -21,6 +21,9 @@ class ImageLoader:
         self.tears = {}
         self.load_tears()
 
+        self.trap_door = {}
+        self.load_trap_door()
+
 
     def __load_images_to_dict(self):
         print("Loading images...")
@@ -49,6 +52,7 @@ class ImageLoader:
         self.images_dict["bullet"] = pygame.image.load("resources/other/tears.png").convert_alpha()
         self.images_dict["tears"] = pygame.image.load("resources/other/tears.png").convert_alpha()
         self.images_dict["tears_pop"] = pygame.image.load("resources/other/tears_pop.png").convert_alpha()
+        self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png").convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
@@ -66,6 +70,9 @@ class ImageLoader:
             self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
             self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
 
+    def load_trap_door(self):
+        self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+        self.trap_door["closed"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 80, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+
     def get_image(self, name: str):
         return self.images_dict[name]
-       

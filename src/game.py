@@ -45,6 +45,7 @@ class Game:
         self.attacks = pygame.sprite.LayeredUpdates()
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
+        self.trap_door = pygame.sprite.LayeredUpdates()
 
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
@@ -99,6 +100,7 @@ class Game:
         self.attacks = pygame.sprite.LayeredUpdates()
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
+        self.trap_door = pygame.sprite.LayeredUpdates()
 
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
@@ -154,6 +156,7 @@ class Game:
         self.chest.empty()
         self.items.empty()
         self.entities.empty()
+        self.trap_door.empty()
      
 
     def _get_new_sprites(self, room):
@@ -165,6 +168,11 @@ class Game:
             self.chest.add(objects["chest"])
             self.collidables.add(objects["chest"])
             self.all_sprites.add(self.chest)
+
+        if objects["trap_door"]:
+            self.trap_door.add(objects["trap_door"])
+            self.all_sprites.add(objects["trap_door"])
+
         self.items.add(objects["items"])
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
@@ -190,6 +198,7 @@ class Game:
         self.doors.draw(self.screen)
         self.chest.draw(self.screen)
         self.items.draw(self.screen)
+        self.trap_door.draw(self.screen)
         
         sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
