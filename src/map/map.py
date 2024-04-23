@@ -7,10 +7,11 @@ from math import inf
 from collections import deque
 
 class Map():
-    def __init__(self, game, player:Player):
+    def __init__(self, game, player:Player, level):
         self.room_map = [[None for _ in range(15)] for _ in range(15)]
         self.game = game
         self.player = player
+        self.level = level
         self.current_position = [0, 0]
         self.map_scheme = self.create_map_scheme()
         self._generate_rooms()
@@ -76,18 +77,18 @@ class Map():
                         doors_to_spawn.append(door_directions[i])
 
                 if self.map_scheme[row][col] == 'S':
-                    self.room_map[row][col] = Room("shop", self.game, doors_to_spawn)
+                    self.room_map[row][col] = Room("shop", self.game, doors_to_spawn, self.level)
 
                 elif self.map_scheme[row][col] == 'B':
-                    self.room_map[row][col] = Room("boss", self.game, doors_to_spawn)
+                    self.room_map[row][col] = Room("boss", self.game, doors_to_spawn, self.level)
 
                 elif self.map_scheme[row][col] == 'T':
-                    self.room_map[row][col] = Room("start", self.game, doors_to_spawn)
+                    self.room_map[row][col] = Room("start", self.game, doors_to_spawn, self.level)
                     self.current_position = [row, col]
 
                 else:
                     room_random_type = random.randint(0, len(rooms) - 1)
-                    self.room_map[row][col] = Room(room_random_type, self.game, doors_to_spawn)
+                    self.room_map[row][col] = Room(room_random_type, self.game, doors_to_spawn, self.level)
 
 
     def render_initial_room(self):

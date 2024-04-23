@@ -16,8 +16,8 @@ class Bullet(pygame.sprite.Sprite):
         self.time_left = self.time_decay
 
         #SIZE
-        self.width = BULLET_WIDTH
-        self.height = BULLET_HEIGHT
+        self.width = game.settings.BULLET_SIZE
+        self.height = game.settings.BULLET_SIZE
 
         #SKIN
         #self.image = pygame.Surface([self.width, self.height])
@@ -155,8 +155,8 @@ class Bullet(pygame.sprite.Sprite):
         
     def animate_and_destroy(self):
         if self.animation_time == 60:
-            self.rect.x -= BULLET_WIDTH
-            self.rect.y -= BULLET_HEIGHT
+            self.rect.x -= self.game.settings.BULLET_SIZE
+            self.rect.y -= self.game.settings.BULLET_SIZE
             self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
 
         self.animation_time -= 1

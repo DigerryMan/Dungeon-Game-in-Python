@@ -7,7 +7,8 @@ class ImageLoader:
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
         self.mobs_ = ["player", "alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
-        self.rooms_ = ["basement", "catacombs", "caves", "controls", "depths", "necropolis", "shading", "shop_room", "utero", "womb"]
+        self.rooms_ = ["controls", "shading", "shop_room",
+                       "basement1", "basement2", "basement3", "basement4"]
         self.doors_ = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
         self.blocks_ = ["rocks2"]
 
@@ -58,12 +59,12 @@ class ImageLoader:
         self.blocks["rock6"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 135, 53, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
 
     def load_tears(self):
-        self.tears["blue_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 12, 42, 42)), (BULLET_WIDTH, BULLET_HEIGHT)).convert_alpha()
-        self.tears["red_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 76, 42, 42)), (BULLET_WIDTH, BULLET_HEIGHT)).convert_alpha()
+        self.tears["blue_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 12, 42, 42)), (self.settings.BULLET_SIZE, self.settings.BULLET_SIZE)).convert_alpha()
+        self.tears["red_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 76, 42, 42)), (self.settings.BULLET_SIZE, self.settings.BULLET_SIZE)).convert_alpha()
 
         for i in range(16):
-            self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (BULLET_WIDTH*3, BULLET_HEIGHT*3)).convert_alpha()
-            self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (BULLET_WIDTH*3, BULLET_HEIGHT*3)).convert_alpha()
+            self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
+            self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
 
     def get_image(self, name: str):
         return self.images_dict[name]

@@ -50,6 +50,7 @@ class Game:
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.map = None
+        self.current_level = 1
         self.player = None
 
 
@@ -103,7 +104,7 @@ class Game:
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.player = Player(self, 0, 0)
-        self.map = Map(self, self.player)
+        self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
 
 

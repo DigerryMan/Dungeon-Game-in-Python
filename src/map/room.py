@@ -20,7 +20,7 @@ from entities.mobs.legs import *
 from entities.mobs.parasite import *
 
 class Room():    
-    def __init__(self, room_type, game, doors_to_spawn:Directions):
+    def __init__(self, room_type, game, doors_to_spawn:Directions, level):
         if room_type in special_rooms:
             self.room = special_rooms[room_type]
         else:
@@ -28,6 +28,7 @@ class Room():
 
         self.game = game
         self.player = game.player
+        self.level = level
         self.room_cleared = False
         self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
@@ -200,16 +201,22 @@ class Room():
     
 
     def select_graphics(self):
-        if self.room == special_rooms["start"]:
+        if self.room == special_rooms["start"] and self.level == 1:
             self.room_background["controls"] = self.game.image_loader.get_image("controls")
-        
-        self.room_background["background_image"] = self.game.image_loader.get_image("shop_room")
+
+        if self.level == 1:
+            self.room_background["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
+
+        if self.room == special_rooms["shop"]:
+            self.room_background["background_image"] = self.game.image_loader.get_image("shop_room")
+            
         self.room_background["shading"] = self.game.image_loader.get_image("shading")
 
 
     def draw(self, screen):
         screen.blit(self.room_background["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
         screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
-        if self.room == special_rooms["start"]:
+
+        if self.room == special_rooms["start"] and self.level == 1:
             controls_rect = self.room_background["controls"].get_rect()
-            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
+            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.2, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
