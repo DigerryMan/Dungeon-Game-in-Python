@@ -151,6 +151,7 @@ class Room():
                     self.walls.append(Wall(self.game, self.game.settings.MAP_WIDTH - 1, y))
 
                 y += 1
+            
 
         self.spawn_player(entry_direction)
         self.player.spawn_pets()
@@ -171,7 +172,8 @@ class Room():
             self.player.set_rect_position(self.game.settings.TILE_SIZE, self.player.rect.y)
 
         elif entry_direction == Directions.CENTER:
-            self.player.set_rect_position((self.game.settings.MAP_WIDTH / 2 - 0.5) * self.game.settings.TILE_SIZE, (self.game.settings.MAP_HEIGHT / 2 - 0.5) * self.game.settings.TILE_SIZE)
+            self.player.set_rect_position((self.game.settings.MAP_WIDTH / 2 - 0.5) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
+                                          (self.game.settings.MAP_HEIGHT / 2 - 0.5) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE))
 
 
     def get_doors_positions(self):
@@ -196,8 +198,7 @@ class Room():
         self.enemies.clear()
 
         for door in self.doors:
-            door.is_open = True
-            door.image.fill(GREEN)
+            door.open()
 
         if self.chest and not self.chest.is_open:
             self.items = self.chest.open()
@@ -229,4 +230,4 @@ class Room():
 
         if self.room == special_rooms["start"] and self.level == 1:
             controls_rect = self.room_background["controls"].get_rect()
-            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.2, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
+            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
