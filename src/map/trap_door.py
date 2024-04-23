@@ -44,4 +44,4 @@ class TrapDoor(pygame.sprite.Sprite):
             return
         
         self.opened = True
-        self.timer = 200
+        self.timer = 120

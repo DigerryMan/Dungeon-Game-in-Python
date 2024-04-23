@@ -21,6 +21,9 @@ class ImageLoader:
         self.tears = {}
         self.load_tears()
 
+        self.doors = {}
+        self.load_doors()
+
         self.trap_door = {}
         self.load_trap_door()
 
@@ -36,7 +39,9 @@ class ImageLoader:
         room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.08)
         for room in self.rooms_:
             if room == "controls":
-                self.images_dict[room] = pygame.image.load("resources/rooms/" + room + ".png").convert_alpha()
+                original_image = pygame.image.load("resources/rooms/" + room + ".png").convert_alpha()
+                new_size = (int(original_image.get_width() * self.settings.SCALE), int(original_image.get_height() * self.settings.SCALE))
+                self.images_dict[room] = pygame.transform.scale(original_image, new_size)
                 continue
 
             self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
@@ -69,6 +74,9 @@ class ImageLoader:
         for i in range(16):
             self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
             self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
+
+    def load_doors(self):
+        self.doors["basement_door1"] = pygame.transform.scale(self.images_dict["door"].subsurface(pygame.Rect(8, 9, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
     def load_trap_door(self):
         self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()

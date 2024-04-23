@@ -17,15 +17,34 @@ class Door(pygame.sprite.Sprite):
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
 
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(YELLOW)
-        
-        self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.image = game.image_loader.doors["basement_door1"].copy()
+
+        if direction == Directions.UP:
+            x = self.rect.centerx
+            self.rect.width = self.image.get_width()
+            self.rect.centerx = x
+            self.x = self.rect.x
+
+        elif direction == Directions.DOWN:
+            self.image = pygame.transform.rotate(self.image, 180)
+            x = self.rect.centerx
+            self.rect.width = self.image.get_width()
+            self.rect.centerx = x
+            self.x = self.rect.x
+
+        elif direction == Directions.LEFT:
+            self.image = pygame.transform.rotate(self.image, 90)
+
+        elif direction == Directions.RIGHT:
+            self.image = pygame.transform.rotate(self.image, -90)
+
 
     def update(self):
+        self.draw()
         if self.is_open:
             self.collide()
 
@@ -33,3 +52,15 @@ class Door(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
             self.game.render_next_room(self.direction)
+
+
+    def draw(self):
+        #x = self.rect.centerx
+        #self.rect.width = self.image.get_width()
+        #self.rect.centerx = x
+            
+        #self.game.screen.blit(self.image, (self.x, self.y))
+        pass
+
+    def open(self):
+        self.is_open = True

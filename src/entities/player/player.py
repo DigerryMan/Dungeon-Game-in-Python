@@ -169,6 +169,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.y = hits[0].rect.top - self.rect.height
                 if self.y_change < 0:
                     self.rect.y = hits[0].rect.bottom
+                    
 
     def _check_items_pick_up(self):
         hits = pygame.sprite.spritecollide(self, self.game.items, False)
@@ -290,6 +291,7 @@ class Player(pygame.sprite.Sprite):
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
 
     def remove_transparency_from_frame(self):
-        bounding_rect = self.frame.get_bounding_rect() 
-        self.image = self.frame.subsurface(bounding_rect)
-        self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height         
+        #bounding_rect = self.frame.get_bounding_rect() 
+        #self.image = self.frame.subsurface(bounding_rect)
+        #self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height
+        self.image = self.frame 
