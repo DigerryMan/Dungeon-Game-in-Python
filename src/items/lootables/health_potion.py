@@ -6,6 +6,7 @@ class Health_potion(LootableItem):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         self.image.fill(RED)
+        self.mask = pygame.mask.from_surface(self.image)
         
 
     def picked_up(self):

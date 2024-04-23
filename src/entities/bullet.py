@@ -32,6 +32,7 @@ class Bullet(pygame.sprite.Sprite):
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+        self.mask = pygame.mask.from_surface(self.image)
 
         #REST
         self.x_change = 0
@@ -126,26 +127,35 @@ class Bullet(pygame.sprite.Sprite):
         if self.is_friendly:       
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if mob_hits and mob_hits[0] not in self.game.not_voulnerable:
-                mob_hits[0].get_hit(self.dmg)
-                self.is_alive = False
+                mob_mask_hits = pygame.sprite.spritecollide(self, self.game.enemies, False, pygame.sprite.collide_mask)
+                if mob_mask_hits:
+                    mob_hits[0].get_hit(self.dmg)
+                    self.is_alive = False
             
         else:
             player_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
             if player_hits:
-                player_hits[0].get_hit(self.dmg)
-                self.is_alive = False
+                mask_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False, pygame.sprite.collide_mask)
+                if mask_hits:  
+                    player_hits[0].get_hit(self.dmg)
+                    self.is_alive = False
             
         block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         door_hits = pygame.sprite.spritecollide(self, self.game.doors, False)
 
         if door_hits:
-            self.is_alive = False
+            mask_door_hits = pygame.sprite.spritecollide(self, self.game.doors, False, pygame.sprite.collide_mask)
+            if mask_door_hits:
+                self.is_alive = False
+            
 
         if block_hits:
-            self.is_alive = False
-            for block_hit in block_hits:
-                if isinstance(block_hit, DestructableBlock):
-                    block_hit.get_hit(self.dmg)
+            mask_block_hits = pygame.sprite.spritecollide(self, self.game.collidables, False, pygame.sprite.collide_mask)
+            if mask_block_hits:
+                self.is_alive = False
+                for block_hit in mask_block_hits:
+                    if isinstance(block_hit, DestructableBlock):
+                        block_hit.get_hit(self.dmg)
                    
     def decay(self):
         self.time_left -= 1

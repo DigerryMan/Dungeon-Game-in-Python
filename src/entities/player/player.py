@@ -61,6 +61,9 @@ class Player(pygame.sprite.Sprite):
         
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
+
+        self.animate()
+        self.mask = pygame.mask.from_surface(self.image)   
     
     def update(self):
         self._user_input()
@@ -158,27 +161,25 @@ class Player(pygame.sprite.Sprite):
     def _collide_blocks(self, direction:str):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if hits:
-            if direction == 'x':
-                if self.x_change > 0:
-                    self.rect.x = hits[0].rect.left - self.rect.width
-                if self.x_change < 0:
-                    self.rect.x = hits[0].rect.right
+            mask_hits = pygame.sprite.spritecollide(self, self.game.collidables, False, pygame.sprite.collide_mask)
+            if mask_hits:  
+                if direction == 'x':
+                    self.rect.x -= self.x_change
 
-            if direction == 'y':
-                if self.y_change > 0:
-                    self.rect.y = hits[0].rect.top - self.rect.height
-                if self.y_change < 0:
-                    self.rect.y = hits[0].rect.bottom
+                if direction == 'y':
+                    self.rect.y -= self.y_change
 
     def _check_items_pick_up(self):
         hits = pygame.sprite.spritecollide(self, self.game.items, False)
-        for item in hits:
-            item_info = item.picked_up()
-            
-            if isinstance(item_info, int): #coins
-                self.coins += item_info
-            else:                          #items
-                self.eq.add_item(item_info)
+        if hits:
+            mask_hits = pygame.sprite.spritecollide(self, self.game.items, False, pygame.sprite.collide_mask)
+            for item in mask_hits:
+                item_info = item.picked_up()
+                
+                if isinstance(item_info, int): #coins
+                    self.coins += item_info
+                else:                          #items
+                    self.eq.add_item(item_info)
 
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect
@@ -290,6 +291,8 @@ class Player(pygame.sprite.Sprite):
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
 
     def remove_transparency_from_frame(self):
-        bounding_rect = self.frame.get_bounding_rect() 
-        self.image = self.frame.subsurface(bounding_rect)
-        self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height         
+        #bounding_rect = self.frame.get_bounding_rect() 
+        #self.image = self.frame.subsurface(bounding_rect)
+        #self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height 
+        self.image = self.frame
+        #self.mask = pygame.mask.from_surface(self.image)        

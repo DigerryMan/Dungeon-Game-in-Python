@@ -30,6 +30,8 @@ class Chest(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
+        self.mask = pygame.mask.from_surface(self.image)
+
 
     def open(self):
         if not self.opened_once:

@@ -19,7 +19,8 @@ class Door(pygame.sprite.Sprite):
 
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(YELLOW)
-        
+        self.mask = pygame.mask.from_surface(self.image)
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -32,4 +33,6 @@ class Door(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.render_next_room(self.direction)
+            mask_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False, pygame.sprite.collide_mask)
+            if mask_hits:
+                self.game.render_next_room(self.direction)

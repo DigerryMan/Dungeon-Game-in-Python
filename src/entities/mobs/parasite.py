@@ -55,9 +55,7 @@ class Parasite(Enemy):
     
     def collide_player(self):
         if not self.is_dig:
-            hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-            if hits:
-                self.game.damage_player(self._collision_damage)
+            super().collide_player()
 
     def change_dmg_vulnerability(self, is_vulnerable: bool):
         if is_vulnerable:

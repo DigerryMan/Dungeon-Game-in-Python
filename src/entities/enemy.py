@@ -32,7 +32,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(GREEN)
         self.animation_loop = 1
-
+        self.mask = pygame.mask.from_surface(self.image) #USTAWIC DLA KAZDEGO SKINA PO 1 KLATCE ANIMACJI
 
         #HITBOX
         self.rect = self.image.get_rect()
@@ -152,10 +152,12 @@ class Enemy(pygame.sprite.Sprite):
     def collide_player(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.damage_player(self._collision_damage)
-            if self._is_wandering:
-                self._is_wandering = False
-                self.group_attacked()
+            mask_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False, pygame.sprite.collide_mask)
+            if mask_hits:
+                self.game.damage_player(self._collision_damage)
+                if self._is_wandering:
+                    self._is_wandering = False
+                    self.group_attacked()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -169,16 +171,18 @@ class Enemy(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if hits:
             if orientation == 'x':
-                if self.x_change > 0:
-                    self.rect.x = hits[0].rect.left - self.rect.width
-                if self.x_change < 0:
-                    self.rect.x = hits[0].rect.right
+                #if self.x_change > 0:
+                    #self.rect.x = hits[0].rect.left - self.rect.width
+                #if self.x_change < 0:
+                    #self.rect.x = hits[0].rect.right
+                self.rect.x -= self.x_change
 
             if orientation == 'y':
-                if self.y_change > 0:
-                    self.rect.y = hits[0].rect.top - self.rect.height
-                if self.y_change < 0:
-                    self.rect.y = hits[0].rect.bottom
+                #if self.y_change > 0:
+                   # self.rect.y = hits[0].rect.top - self.rect.height
+                #if self.y_change < 0:
+                    #self.rect.y = hits[0].rect.bottom
+                self.rect.y -= self.y_change
 
     def _correct_rounding(self):
         if self.x_change < 0:

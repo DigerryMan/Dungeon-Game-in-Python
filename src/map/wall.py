@@ -13,6 +13,7 @@ class Wall(pygame.sprite.Sprite):
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
         
+        self.image = pygame.Surface((self.width, self.height))
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.rect.x = self.x
         self.rect.y = self.y

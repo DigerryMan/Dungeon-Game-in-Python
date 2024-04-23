@@ -22,7 +22,8 @@ class LootableItem(pygame.sprite.Sprite):
 
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(WHITE)
-        
+        self.mask = pygame.mask.from_surface(self.image) 
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y

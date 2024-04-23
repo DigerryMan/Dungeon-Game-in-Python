@@ -1,3 +1,4 @@
+import pygame
 from items.lootable_item import LootableItem
 from items.stat_items.items_list import ItemsList
 
@@ -11,11 +12,14 @@ class Item(LootableItem):
 
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
+        
         self.image = self.item["image"]
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self.mask = pygame.mask.from_surface(self.image)
         
 
     def roll_item(self, category):
