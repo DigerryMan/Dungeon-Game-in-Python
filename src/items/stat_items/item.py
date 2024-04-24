@@ -16,8 +16,13 @@ class Item(LootableItem):
         self.image = self.item["image"]
 
         self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
+        self.rect.centerx = x
+        self.rect.centery = y
+
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
 
         self.mask = pygame.mask.from_surface(self.image)
         

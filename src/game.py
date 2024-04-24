@@ -132,8 +132,8 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.blocks.update()
-        self.items.update()
+        #self.blocks.update()
+        #self.items.update()
         if len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()

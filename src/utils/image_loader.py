@@ -27,6 +27,9 @@ class ImageLoader:
         self.trap_door = {}
         self.load_trap_door()
 
+        self.lootables = {}
+        self.load_lootables()
+
 
     def __load_images_to_dict(self):
         print("Loading images...")
@@ -58,6 +61,7 @@ class ImageLoader:
         self.images_dict["tears"] = pygame.image.load("resources/other/tears.png").convert_alpha()
         self.images_dict["tears_pop"] = pygame.image.load("resources/other/tears_pop.png").convert_alpha()
         self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png").convert_alpha()
+        self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png").convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
@@ -81,6 +85,17 @@ class ImageLoader:
     def load_trap_door(self):
         self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
         self.trap_door["closed"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 80, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+
+    def load_lootables(self):
+        size_to_scale = (self.settings.TILE_SIZE * 1.5, self.settings.TILE_SIZE * 1.5)
+        for i in range(6):
+            self.lootables["gold_coin_shine" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), size_to_scale).convert_alpha()
+
+        for i in range(8):
+            self.lootables["gold_coin_drop" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), size_to_scale).convert_alpha()
+
+        for i in range(9):
+            self.lootables["gold_coin_pickup" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 128, 64, 64)), size_to_scale).convert_alpha()
 
     def get_image(self, name: str):
         return self.images_dict[name]
