@@ -1,7 +1,7 @@
 import pygame
+from items.stat_items.items_list import ItemsList
 from map.map import *
-from menu.button import *
-from entities.player import *
+from entities.player.player import *
 from config import *
 from utils.image_loader import ImageLoader
 from utils.settings import *
@@ -15,10 +15,13 @@ class Game:
         #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
         window_size = (1920, 1080)
+        #window_size = (1280, 720)
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
         self.settings = Settings(window_size)
+        self.image_loader = ImageLoader(self.settings)
+        self.items_list = ItemsList(self)
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
@@ -28,19 +31,12 @@ class Game:
 
         self.e_pressed = False
 
-        self.image_loader = ImageLoader()
-          
-        self.intro_background = pygame.image.load("resources/menu/introbackground.png")
-        self.intro_background = pygame.transform.smoothscale(self.intro_background, self.screen.get_size())
-        self.menu_background = pygame.image.load("resources/menu/menuoverlay.png")
-        self.menu_background = pygame.transform.smoothscale(self.menu_background, self.screen.get_size())
-        self.main_title = pygame.image.load("resources/menu/maintitle.png")
-        title_width = self.settings.WIN_WIDTH // 2
-        title_height = self.main_title.get_height() * (title_width // self.main_title.get_width())
-        self.main_title = pygame.transform.scale(self.main_title, (title_width, title_height))
+        self.handle_resolution_change(window_size)  
+                
         self.font = pygame.font.SysFont("arialblack", 30)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
+        self.entities = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
@@ -49,13 +45,30 @@ class Game:
         self.attacks = pygame.sprite.LayeredUpdates()
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
+        self.trap_door = pygame.sprite.LayeredUpdates()
 
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.map = None
+        self.current_level = 1
         self.player = None
-        
+
+
+    def handle_resolution_change(self, window_size):
+        self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
+        self.settings = Settings(window_size)
+        self.image_loader = ImageLoader(self.settings)
+        self.items_list = ItemsList(self)
+
+        self.intro_background = pygame.transform.smoothscale(self.image_loader.get_image("introbackground"), self.screen.get_size())
+        self.menu_card = pygame.transform.smoothscale(self.image_loader.get_image("menucard"), self.screen.get_size())
+        self.settings_card = pygame.transform.smoothscale(self.image_loader.get_image("settingscard"), self.screen.get_size())
+        self.menu_background = pygame.transform.smoothscale(self.image_loader.get_image("menuoverlay"), self.screen.get_size())
+        self.pause_card = pygame.transform.smoothscale(self.image_loader.get_image("pausecard2"), (self.image_loader.get_image("pausecard2").get_height() * self.settings.SCALE, self.image_loader.get_image("pausecard2").get_width() * self.settings.SCALE))
+        self.arrow = pygame.transform.smoothscale(self.image_loader.get_image("arrow2"), (self.image_loader.get_image("arrow2").get_width() * 0.7 * self.settings.SCALE, self.image_loader.get_image("arrow2").get_height() * 0.7 * self.settings.SCALE))
+        self.main_title = pygame.transform.scale(self.image_loader.get_image("maintitle"), (self.image_loader.get_image("maintitle").get_width() * 2.8 * self.settings.SCALE, self.image_loader.get_image("maintitle").get_height() * 2.8 * self.settings.SCALE))
+
 
     def run(self):
         self.intro_screen()
@@ -69,12 +82,17 @@ class Game:
 
             if self.paused:
                 self.display_pause()
+            
+            if self.player is not None and self.player.eq_opened:
+                self.display_eq()
 
         pygame.quit()
+
 
     def render_new_map(self):
         self.player_sprite = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
+        self.entities = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
@@ -82,13 +100,15 @@ class Game:
         self.attacks = pygame.sprite.LayeredUpdates()
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
+        self.trap_door = pygame.sprite.LayeredUpdates()
 
         #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.player = Player(self, 0, 0)
-        self.map = Map(self, self.player)
+        self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
+
 
     def events(self):
         for event in pygame.event.get():
@@ -102,6 +122,9 @@ class Game:
                 if event.key == pygame.K_e:
                     self.e_pressed = True
 
+                if event.key == pygame.K_TAB:
+                    self.player.eq_opened = not self.player.eq_opened
+
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_e:
                     self.e_pressed = False
@@ -109,8 +132,8 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        self.blocks.update()
-        self.items.update()
+        #self.blocks.update()
+        #self.items.update()
         if len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
@@ -123,7 +146,7 @@ class Game:
 
 
     def _clear_sprites(self):
-        self.all_sprites.remove(self.blocks, self.doors, self.enemies, self.attacks)
+        self.all_sprites.empty()
         self.blocks.empty()
         self.doors.empty()
         self.attacks.empty()
@@ -132,20 +155,30 @@ class Game:
         self.not_voulnerable.empty()
         self.chest.empty()
         self.items.empty()
+        self.entities.empty()
+        self.trap_door.empty()
      
 
     def _get_new_sprites(self, room):
+        self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
         self.blocks.add(objects["blocks"])
         self.doors.add(objects["doors"])
         if objects["chest"]:
             self.chest.add(objects["chest"])
             self.collidables.add(objects["chest"])
+            self.all_sprites.add(self.chest)
+
+        if objects["trap_door"]:
+            self.trap_door.add(objects["trap_door"])
+            self.all_sprites.add(objects["trap_door"])
+
         self.items.add(objects["items"])
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
-        self.all_sprites.add(self.blocks, self.doors, self.enemies, self.attacks)
+        self.all_sprites.add(self.collidables, self.doors, self.enemies, self.attacks, self.items)
+        self.entities.add(self.enemies, self.player_sprite)
 
 
     def damage_player(self, enemy_dmg:int):
@@ -159,20 +192,26 @@ class Game:
     def draw(self):
         self.screen.fill(BLACK)
 
-        self.collidables.draw(self.screen)
+        self.map.get_current_room().draw(self.screen)
+
+        self.blocks.draw(self.screen)
+        self.doors.draw(self.screen)
+        self.chest.draw(self.screen)
         self.items.draw(self.screen)
+        self.trap_door.draw(self.screen)
         
-        sprite_list = sorted(self.all_sprites, key=lambda sprite: sprite._layer)
+        sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             self.screen.blit(sprite.image, sprite.rect)
 
         
         self.clock.tick(FPS)
-        pygame.display.update()
+        pygame.display.flip()
 
 
     def game_over(self):
         pass
+
 
     def intro_screen(self):
         while self.intro_playing:
@@ -189,10 +228,12 @@ class Game:
             self.clock.tick(FPS)
             pygame.display.update()
 
+
     def main_menu(self):
-        play_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*0.8, 200, 50, "Play", WHITE, self.font, 40)
-        settings_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Settings", WHITE, self.font, 40)
-        quit_button = Button(self.settings.WIN_WIDTH/2 - 100, (self.settings.WIN_HEIGHT/2)*1.2, 200, 50, "Quit", WHITE, self.font, 40)
+        arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
+                           (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
+                           (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
+        current_arrow = 0
 
         while self.menu_playing:
             for event in pygame.event.get():
@@ -200,64 +241,102 @@ class Game:
                     self.menu_playing = False
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if play_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.render_new_map()
-                        self.paused = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
 
-                    if quit_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.running = False
+                    if event.key == pygame.K_UP:
+                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
 
-                    if settings_button.is_pressed(pygame.mouse.get_pos()):
-                        self.menu_playing = False
-                        self.settings_playing = True
-                        self.display_settings()
-                
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.menu_playing = False
+                            self.render_new_map()
+                            self.paused = False
 
-            self.screen.fill(DARK_GREY)
+                        elif current_arrow == 1:
+                            self.menu_playing = False
+                            self.settings_playing = True
+                            self.display_settings()
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
+                                            (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
+                                            (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
+                            
+                            if not self.menu_playing:
+                                return
+
+                        elif current_arrow == 2:
+                            self.menu_playing = False
+                            self.running = False
+
+            self.screen.blit(self.menu_card, (0, 0))
             self.screen.blit(self.menu_background, (0, 0))
-            
-            title_rect = self.main_title.get_rect(center=(self.settings.WIN_WIDTH/2, self.settings.WIN_HEIGHT/4))
-            self.screen.blit(self.main_title, title_rect)
-            
-            self.screen.blit(play_button.image, play_button.rect)
-            self.screen.blit(settings_button.image, settings_button.rect)
-            self.screen.blit(quit_button.image, quit_button.rect)
+            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
+
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.clock.tick(FPS)
             pygame.display.update()
 
 
     def display_settings(self):
-        back_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Back", WHITE, self.font, 40)
         settings_playing = True
+
+        arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                    (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                    (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
+        current_arrow = 0
 
         while settings_playing:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     settings_playing = False
+                    self.menu_playing = False
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if back_button.is_pressed(pygame.mouse.get_pos()):
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_DOWN:
+                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
+
+                    if event.key == pygame.K_UP:
+                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
+
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.handle_resolution_change((1920, 1080))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
+                        elif current_arrow == 1:
+                            self.handle_resolution_change((1600, 900))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
+                        elif current_arrow == 2:
+                            self.handle_resolution_change((1280, 720))
+                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
+                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
+                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
+
+                    if event.key == pygame.K_ESCAPE:
                         settings_playing = False
                         self.menu_playing = True
-                    
 
-            self.screen.fill(DARK_GREY)
+
+            self.screen.blit(self.settings_card, (0, 0))
             self.screen.blit(self.menu_background, (0, 0))
+            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
 
-            self.screen.blit(back_button.image, back_button.rect)
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.clock.tick(FPS)
             pygame.display.update()
 
 
     def display_pause(self):
-        resume_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2, 200, 50, "Resume", WHITE, self.font, 40)
-        menu_button = Button(self.settings.WIN_WIDTH/2 - 100, self.settings.WIN_HEIGHT/2 + 100, 200, 50, "Menu", WHITE, self.font, 40)
+        arrow_positions = [(self.settings.WIN_WIDTH//2.82, self.settings.WIN_HEIGHT//1.55),
+                           (self.settings.WIN_WIDTH//2.62, self.settings.WIN_HEIGHT//1.38)]
+        current_arrow = 0
 
         while self.paused:
             for event in pygame.event.get():
@@ -265,19 +344,42 @@ class Game:
                     self.paused = False
                     self.running = False
 
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.paused = False
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if resume_button.is_pressed(pygame.mouse.get_pos()):
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
                         self.paused = False
+                    
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
+                        current_arrow = current_arrow + 1 if current_arrow == 0 else 0
 
-                    if menu_button.is_pressed(pygame.mouse.get_pos()):
-                        self.paused = False
-                        self.menu_playing = True
+                    if event.key == pygame.K_RETURN:
+                        if current_arrow == 0:
+                            self.paused = False
+                        elif current_arrow == 1:
+                            self.paused = False
+                            self.menu_playing = True
 
-            self.screen.blit(resume_button.image, resume_button.rect)
-            self.screen.blit(menu_button.image, menu_button.rect)
+            self.screen.blit(self.pause_card, (self.settings.WIN_WIDTH//4, self.settings.WIN_HEIGHT//20))
+            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
+            self.clock.tick(FPS)
+            pygame.display.update()
+
+
+    def display_eq(self):
+        self.player.eq.user_eq_input(None) #show big_item first time
+        
+        while(self.player.eq_opened):
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    self.player.eq_opened = False
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE:
+                        self.player.eq_opened = False
+
+                    self.player.eq.user_eq_input(event.key)
+
+            self.player.eq.draw(self.screen)
             self.clock.tick(FPS)
             pygame.display.update()

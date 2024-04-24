@@ -34,5 +34,3 @@ class ShopStand(Block):
             
         else:
             self.image.fill(BROWN)
-
-        

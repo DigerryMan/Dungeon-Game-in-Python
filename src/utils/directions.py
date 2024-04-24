@@ -7,6 +7,7 @@ class Directions(Enum):
     RIGHT = "right"
     CENTER = "center"
     PLAYER = "player"
+    ENEMY = "enemy"
 
     def reverse(self):
         if self == Directions.UP:

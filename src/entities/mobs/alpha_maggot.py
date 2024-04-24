@@ -13,7 +13,7 @@ class AlphaMaggot(Maggot):
         self._projectal_speed = 3
 
         #SKIN
-        self.image.fill(DARK_RED)
+        self.img = game.image_loader.get_image("alpha_maggot")
 
     def attack(self):
         self._shot_time_left -= 1

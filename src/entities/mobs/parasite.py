@@ -14,15 +14,14 @@ class Parasite(Enemy):
         self.shoot_cd_after_dig_out = int(0.7 * FPS)
 
         #SKIN
-        self.image.set_colorkey(GREEN)
         self.x_frame = 0
         self.img = game.image_loader.get_image("parasite")
         
         self.MOB_SIZE = game.settings.MOB_SIZE
 
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image.blit(scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
+        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.image = self.frame
 
         #REST
         self.is_dig = True
@@ -56,9 +55,7 @@ class Parasite(Enemy):
     
     def collide_player(self):
         if not self.is_dig:
-            hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-            if hits:
-                self.game.damage_player(self._collision_damage)
+            super().collide_player()
 
     def change_dmg_vulnerability(self, is_vulnerable: bool):
         if is_vulnerable:
@@ -84,11 +81,22 @@ class Parasite(Enemy):
     def nextFrame(self, player_shoot_frame=False):
         self.x_frame = (self.x_frame + 32) % (8 * 32)
         self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        scaled_frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
         
         if player_shoot_frame:
             x_p, _ = self.game.player.get_center_position()
             if x_p < self.rect.centerx:
-                scaled_frame = pygame.transform.flip(scaled_frame, True, False)
+                self.frame = pygame.transform.flip(self.frame, True, False)
 
-        self.image.blit(scaled_frame, (0, 0, self.MOB_SIZE, self.MOB_SIZE))
+        self.remove_transparency_from_frame()
+    
+    def remove_transparency_from_frame(self):
+        old_x_center = self.rect.centerx
+        old_bottom = self.rect.bottom
+
+        bounding_rect = self.frame.get_bounding_rect() 
+        self.image = self.frame.subsurface(bounding_rect)
+
+        self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height
+        self.rect.bottom = old_bottom
+        self.rect.centerx = old_x_center

@@ -14,15 +14,47 @@ class Door(pygame.sprite.Sprite):
 
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
-        self.width = game.settings.TILE_SIZE
-        self.height = game.settings.TILE_SIZE
 
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(YELLOW)
-        
+        self.image = game.image_loader.doors["basement_door1"].copy()
+        self.mask = pygame.mask.from_surface(self.image)
+
+        #self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self.width = self.rect.width
+        self.height = self.rect.height
+
+        if direction == Directions.UP:
+            x_offset = (self.rect.width - self.game.settings.TILE_SIZE) // 2
+            self.rect.x -= x_offset
+            self.x = self.rect.x
+            mask = pygame.Surface((self.rect.width, self.rect.height - self.rect.height//2.25))
+            self.mask = pygame.mask.from_surface(mask)
+
+        elif direction == Directions.DOWN:
+            self.image = pygame.transform.rotate(self.image, 180)
+            x_offset = (self.rect.width - self.game.settings.TILE_SIZE) // 2
+            self.rect.x -= x_offset
+            self.x = self.rect.x
+            removed_hitbox = self.rect.copy()
+            removed_hitbox = pygame.Surface((removed_hitbox.width, removed_hitbox.height//5))
+            mask = pygame.mask.from_surface(removed_hitbox)
+            self.mask.erase(mask, (0, 0))
+
+        elif direction == Directions.LEFT:
+            self.image = pygame.transform.rotate(self.image, 90)
+            mask = pygame.Surface((self.rect.width - self.rect.width//2.5, self.rect.height))
+            self.mask = pygame.mask.from_surface(mask)
+
+        elif direction == Directions.RIGHT:
+            self.image = pygame.transform.rotate(self.image, -90)
+            self.rect.x -= self.rect.width * .2
+            removed_hitbox = self.rect.copy()
+            removed_hitbox = pygame.Surface((removed_hitbox.width//2.5, removed_hitbox.height))
+            mask = pygame.mask.from_surface(removed_hitbox)
+            self.mask.erase(mask, (0, 0))
 
 
     def update(self):
@@ -32,4 +64,9 @@ class Door(pygame.sprite.Sprite):
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
         if hits:
-            self.game.render_next_room(self.direction)
+            mask_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False, pygame.sprite.collide_mask)
+            if mask_hits:
+                self.game.render_next_room(self.direction)
+
+    def open(self):
+        self.is_open = True
