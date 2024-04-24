@@ -36,7 +36,7 @@ class ImageLoader:
         for mob in self.mobs_:
             self.images_dict[mob] = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
 
-        room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.08)
+        room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.12)
         for room in self.rooms_:
             if room == "controls":
                 original_image = pygame.image.load("resources/rooms/" + room + ".png").convert_alpha()

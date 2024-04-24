@@ -42,7 +42,7 @@ class Bullet(pygame.sprite.Sprite):
         #DEATH ANIMATION
         self.is_alive = True
         self.frame = 0
-        self.animation_time = int(1 * FPS)
+        self.animation_time = 45
         self.time_per_frame = self.animation_time // 15
 
         self.game = game
@@ -165,7 +165,7 @@ class Bullet(pygame.sprite.Sprite):
 
         
     def animate_and_destroy(self):
-        if self.animation_time == 60:
+        if self.animation_time == 45:
             self.rect.x -= self.game.settings.BULLET_SIZE
             self.rect.y -= self.game.settings.BULLET_SIZE
             self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
