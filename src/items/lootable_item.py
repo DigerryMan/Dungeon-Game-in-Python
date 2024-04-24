@@ -32,6 +32,8 @@ class LootableItem(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
 
+        self.is_picked_up = False
+
 
     def update(self):
         self.drop_animation()
@@ -46,8 +48,7 @@ class LootableItem(pygame.sprite.Sprite):
             self.drop_animation_time -= 1
 
     def picked_up(self):
-        self.clean_up()
-        return None
+        pass
     
     def clean_up(self):
         current_room = self.game.map.get_current_room()

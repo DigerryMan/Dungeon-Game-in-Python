@@ -70,7 +70,7 @@ class Room():
             for y, row in enumerate(self.room):
                 for x, col in enumerate(row):
                     if col == 'C':
-                        self.chest = Chest(self.game, x, y, "medium")
+                        self.chest = Chest(self.game, x, y, "large")
 
                     elif col == 'B':
                         self.blocks.append(Block(self.game, x, y))

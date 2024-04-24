@@ -73,7 +73,9 @@ class Chest(pygame.sprite.Sprite):
                 items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
             for _ in range(1):
-                items_to_craft.append(HealthPotion(self.game, self.rect.centerx, self.rect.centery))
+               items_to_craft.append(HealthPotion(self.game, self.rect.centerx, self.rect.centery))
+
+            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
 
 
     def animate_opening(self):

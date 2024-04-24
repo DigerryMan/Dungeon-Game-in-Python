@@ -2,6 +2,7 @@ import pygame
 from config import *
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
+from items.item_types import ItemType
 from ..bullet import *
 
 class Player(pygame.sprite.Sprite):
@@ -11,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.max_health = BASE_HEALTH
         self.health = BASE_HEALTH
         self.__speed = BASE_SPEED
-        self.coins = 100
+        self.coins = 0
 
         #SIZE
         self.width = game.settings.PLAYER_SIZE
@@ -174,12 +175,17 @@ class Player(pygame.sprite.Sprite):
         if hits:
             mask_hits = pygame.sprite.spritecollide(self, self.game.items, False, pygame.sprite.collide_mask)
             for item in mask_hits:
-                item_info = item.picked_up()
-                
-                if isinstance(item_info, int): #coins
-                    self.coins += item_info
-                else:                          #items
-                    self.eq.add_item(item_info)
+                if not item.is_picked_up:
+                    type, item_info = item.picked_up()
+                    
+                    if type == ItemType.COIN:
+                        self.coins += item_info
+
+                    elif type == ItemType.HEALTH_POTION:
+                        self.heal(item_info)
+
+                    elif type == ItemType.ITEM:
+                        self.eq.add_item(item_info)
 
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect

@@ -1,4 +1,5 @@
 import pygame
+from items.item_types import ItemType
 from items.lootable_item import LootableItem
 from items.stat_items.items_list import ItemsList
 
@@ -33,4 +34,7 @@ class Item(LootableItem):
 
     def picked_up(self):
         self.clean_up()
-        return self.item
+        self.kill()
+        self.is_picked_up = True
+        
+        return ItemType.ITEM, self.item

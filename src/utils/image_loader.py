@@ -62,6 +62,7 @@ class ImageLoader:
         self.images_dict["tears_pop"] = pygame.image.load("resources/other/tears_pop.png").convert_alpha()
         self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png").convert_alpha()
         self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png").convert_alpha()
+        self.images_dict["silver_coin"] = pygame.image.load("resources/other/nickel.png").convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
@@ -90,9 +91,11 @@ class ImageLoader:
         size_to_scale = (self.settings.TILE_SIZE * 1.5, self.settings.TILE_SIZE * 1.5)
         for i in range(6):
             self.lootables["gold_coin_shine" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), size_to_scale).convert_alpha()
+            self.lootables["silver_coin_shine" + str(i)] = pygame.transform.scale(self.images_dict["silver_coin"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), size_to_scale).convert_alpha()
 
         for i in range(8):
             self.lootables["gold_coin_drop" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), size_to_scale).convert_alpha()
+            self.lootables["silver_coin_drop" + str(i)] = pygame.transform.scale(self.images_dict["silver_coin"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), size_to_scale).convert_alpha()
 
         for i in range(9):
             self.lootables["gold_coin_pickup" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 128, 64, 64)), size_to_scale).convert_alpha()
