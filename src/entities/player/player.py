@@ -56,6 +56,7 @@ class Player(pygame.sprite.Sprite):
         self.__immortality_time_left = 0
         self.__shot_time_left = 0
         self.facing = Directions.DOWN
+        self.direction = Directions.DOWN
         self.last_horizontall_facing = Directions.RIGHT
         self.x_change = 0
         self.y_change = 0
@@ -130,21 +131,20 @@ class Player(pygame.sprite.Sprite):
         self.__shot_time_left -= 1
         if self.__shot_time_left <= 0:
             shot = False
-            direction:Directions = None
             if keys[pygame.K_LEFT]:
-                direction = Directions.LEFT
+                self.direction = Directions.LEFT
                 shot = True
 
             if keys[pygame.K_RIGHT]:
-                direction = Directions.RIGHT
+                self.direction = Directions.RIGHT
                 shot = True
 
             if keys[pygame.K_UP]:
-                direction = Directions.UP
+                self.direction = Directions.UP
                 shot = True
 
             if keys[pygame.K_DOWN]:
-                direction = Directions.DOWN
+                self.direction = Directions.DOWN
                 shot = True
             
             if shot:
@@ -152,12 +152,27 @@ class Player(pygame.sprite.Sprite):
                 additional_v = 0
                 
                 if PLAYER_SHOOT_DIAGONAL:
-                    _, other_axis_index = direction.rotate_clockwise().get_axis_tuple()     
+                    _, other_axis_index = self.direction.rotate_clockwise().get_axis_tuple()     
                     if x_y_vel[other_axis_index]:
                         additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
-                Bullet(self.game, self.rect.centerx, self.rect.centery, direction, self.get_shot_speed(), True,
+
+                x, y = self.calculate_bullet_position()
+
+                Bullet(self.game, x, y, self.direction, self.get_shot_speed(), True,
                         (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                        additional_speed=additional_v)
+
+    def calculate_bullet_position(self):
+        x, y = self.rect.centerx, self.rect.centery
+        if self.direction == Directions.LEFT:
+            x -= self.PLAYER_SIZE//2
+        elif self.direction == Directions.RIGHT:
+            x += self.PLAYER_SIZE//2
+        elif self.direction == Directions.UP:
+            y -= self.PLAYER_SIZE//2
+        elif self.direction == Directions.DOWN:
+            y += self.PLAYER_SIZE//2
+        return x, y
 
     def _correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
