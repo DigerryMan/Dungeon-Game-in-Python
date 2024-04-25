@@ -25,13 +25,18 @@ class LootableItem(pygame.sprite.Sprite):
         self.is_picked_up = False
 
         if drop_animtion:
+            TS = game.settings.TILE_SIZE
             self.drop_animation_time = 40
             self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE
+
             x = self.horizontal_velocity * self.drop_animation_time
-            TS = game.settings.TILE_SIZE
-            y = (TS + (5 * TS**2 - 4 * x**2)**0.5)/2
+            y = -(((5/4) * TS**2 - x**2)**0.5)
+
+            #final_x = x + self.x
+            final_y = y + self.y + TS//4
+
             self.acceleration = 0.2 * game.settings.SCALE
-            self.vertical_velocity = (self.y - y - (self.acceleration * self.drop_animation_time**2)/2) / self.drop_animation_time
+            self.vertical_velocity = -((self.y - final_y - (self.acceleration * self.drop_animation_time**2)/2) / self.drop_animation_time)
 
         else:
             self.drop_animation_time = 0
