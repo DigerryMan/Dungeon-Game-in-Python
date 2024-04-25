@@ -1,4 +1,5 @@
 import pygame
+import os
 from items.stat_items.items_list import ItemsList
 from map.map import *
 from entities.player.player import *
@@ -16,6 +17,7 @@ class Game:
 
         window_size = (1920, 1080)
         #window_size = (1280, 720)
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
