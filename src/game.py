@@ -11,10 +11,6 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        #nie ruszac
-        #self.screen = pygame.display.set_mode((0, 0))
-        #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-
         window_size = (1920, 1080)
         #window_size = (1280, 720)
         os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -48,8 +44,6 @@ class Game:
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
         self.trap_door = pygame.sprite.LayeredUpdates()
-
-        #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.map = None
@@ -63,13 +57,13 @@ class Game:
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
 
-        self.intro_background = pygame.transform.smoothscale(self.image_loader.get_image("introbackground"), self.screen.get_size())
-        self.menu_card = pygame.transform.smoothscale(self.image_loader.get_image("menucard"), self.screen.get_size())
-        self.settings_card = pygame.transform.smoothscale(self.image_loader.get_image("settingscard"), self.screen.get_size())
-        self.menu_background = pygame.transform.smoothscale(self.image_loader.get_image("menuoverlay"), self.screen.get_size())
-        self.pause_card = pygame.transform.smoothscale(self.image_loader.get_image("pausecard2"), (self.image_loader.get_image("pausecard2").get_height() * self.settings.SCALE, self.image_loader.get_image("pausecard2").get_width() * self.settings.SCALE))
-        self.arrow = pygame.transform.smoothscale(self.image_loader.get_image("arrow2"), (self.image_loader.get_image("arrow2").get_width() * 0.7 * self.settings.SCALE, self.image_loader.get_image("arrow2").get_height() * 0.7 * self.settings.SCALE))
-        self.main_title = pygame.transform.scale(self.image_loader.get_image("maintitle"), (self.image_loader.get_image("maintitle").get_width() * 2.8 * self.settings.SCALE, self.image_loader.get_image("maintitle").get_height() * 2.8 * self.settings.SCALE))
+        self.intro_background = self.image_loader.get_image("introbackground")
+        self.menu_card = self.image_loader.get_image("menucard")
+        self.settings_card = self.image_loader.get_image("settingscard")
+        self.menu_background = self.image_loader.get_image("menuoverlay")
+        self.pause_card = self.image_loader.get_image("pausecard2")
+        self.arrow = self.image_loader.get_image("arrow2")
+        self.main_title = self.image_loader.get_image("maintitle")
 
 
     def run(self):
@@ -103,8 +97,6 @@ class Game:
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
         self.trap_door = pygame.sprite.LayeredUpdates()
-
-        #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.player = Player(self, 0, 0)
@@ -134,8 +126,6 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        #self.blocks.update()
-        #self.items.update()
         if len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
@@ -208,7 +198,7 @@ class Game:
 
         
         self.clock.tick(FPS)
-        pygame.display.flip()
+        pygame.display.update()
 
 
     def game_over(self):

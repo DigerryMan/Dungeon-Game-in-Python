@@ -14,6 +14,7 @@ class ImageLoader:
 
         self.images_dict = {}
         self.__load_images_to_dict()
+        self.scale_menu_images()
 
         self.blocks = {}
         self.load_blocks()
@@ -32,7 +33,6 @@ class ImageLoader:
 
 
     def __load_images_to_dict(self):
-        print("Loading images...")
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
 
@@ -48,7 +48,6 @@ class ImageLoader:
                 continue
 
             self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
-            #self.images_dict[room] = pygame.image.load("resources/rooms/" + room + ".png").convert()
 
         for door in self.doors_:
             self.images_dict[door] = pygame.image.load("resources/doors/" + door + ".png").convert_alpha()
@@ -63,6 +62,23 @@ class ImageLoader:
         self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png").convert_alpha()
         self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png").convert_alpha()
         self.images_dict["silver_coin"] = pygame.image.load("resources/other/nickel.png").convert_alpha()
+
+    def scale_menu_images(self):
+        screen_size = (self.settings.WIN_WIDTH, self.settings.WIN_HEIGHT)
+        self.images_dict["introbackground"] = pygame.transform.scale(self.images_dict["introbackground"], screen_size).convert_alpha()
+        self.images_dict["menucard"] = pygame.transform.scale(self.images_dict["menucard"], screen_size).convert_alpha()
+        self.images_dict["settingscard"] = pygame.transform.scale(self.images_dict["settingscard"], screen_size).convert_alpha()
+        self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
+        
+        self.images_dict["pausecard2"] = pygame.transform.scale(self.images_dict["pausecard2"],
+                                                                (self.images_dict["pausecard2"].get_height() * self.settings.SCALE, self.images_dict["pausecard2"].get_width() * self.settings.SCALE)).convert_alpha()
+        
+        self.images_dict["arrow2"] = pygame.transform.scale(self.images_dict["arrow2"],
+                                                            (self.images_dict["arrow2"].get_width() * 0.7 * self.settings.SCALE, self.images_dict["arrow2"].get_height() * 0.7 * self.settings.SCALE)).convert_alpha()
+        
+        self.images_dict["maintitle"] = pygame.transform.scale(self.images_dict["maintitle"],
+                                                               (self.images_dict["maintitle"].get_width() * 2.8 * self.settings.SCALE, self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE)).convert_alpha()
+
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
