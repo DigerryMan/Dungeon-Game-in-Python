@@ -9,16 +9,6 @@ class LootableItem(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
 
-        self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE
-        self.vertical_velocity = (10 - abs(self.horizontal_velocity)) * game.settings.SCALE
-        self.acceleration = (0.6 - abs(self.horizontal_velocity) / 12) * game.settings.SCALE
-
-        if drop_animtion:
-            self.drop_animation_time = 40
-
-        else:
-            self.drop_animation_time = 0
-
         self.image = pygame.Surface([30, 30])
         self.image.fill(WHITE)
         self.mask = pygame.mask.from_surface(self.image)
@@ -33,6 +23,18 @@ class LootableItem(pygame.sprite.Sprite):
         self.height = self.image.get_height()
 
         self.is_picked_up = False
+
+        if drop_animtion:
+            self.drop_animation_time = 40
+            self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE
+            x = self.horizontal_velocity * self.drop_animation_time
+            TS = game.settings.TILE_SIZE
+            y = (TS + (5 * TS**2 - 4 * x**2)**0.5)/2
+            self.acceleration = 0.2 * game.settings.SCALE
+            self.vertical_velocity = (self.y - y - (self.acceleration * self.drop_animation_time**2)/2) / self.drop_animation_time
+
+        else:
+            self.drop_animation_time = 0
 
 
     def update(self):
