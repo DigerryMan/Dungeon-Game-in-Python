@@ -1,4 +1,5 @@
 import random
+import pygame
 from config import *
 from entities.bullet import Bullet
 from entities.enemy import Enemy
@@ -19,7 +20,16 @@ class Slime(Enemy):
         self._jump_range = 3 # has to be min 2
 
         #SKINS
-        self.image.fill(ORANGE)
+        self.MOB_SIZE = game.settings.MOB_SIZE
+        self.img = game.image_loader.get_image('slime')
+        self.frame = self.img.subsurface(pygame.Rect(0, 0, 32, 32))
+        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.image = self.frame
+        self.mask = pygame.mask.from_surface(self.image)
+        self.frame_x = 0
+        self.frame_y = 0
+        self.animation_time = [0.95, 0.9, 0.8, 0.7, 0.5, 0.25, 0.18, 0.1]
+        self.prepare_animation_time()
 
         #POSITION
         self.x = x
@@ -35,6 +45,7 @@ class Slime(Enemy):
         self.is_jumping = False
         self.jump_time_left = 0
         self.next_jump_time_left = 0
+        self.is_jumping_left = False
 
         self.new_jump_x = x
         self.new_jump_y = y
@@ -48,6 +59,10 @@ class Slime(Enemy):
 
         #REST
         self.prepare_atack = False
+
+    def prepare_animation_time(self):
+        for index, value in enumerate(self.animation_time):
+            self.animation_time[index] = int(value * self.jump_time)
 
     def correct_possible_jumps(self):
         self.possible_jumps.remove((0, 0))
@@ -102,6 +117,10 @@ class Slime(Enemy):
         if possible_moves:
             self.old_jump_x, self.old_jump_y = self.new_jump_x, self.new_jump_y
             self.new_jump_x, self.new_jump_y = random.choice(possible_moves)
+            if self.new_jump_x < self.old_jump_x:
+                self.is_jumping_left = True
+            else:
+                self.is_jumping_left = False
             self.calculate_parabolic_jump()
         
     def calculate_parabolic_jump(self):
@@ -142,3 +161,24 @@ class Slime(Enemy):
             self._layer = self.rect.bottom + 2500
         else:
             self._layer = self.rect.bottom
+    
+    def animate(self):
+        if self.is_jumping:
+            if self.jump_time_left in self.animation_time:
+                self.frame_x += 1
+                if self.frame_x > 3:
+                    self.frame_x = 0
+                    self.frame_y += 1
+                
+                self.frame = self.img.subsurface(pygame.Rect(self.frame_x * 32, self.frame_y * 32, 32, 32))
+                self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+                
+                if self.is_jumping_left:
+                    self.frame = pygame.transform.flip(self.frame, True, False)
+                
+                self.image = self.frame
+                self.mask = pygame.mask.from_surface(self.image)
+        else:
+            print("halo")
+            self.frame_x = 0
+            self.frame_y = 0
