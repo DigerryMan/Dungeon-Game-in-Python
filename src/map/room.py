@@ -160,10 +160,10 @@ class Room():
     
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE + self.game.settings.PLAYER_SIZE)
+            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE + self.game.settings.PLAYER_SIZE * 0.9)
 
         elif entry_direction == Directions.DOWN:
-            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.TILE_SIZE)
+            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.TILE_SIZE * 1.1)
 
         elif entry_direction == Directions.LEFT:
             self.player.set_rect_position((self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
