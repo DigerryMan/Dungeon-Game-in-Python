@@ -9,7 +9,7 @@ class ImageLoader:
         self.mobs_ = ["player", "alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
         self.rooms_ = ["controls", "shading", "shop_room",
                        "basement1", "basement2", "basement3", "basement4"]
-        self.doors_ = ["angel_door", "boss_door", "devil_door", "door", "red_door"]
+        self.doors_ = ["angel_door", "boss_door", "devil_door", "basement_door1", "red_door"]
         self.blocks_ = ["rocks2"]
 
         self.images_dict = {}
@@ -97,7 +97,8 @@ class ImageLoader:
             self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
 
     def load_doors(self):
-        self.doors["basement_door1"] = pygame.transform.scale(self.images_dict["door"].subsurface(pygame.Rect(8, 9, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+        for i in range(19):
+            self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
     def load_trap_door(self):
         self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
