@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.mask = pygame.mask.from_surface(self.image)
 
-        removed_hitbox_from_sides = pygame.Surface((self.mask.get_size()[1] * 0.3, self.mask.get_size()[1]))
+        removed_hitbox_from_sides = pygame.Surface((self.mask.get_size()[1] * 0.2, self.mask.get_size()[1]))
         removed_hitbox_from_top = pygame.Surface((self.mask.get_size()[0], self.mask.get_size()[0] * 0.25))
         cut_mask_sides = pygame.mask.from_surface(removed_hitbox_from_sides)
         cut_mask_top = pygame.mask.from_surface(removed_hitbox_from_top)

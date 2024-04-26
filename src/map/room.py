@@ -30,7 +30,7 @@ class Room():
         self.game = game
         self.player = game.player
         self.level = level
-        self.room_cleared = False
+        self.is_cleared = False
         self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
 
@@ -44,7 +44,7 @@ class Room():
         self.blocks = []
         self.walls = []
         self.items = []
-        self.trap_door = None
+        self.trap_door:TrapDoor = None
 
     def get_objects(self):
         return {
@@ -84,7 +84,7 @@ class Room():
                     elif col == 'T':
                         self.trap_door = TrapDoor(self.game, x, y)
 
-                    if not self.room_cleared:
+                    if not self.is_cleared:
                         if col == 'E':
                             self.enemies.append(Wanderer(self.game, x, y))
                         elif col == 'L':
@@ -112,51 +112,56 @@ class Room():
                 elif(x == self.game.settings.MAP_WIDTH - 1):
                     self.doors.append(Door(self.game, x, y, Directions.RIGHT))
 
-            #top wall
-            x = 0
-            while x < self.game.settings.MAP_WIDTH:
-                if((0, x + 0.5) not in doors_positions):
-                    self.walls.append(Wall(self.game, x, 0))
-                else:
-                    self.walls.append(Wall(self.game, x - 0.5, 0))
-                    self.walls.append(Wall(self.game, x + 1.5, 0))
-                    x += 1
+            self.spawn_outer_walls(doors_positions)
 
-                x += 1
-
-            #bottom wall
-            x = 0
-            while x < self.game.settings.MAP_WIDTH:
-                if((self.game.settings.MAP_HEIGHT - 1, x + 0.5) not in doors_positions):
-                    self.walls.append(Wall(self.game, x, self.game.settings.MAP_HEIGHT - 1))
-                else:
-                    self.walls.append(Wall(self.game, x - 0.5, self.game.settings.MAP_HEIGHT - 1))
-                    self.walls.append(Wall(self.game, x + 1.5, self.game.settings.MAP_HEIGHT - 1))
-                    x += 1
-
-                x += 1
-            
-            #left wall
-            y = 0
-            while y < self.game.settings.MAP_HEIGHT:
-                if((y, 0) not in doors_positions):
-                    self.walls.append(Wall(self.game, 0, y))
-
-                y += 1
-
-            #right wall
-            y = 0
-            while y < self.game.settings.MAP_HEIGHT:
-                if((y, self.game.settings.MAP_WIDTH - 1) not in doors_positions):
-                    self.walls.append(Wall(self.game, self.game.settings.MAP_WIDTH - 1, y))
-
-                y += 1
-            
+            for door in self.doors:
+                if door.direction == entry_direction.reverse(): #if the door is the one the player came from
+                    door.animate_closing()
 
         self.spawn_player(entry_direction)
         self.player.spawn_pets()
         self.drawn_once = True
         
+    def spawn_outer_walls(self, doors_positions):
+        #top wall
+        x = 0
+        while x < self.game.settings.MAP_WIDTH:
+            if((0, x + 0.5) not in doors_positions):
+                self.walls.append(Wall(self.game, x, 0))
+            else:
+                self.walls.append(Wall(self.game, x - 0.5, 0))
+                self.walls.append(Wall(self.game, x + 1.5, 0))
+                x += 1
+
+            x += 1
+
+        #bottom wall
+        x = 0
+        while x < self.game.settings.MAP_WIDTH:
+            if((self.game.settings.MAP_HEIGHT - 1, x + 0.5) not in doors_positions):
+                self.walls.append(Wall(self.game, x, self.game.settings.MAP_HEIGHT - 1))
+            else:
+                self.walls.append(Wall(self.game, x - 0.5, self.game.settings.MAP_HEIGHT - 1))
+                self.walls.append(Wall(self.game, x + 1.5, self.game.settings.MAP_HEIGHT - 1))
+                x += 1
+
+            x += 1
+        
+        #left wall
+        y = 0
+        while y < self.game.settings.MAP_HEIGHT:
+            if((y, 0) not in doors_positions):
+                self.walls.append(Wall(self.game, 0, y))
+
+            y += 1
+
+        #right wall
+        y = 0
+        while y < self.game.settings.MAP_HEIGHT:
+            if((y, self.game.settings.MAP_WIDTH - 1) not in doors_positions):
+                self.walls.append(Wall(self.game, self.game.settings.MAP_WIDTH - 1, y))
+
+            y += 1
     
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
@@ -195,7 +200,7 @@ class Room():
         return doors_positions
 
     def set_room_cleared(self):
-        self.room_cleared = True
+        self.is_cleared = True
         self.enemies.clear()
 
         for door in self.doors:
@@ -227,8 +232,18 @@ class Room():
 
     def draw(self, screen):
         screen.blit(self.room_background["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
-        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
-
         if self.room == special_rooms["start"] and self.level == 1:
             controls_rect = self.room_background["controls"].get_rect()
             screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
+
+        self.game.blocks.draw(screen)
+        self.game.doors.draw(screen)
+        self.game.chest.draw(screen)
+        self.game.items.draw(screen)
+        self.game.trap_door.draw(screen)
+
+        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+        
+        sprite_list = sorted(self.game.entities, key=lambda sprite: sprite._layer)
+        for sprite in sprite_list:
+            screen.blit(sprite.image, sprite.rect)

@@ -15,7 +15,8 @@ class Door(pygame.sprite.Sprite):
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
 
-        self.images = [game.image_loader.doors[f"basement_door1_{i}"].copy() for i in range(19)]
+        self.animation_frames = 19
+        self.images = [game.image_loader.doors[f"basement_door1_{i}"].copy() for i in range(self.animation_frames)]
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -34,7 +35,7 @@ class Door(pygame.sprite.Sprite):
             self.mask = pygame.mask.from_surface(mask)
 
         elif direction == Directions.DOWN:
-            for i in range(19):
+            for i in range(self.animation_frames):
                 self.images[i] = pygame.transform.rotate(self.images[i], 180)
 
             x_offset = (self.rect.width - self.game.settings.TILE_SIZE) // 2
@@ -46,14 +47,14 @@ class Door(pygame.sprite.Sprite):
             self.mask.erase(mask, (0, 0))
 
         elif direction == Directions.LEFT:
-            for i in range(19):
+            for i in range(self.animation_frames):
                 self.images[i] = pygame.transform.rotate(self.images[i], 90)
 
             mask = pygame.Surface((self.rect.width - self.rect.width//2.5, self.rect.height))
             self.mask = pygame.mask.from_surface(mask)
 
         elif direction == Directions.RIGHT:
-            for i in range(19):
+            for i in range(self.animation_frames):
                 self.images[i] = pygame.transform.rotate(self.images[i], -90)
 
             self.rect.x -= self.rect.width * .2
@@ -65,20 +66,38 @@ class Door(pygame.sprite.Sprite):
         self.image = self.images[0]
 
         self.time_per_frame = 1
-        self.timer = self.time_per_frame * 18
+        self.timer = 0
         self.current_frame = 0
+        self.reverse_animation = False
 
 
     def update(self):
         if self.is_open:
             self.collide()
-            if self.timer > 0:
-                self.timer -= 1
-                if self.timer % self.time_per_frame == 0:
-                    self.current_frame += 1
-                    self.image = self.images[self.current_frame]
-                    print(self.current_frame)
-                
+
+        if self.timer > 0:
+            self.timer -= 1
+            if self.timer % self.time_per_frame == 0:
+                self.next_frame()
+
+    def next_frame(self):
+        if not self.reverse_animation:
+            self.current_frame += 1
+
+        else:
+            self.current_frame -= 1
+
+        self.image = self.images[self.current_frame]
+
+    def animate_closing(self):
+        self.timer = self.time_per_frame * (self.animation_frames - 1)
+        self.current_frame = 18
+        self.reverse_animation = True
+
+    def animate_opening(self):
+        self.timer = self.time_per_frame * (self.animation_frames - 1)
+        self.current_frame = 0
+        self.reverse_animation = False
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
@@ -89,3 +108,4 @@ class Door(pygame.sprite.Sprite):
 
     def open(self):
         self.is_open = True
+        self.animate_opening()

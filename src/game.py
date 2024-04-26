@@ -126,7 +126,7 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        if len(self.enemies) == 0 or ADMIN:
+        if not self.map.get_current_room().is_cleared and len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
@@ -186,7 +186,7 @@ class Game:
 
         self.map.get_current_room().draw(self.screen)
 
-        self.blocks.draw(self.screen)
+        """self.blocks.draw(self.screen)
         self.doors.draw(self.screen)
         self.chest.draw(self.screen)
         self.items.draw(self.screen)
@@ -194,7 +194,7 @@ class Game:
         
         sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
-            self.screen.blit(sprite.image, sprite.rect)
+            self.screen.blit(sprite.image, sprite.rect)"""
 
         
         self.clock.tick(FPS)

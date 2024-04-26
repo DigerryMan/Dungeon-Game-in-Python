@@ -105,11 +105,6 @@ class Map():
         room = self.room_map[row][col]
         room.generate_room(direction)
         
-
-    def get_current_room(self):
-        return self.room_map[self.current_position[0]][self.current_position[1]]
-
-
     def _change_position_on_map(self, direction:Directions):
         if direction == Directions.UP:
             self.current_position[0] -= 1
@@ -122,6 +117,9 @@ class Map():
 
         elif direction == Directions.RIGHT:
             self.current_position[1] += 1
+
+    def get_current_room(self):
+        return self.room_map[self.current_position[0]][self.current_position[1]]
 
 
     def set_room_cleared(self):

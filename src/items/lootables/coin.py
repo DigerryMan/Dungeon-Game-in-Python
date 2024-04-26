@@ -37,7 +37,7 @@ class Coin(LootableItem):
 
         self.time_per_frame_shine = 3
         self.time_per_frame_drop = self.drop_animation_time // 8
-        self.time_per_frame_pickup = 3
+        self.time_per_frame_pickup = 1
 
         self.pickup_timer = self.time_per_frame_pickup * 9
 
