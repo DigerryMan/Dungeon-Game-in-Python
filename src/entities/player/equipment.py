@@ -61,8 +61,8 @@ class Equipment():
 
         #items
         self.items = []
-        self.first_item_x = self.x + 22
-        self.first_item_y = self.y + 22
+        self.first_item_x = self.x + 69
+        self.first_item_y = self.y + 65
         self.item_distance = 73
         self.item_size = self.item_distance - 3
         self.item_in_row = 4
@@ -93,8 +93,8 @@ class Equipment():
         self.font_color = (54, 47, 45)
 
         #stats
-        self.stats_x = self.x + 430
-        self.stats_y = self.y + 46
+        self.stats_x = self.x + 475
+        self.stats_y = self.y + 90
         self.stats_y_change = 58
 
     def draw(self, screen):
