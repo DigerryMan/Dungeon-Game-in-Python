@@ -65,6 +65,7 @@ class ImageLoader:
         self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png")
         self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png")
         self.images_dict["silver_coin"] = pygame.image.load("resources/other/nickel.png")
+        self.images_dict["hearts"] = pygame.image.load("resources/items/pickup_hearts.png")
         self.images_dict["small_chest"] = pygame.image.load("resources/other/small_chest.png")
         self.images_dict["medium_chest"] = pygame.image.load("resources/other/medium_chest.png")
         self.images_dict["large_chest"] = pygame.image.load("resources/other/large_chest.png")
@@ -122,6 +123,9 @@ class ImageLoader:
 
         for i in range(9):
             self.lootables["gold_coin_pickup" + str(i)] = pygame.transform.scale(self.images_dict["gold_coin"].subsurface(pygame.Rect(i * 64, 128, 64, 64)), size_to_scale).convert_alpha()
+
+        self.lootables["full_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(0, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
+        self.lootables["half_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(32, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
 
     def load_chests(self):
         for i in range(8):

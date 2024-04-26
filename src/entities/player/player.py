@@ -205,7 +205,7 @@ class Player(pygame.sprite.Sprite):
                     if type == ItemType.COIN:
                         self.coins += item_info
 
-                    elif type == ItemType.HEALTH_POTION:
+                    elif type == ItemType.PICKUP_HEART:
                         self.heal(item_info)
 
                     elif type == ItemType.ITEM:

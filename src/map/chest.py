@@ -3,7 +3,7 @@ import random
 from config import *
 from items.lootables.silver_coin import SilverCoin
 from items.lootables.golden_coin import GoldenCoin
-from items.lootables.health_potion import HealthPotion
+from items.lootables.pickup_heart import PickupHeart
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 
@@ -72,7 +72,7 @@ class Chest(pygame.sprite.Sprite):
                 items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
             for _ in range(random.randint(0, 1)):
-                items_to_craft.append(HealthPotion(self.game, self.rect.centerx, self.rect.centery))
+                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
         elif self.type == "large":
             for _ in range(random.randint(5, 10)):
@@ -82,6 +82,6 @@ class Chest(pygame.sprite.Sprite):
                 items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
             for _ in range(1):
-               items_to_craft.append(HealthPotion(self.game, self.rect.centerx, self.rect.centery))
+               items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
             items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
