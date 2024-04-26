@@ -30,6 +30,8 @@ class Fly(Enemy):
         self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
         self.image = self.frame
 
+        self.mask = pygame.mask.from_surface(self.image)
+
     def animate(self):
         if not self._is_dead:
             self.time -= 1
