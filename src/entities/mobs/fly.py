@@ -50,7 +50,6 @@ class Fly(Enemy):
     def start_dying(self):
         self._is_dead = True
         if self.dead_animation_time_left == self.dead_animation_time:
-            print("raz")
             self.x_frame = 0
             self.y_frame = 1
             self.frame = self.img.subsurface(pygame.Rect(self.x_frame * 64, self.y_frame * 64, 64, 64))

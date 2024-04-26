@@ -297,7 +297,7 @@ class Player(pygame.sprite.Sprite):
         if self.reversed_frame:
             self.frame = pygame.transform.flip(self.frame, True, False)
 
-        self.remove_transparency_from_frame()
+        self.image = self.frame
     
     def set_body_frame(self):
         if self.facing == Directions.LEFT:
@@ -323,10 +323,3 @@ class Player(pygame.sprite.Sprite):
         
         self.head_frame = self.img.subsurface(pygame.Rect(x * 32, 0, 32, 32))
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
-
-    def remove_transparency_from_frame(self):
-        #bounding_rect = self.frame.get_bounding_rect() 
-        #self.image = self.frame.subsurface(bounding_rect)
-        #self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height 
-        self.image = self.frame
-        #self.mask = pygame.mask.from_surface(self.image)        
