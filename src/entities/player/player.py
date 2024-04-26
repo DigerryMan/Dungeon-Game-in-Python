@@ -40,7 +40,6 @@ class Player(pygame.sprite.Sprite):
         self.head_frame = None
         self.body_frame = None
         self.is_moving = False
-
         
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
@@ -129,25 +128,26 @@ class Player(pygame.sprite.Sprite):
 
     def _shoot(self, keys, x_y_vel):
         self.__shot_time_left -= 1
-        if self.__shot_time_left <= 0:
-            shot = False
-            if keys[pygame.K_LEFT]:
-                self.direction = Directions.LEFT
-                shot = True
+        shot_try = False
+        if keys[pygame.K_LEFT]:
+            self.direction = Directions.LEFT
+            shot_try = True
 
-            if keys[pygame.K_RIGHT]:
-                self.direction = Directions.RIGHT
-                shot = True
+        if keys[pygame.K_RIGHT]:
+            self.direction = Directions.RIGHT
+            shot_try = True
 
-            if keys[pygame.K_UP]:
-                self.direction = Directions.UP
-                shot = True
+        if keys[pygame.K_UP]:
+            self.direction = Directions.UP
+            shot_try = True
 
-            if keys[pygame.K_DOWN]:
-                self.direction = Directions.DOWN
-                shot = True
-            
-            if shot:
+        if keys[pygame.K_DOWN]:
+            self.direction = Directions.DOWN
+            shot_try = True
+        
+        if shot_try:
+            self.facing = self.direction
+            if self.__shot_time_left <= 0:
                 self.__shot_time_left = self.get_shooting_cooldown()
                 additional_v = 0
                 
@@ -159,7 +159,7 @@ class Player(pygame.sprite.Sprite):
                 x, y = self.calculate_bullet_position()
 
                 Bullet(self.game, x, y, self.direction, self.get_shot_speed(), True,
-                        (BASE_DMG+self.eq.stats["dmg"]+10)*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
+                        (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                        additional_speed=additional_v)
 
     def calculate_bullet_position(self):
@@ -260,10 +260,12 @@ class Player(pygame.sprite.Sprite):
      
     def animate(self):
         frame_change = False
+        self.reversed_frame = False
         self.head_frame_time -= 1
+
         if self.is_moving:
             self.time -= 1
-        else:
+        if not self.is_moving:
             self.set_standing_frame()
 
         if self.head_frame_time <= 0:
@@ -298,7 +300,6 @@ class Player(pygame.sprite.Sprite):
         self.remove_transparency_from_frame()
     
     def set_body_frame(self):
-        self.reversed_frame = False
         if self.facing == Directions.LEFT:
             self.y_frame = 2
             self.reversed_frame = True
@@ -314,6 +315,9 @@ class Player(pygame.sprite.Sprite):
         x = self.next_head_frame
         if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
             x += 2
+            if self.facing == Directions.LEFT:
+                self.reversed_frame = True
+            
         if self.facing == Directions.UP:
             x += 4
         
