@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.max_health = BASE_HEALTH
         self.health = BASE_HEALTH
-        self.__speed = BASE_SPEED
+        self.__speed = BASE_SPEED * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self.coins = 0
 
         #SIZE
@@ -159,7 +159,7 @@ class Player(pygame.sprite.Sprite):
                 x, y = self.calculate_bullet_position()
 
                 Bullet(self.game, x, y, self.direction, self.get_shot_speed(), True,
-                        (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
+                        (BASE_DMG+self.eq.stats["dmg"]+10)*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                        additional_speed=additional_v)
 
     def calculate_bullet_position(self):

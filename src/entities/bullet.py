@@ -10,7 +10,7 @@ class Bullet(pygame.sprite.Sprite):
         self.dmg = dmg
         self.direction = direction
         self.is_friendly = is_friendly
-        self.speed = speed
+        self.speed = speed * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self.additional_speed = additional_speed
         self.time_decay = int(time_decay_in_seconds * FPS)
         self.time_left = self.time_decay

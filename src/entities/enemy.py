@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self._damage = 1
         self._collision_damage = 1
         
-        self._speed = 3 + (random.random() * 2 - 1)
+        self._speed = (3 + (random.random() * 2 - 1)) * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
         self._shot_cd = int(2.5 * FPS)

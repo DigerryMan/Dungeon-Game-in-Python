@@ -85,7 +85,7 @@ class Room():
                         self.trap_door = TrapDoor(self.game, x, y)
 
                     if not self.is_cleared:
-                        if col == 'E':
+                        if col == 'W':
                             self.enemies.append(Wanderer(self.game, x, y))
                         elif col == 'L':
                             self.enemies.append(Legs(self.game, x, y))

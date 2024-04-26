@@ -9,7 +9,7 @@ class AlphaMaggot(Maggot):
         super().__init__(game, x, y)
         #CHANGEABLE STATS
         self._health = 8
-        self._speed = 4
+        self._speed = 4 * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self._projectal_speed = 3
 
         #SKIN

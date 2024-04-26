@@ -9,7 +9,7 @@ class Maggot(Enemy):
         super().__init__(game, x, y, False)
         #CHANGEABLE STATS
         self._health = 4
-        self._speed = 3
+        self._speed = 3 * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self._random_dir_change_cd = int(2 * FPS)
         
         #SKIN

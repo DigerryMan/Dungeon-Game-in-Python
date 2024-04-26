@@ -10,7 +10,7 @@ class FriendlyGhost(Ghost):
         super().__init__(game, x, y)
         self._health = 3333
         self.damage = 1
-        self.speed = 1
+        self.speed = 1 * game.settings.WINDOW_SIZE_SPEED_FACTOR
         self._projectal_speed = 10
         self.reversed_moves = reversed_moves
 
