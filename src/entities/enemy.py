@@ -173,17 +173,9 @@ class Enemy(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if hits:
             if orientation == 'x':
-                #if self.x_change > 0:
-                    #self.rect.x = hits[0].rect.left - self.rect.width
-                #if self.x_change < 0:
-                    #self.rect.x = hits[0].rect.right
                 self.rect.x -= self.x_change
 
             if orientation == 'y':
-                #if self.y_change > 0:
-                   # self.rect.y = hits[0].rect.top - self.rect.height
-                #if self.y_change < 0:
-                    #self.rect.y = hits[0].rect.bottom
                 self.rect.y -= self.y_change
 
     def _correct_rounding(self):
