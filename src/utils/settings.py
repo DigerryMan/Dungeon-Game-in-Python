@@ -8,7 +8,6 @@ class Settings():
         self.TILE_SIZE = self.WIN_WIDTH // 16
         self.PLAYER_SIZE = int(self.TILE_SIZE * 0.8)
         self.MOB_SIZE = int(self.TILE_SIZE * 0.85)
-        self.WINDOW_SIZE_SPEED_FACTOR = self.WIN_WIDTH / 1920 
         self.BULLET_SIZE = int(self.SCALE * 40)
         
         self.MAP_WIDTH = self.WIN_WIDTH // self.TILE_SIZE

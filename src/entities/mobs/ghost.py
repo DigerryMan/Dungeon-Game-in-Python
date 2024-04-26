@@ -8,7 +8,7 @@ class Ghost(Enemy):
         
         #CHANGEABLE STATS
         self._health = 6
-        self._speed = 3 * game.settings.WINDOW_SIZE_SPEED_FACTOR
+        self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 7
         
         #SKINS

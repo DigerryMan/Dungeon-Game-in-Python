@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.max_health = BASE_HEALTH
         self.health = BASE_HEALTH
-        self.__speed = BASE_SPEED * game.settings.WINDOW_SIZE_SPEED_FACTOR
+        self.__speed = BASE_SPEED * game.settings.SCALE
         self.coins = 0
 
         #SIZE

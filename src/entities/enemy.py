@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self._damage = 1
         self._collision_damage = 1
         
-        self._speed = (3 + (random.random() * 2 - 1)) * game.settings.WINDOW_SIZE_SPEED_FACTOR
+        self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
         self._shot_cd = int(2.5 * FPS)
@@ -54,6 +54,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self._bullet_decay_sec = bullet_decay_sec
 
+        self._is_dead = False
         self.game = game
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -81,10 +82,11 @@ class Enemy(pygame.sprite.Sprite):
         self.y_change = 0
 
     def move(self):
-        if self._is_wandering:
-            self.wander()
-        else:
-            self.move_because_of_player() 
+        if not self._is_dead:
+            if self._is_wandering:
+                self.wander()
+            else:
+                self.move_because_of_player() 
         
     def wander(self):
         if self._is_idling:
@@ -229,7 +231,7 @@ class Enemy(pygame.sprite.Sprite):
     
     def check_if_dead(self):
         if self._health <= 0:
-            self.kill()
+            self.start_dying()
 
     def roll_interval(self, interval):
         return random.randint(interval[0], interval[1])
@@ -250,6 +252,10 @@ class Enemy(pygame.sprite.Sprite):
             if axis == 'y':
                 self.y_change = self._speed
     
+    def start_dying(self):
+        self._is_dead = True
+        self.kill()
+
     @staticmethod
     def check_group_attacked():
         return Enemy.is_group_attacked
