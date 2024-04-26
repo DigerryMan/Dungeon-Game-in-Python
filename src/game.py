@@ -186,17 +186,6 @@ class Game:
 
         self.map.get_current_room().draw(self.screen)
 
-        """self.blocks.draw(self.screen)
-        self.doors.draw(self.screen)
-        self.chest.draw(self.screen)
-        self.items.draw(self.screen)
-        self.trap_door.draw(self.screen)
-        
-        sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
-        for sprite in sprite_list:
-            self.screen.blit(sprite.image, sprite.rect)"""
-
-        
         self.clock.tick(FPS)
         pygame.display.update()
 
