@@ -25,14 +25,14 @@ class AlphaMaggot(Maggot):
             self.roll_next_shot_cd()
             self._shot_time_left = self._shot_cd
 
-    def rotate_facing(self):
-        rand = random.randint(1, 3)
+    #def rotate_face_dir(self):
+        #rand = random.randint(1, 3)
 
-        if rand == 1:
-            self.facing = self.facing.rotate_clockwise()
-        elif rand == 2:
-            self.facing = self.facing.rotate_counter_clockwise()
-        else:
-            self.facing = self.facing.reverse()
+        #if rand == 1:
+        #    self.facing = self.facing.rotate_clockwise()
+        #elif rand == 2:
+        #    self.facing = self.facing.rotate_counter_clockwise()
+        #else:
+        #    self.facing = self.facing.reverse()
             
-        self.roll_rotation_cd(int(0.3 * FPS), int(1.8 * FPS))
+        #self.roll_rotation_cd(int(0.3 * FPS), int(1.8 * FPS))
