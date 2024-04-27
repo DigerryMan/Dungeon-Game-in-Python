@@ -28,6 +28,7 @@ class Game:
         self.paused = False
 
         self.e_pressed = False
+        self.space_pressed = False
 
         self.handle_resolution_change(window_size)  
                 
@@ -105,6 +106,9 @@ class Game:
 
 
     def events(self):
+        self.e_pressed = False
+        self.space_pressed = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -116,12 +120,11 @@ class Game:
                 if event.key == pygame.K_e:
                     self.e_pressed = True
 
+                if event.key == pygame.K_SPACE:
+                    self.space_pressed = True
+
                 if event.key == pygame.K_TAB:
                     self.player.eq_opened = not self.player.eq_opened
-
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_e:
-                    self.e_pressed = False
 
 
     def update(self):

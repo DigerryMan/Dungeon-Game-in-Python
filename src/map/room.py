@@ -243,7 +243,9 @@ class Room():
         self.game.trap_door.draw(screen)
 
         screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+
+        to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
         
-        sprite_list = sorted(self.game.entities, key=lambda sprite: sprite._layer)
+        sprite_list = sorted(to_be_sorted, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             screen.blit(sprite.image, sprite.rect)
