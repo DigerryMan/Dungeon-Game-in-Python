@@ -58,7 +58,9 @@ class Player(pygame.sprite.Sprite):
         self.last_horizontall_facing = Directions.RIGHT
         self.x_change = 0
         self.y_change = 0
-        
+        self.shot_try = False
+        self.head_tear_anime_time_left = -1
+
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -141,24 +143,24 @@ class Player(pygame.sprite.Sprite):
 
     def _shoot(self, keys, x_y_vel):
         self.__shot_time_left -= 1
-        shot_try = False
+        self.shot_try = False
         if keys[pygame.K_LEFT]:
             self.facing = Directions.LEFT
-            shot_try = True
+            self.shot_try = True
 
         if keys[pygame.K_RIGHT]:
             self.facing = Directions.RIGHT
-            shot_try = True
+            self.shot_try = True
 
         if keys[pygame.K_UP]:
             self.facing = Directions.UP
-            shot_try = True
+            self.shot_try = True
 
         if keys[pygame.K_DOWN]:
             self.facing = Directions.DOWN
-            shot_try = True
+            self.shot_try = True
         
-        if shot_try:
+        if self.shot_try:
             if self.__shot_time_left <= 0:
                 self.__shot_time_left = self.get_shooting_cooldown()
                 additional_v = 0
@@ -169,10 +171,12 @@ class Player(pygame.sprite.Sprite):
                         additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
                 x, y = self.calculate_bullet_position()
-
+                self.head_tear_anime_time_left = 8
                 Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
                         (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                        additional_speed=additional_v)
+            else:
+                self.shot_try = False
 
     def calculate_bullet_position(self):
         x, y = self.rect.centerx, self.rect.centery
@@ -277,27 +281,28 @@ class Player(pygame.sprite.Sprite):
     def animate(self):
         frame_change = False
         self.reversed_frame = False
-        self.head_frame_time -= 1
 
         if self.is_moving:
             self.time -= 1
-        if not self.is_moving:
-            self.set_standing_frame()
-
-        if self.head_frame_time <= 0:
-            self.head_frame_time = self.next_head_frame_ticks_cd
-            self.x_head_frame = (self.x_head_frame + 1) % 2
-            frame_change = True
-            self.set_head_frame()
-
+        
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd 
             self.x_legs_frame = (self.x_legs_frame + 1) % 10
-            frame_change = True
-            self.set_body_frame()
+        
+        self.set_body_frame()
 
-        if frame_change:
-            self.next_frame()
+        if not self.is_moving:
+            self.set_standing_frame()
+
+        if self.shot_try or self.head_tear_anime_time_left >= 0:
+            if self.shot_try or self.head_tear_anime_time_left == 0:
+                self.x_head_frame = (self.x_head_frame + 1) % 2
+            self.head_tear_anime_time_left -= 1
+
+        self.set_head_frame()
+
+        
+        self.next_frame()
 
     
     def set_standing_frame(self):
