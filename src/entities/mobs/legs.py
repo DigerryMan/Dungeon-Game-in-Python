@@ -13,23 +13,18 @@ class Legs(Enemy):
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("legs")
         self.images = []
-        
-        #self.frame = self.img.subsurface(pygame.Rect(0, 0, self.MOB_SIZE, self.MOB_SIZE))
-        #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
         self.frame = None
-        #self.image = self.frame
 
         self.x_frame = 0
         self.y_frame = 0
         self.which_frame = 0
         self.reversed_frame = False
-
+    
         self.prepare_images()
         self.image = self.images[0]
-        print(self.image)
+
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
-        #bounding_rect = self.frame.get_bounding_rect() 
 
     def prepare_images(self):
         for y in range(6):
@@ -60,10 +55,6 @@ class Legs(Enemy):
             if self.facing == Directions.LEFT:
                 self.reversed_frame = True
          
-
-        #self.frame = self.img.subsurface(pygame.Rect(x * 32, y * 32, 32, 32))
-        #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        
         if self.reversed_frame:
             self.image = pygame.transform.flip(self.images[curr_frame], True, False)
         else:

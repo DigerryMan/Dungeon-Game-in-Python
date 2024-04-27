@@ -14,6 +14,8 @@ class AlphaMaggot(Maggot):
 
         #SKIN
         self.img = game.image_loader.get_image("alpha_maggot")
+        self.images = []
+        self.prepared_images()
 
     def attack(self):
         self._shot_time_left -= 1

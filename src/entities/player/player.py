@@ -13,19 +13,12 @@ class Player(pygame.sprite.Sprite):
         self.health = BASE_HEALTH
         self.__speed = BASE_SPEED * game.settings.SCALE
         self.coins = 0
-
-        #SIZE
-        self.width = game.settings.PLAYER_SIZE
-        self.height = game.settings.PLAYER_SIZE
-
+        
         #SKIN
-        self.image = pygame.Surface([self.width, self.height])
-
         self.x_legs_frame = 0
         self.x_head_frame = 0
-        self.next_head_frame = 0
-        self.y_frame = 0
         self.reversed_frame = False
+        self.reversed_head = False
         
         #ANIMATION SPEED
         self.next_frame_ticks_cd = 3
@@ -35,16 +28,22 @@ class Player(pygame.sprite.Sprite):
 
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.img = game.image_loader.get_image("player")
-        self.frame = self.img.subsurface(pygame.Rect(self.x_legs_frame, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+
+        self.body_images = []
+        self.head_images = []
+        self.frame = None
+
+        self.prepare_images()
+        self.image = self.body_images[0]
+
         self.head_frame = None
         self.body_frame = None
         self.is_moving = False
         
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
-        self.rect.x = x * self.width
-        self.rect.y = y * self.height
+        self.rect.x = x * self.PLAYER_SIZE
+        self.rect.y = y * self.PLAYER_SIZE
         
         #EQ
         self.eq = Equipment(self)
@@ -65,7 +64,17 @@ class Player(pygame.sprite.Sprite):
 
         self.animate()
         self.mask = pygame.mask.from_surface(self.image)
+        self.correct_player_mask()
+        
+    def prepare_images(self):
+        for y in range(1, 3):
+            for x in range(10):
+                self.body_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, y * self.PLAYER_SIZE, self.PLAYER_SIZE, self.PLAYER_SIZE)))
 
+        for x in range(6):
+            self.head_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, 0, self.PLAYER_SIZE, self.PLAYER_SIZE)))
+
+    def correct_player_mask(self):
         removed_hitbox_from_sides = pygame.Surface((self.mask.get_size()[1] * 0.2, self.mask.get_size()[1]))
         removed_hitbox_from_top = pygame.Surface((self.mask.get_size()[0], self.mask.get_size()[0] * 0.25))
         cut_mask_sides = pygame.mask.from_surface(removed_hitbox_from_sides)
@@ -74,7 +83,7 @@ class Player(pygame.sprite.Sprite):
         self.mask.erase(cut_mask_sides, (0, 0))
         self.mask.erase(cut_mask_sides, (self.mask.get_size()[0] - cut_mask_sides.get_size()[0], 0))
         self.mask.erase(cut_mask_top, (0, 0))
-    
+
     def update(self):
         self._user_input()
         self._correct_diagonal_movement()
@@ -103,6 +112,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_a]:
             self.x_change -= self.__speed
             self.facing = Directions.LEFT
+            self.direction = Directions.LEFT
             self.last_horizontall_facing = Directions.LEFT
             x_y_vel[0] -= 1
             self.is_moving = True
@@ -110,6 +120,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_d]:
             self.x_change += self.__speed
             self.facing = Directions.RIGHT
+            self.direction = Directions.RIGHT
             self.last_horizontall_facing = Directions.RIGHT
             x_y_vel[0] += 1
             self.is_moving = True
@@ -117,12 +128,14 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_w]: 
             self.y_change -= self.__speed
             self.facing = Directions.UP
+            self.direction = Directions.UP
             x_y_vel[1] -= 1
             self.is_moving = True
 
         if keys[pygame.K_s]:
             self.y_change += self.__speed
             self.facing = Directions.DOWN
+            self.direction = Directions.DOWN
             x_y_vel[1] += 1
             self.is_moving = True
 
@@ -130,23 +143,22 @@ class Player(pygame.sprite.Sprite):
         self.__shot_time_left -= 1
         shot_try = False
         if keys[pygame.K_LEFT]:
-            self.direction = Directions.LEFT
+            self.facing = Directions.LEFT
             shot_try = True
 
         if keys[pygame.K_RIGHT]:
-            self.direction = Directions.RIGHT
+            self.facing = Directions.RIGHT
             shot_try = True
 
         if keys[pygame.K_UP]:
-            self.direction = Directions.UP
+            self.facing = Directions.UP
             shot_try = True
 
         if keys[pygame.K_DOWN]:
-            self.direction = Directions.DOWN
+            self.facing = Directions.DOWN
             shot_try = True
         
         if shot_try:
-            self.facing = self.direction
             if self.__shot_time_left <= 0:
                 self.__shot_time_left = self.get_shooting_cooldown()
                 additional_v = 0
@@ -158,19 +170,19 @@ class Player(pygame.sprite.Sprite):
 
                 x, y = self.calculate_bullet_position()
 
-                Bullet(self.game, x, y, self.direction, self.get_shot_speed(), True,
+                Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
                         (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                        additional_speed=additional_v)
 
     def calculate_bullet_position(self):
         x, y = self.rect.centerx, self.rect.centery
-        if self.direction == Directions.LEFT:
+        if self.facing == Directions.LEFT:
             x -= self.PLAYER_SIZE//2
-        elif self.direction == Directions.RIGHT:
+        elif self.facing == Directions.RIGHT:
             x += self.PLAYER_SIZE//2
-        elif self.direction == Directions.UP:
+        elif self.facing == Directions.UP:
             y -= self.PLAYER_SIZE//2
-        elif self.direction == Directions.DOWN:
+        elif self.facing == Directions.DOWN:
             y += self.PLAYER_SIZE//2
         return x, y
 
@@ -274,11 +286,10 @@ class Player(pygame.sprite.Sprite):
 
         if self.head_frame_time <= 0:
             self.head_frame_time = self.next_head_frame_ticks_cd
-            self.next_head_frame = (self.next_head_frame + 1) % 2
+            self.x_head_frame = (self.x_head_frame + 1) % 2
             frame_change = True
             self.set_head_frame()
 
-        
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd 
             self.x_legs_frame = (self.x_legs_frame + 1) % 10
@@ -288,42 +299,43 @@ class Player(pygame.sprite.Sprite):
         if frame_change:
             self.next_frame()
 
+    
     def set_standing_frame(self):
-        self.body_frame = self.img.subsurface(pygame.Rect(0 * 32, 1 * 32, 32, 32))
-        self.body_frame = pygame.transform.scale(self.body_frame, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+        self.body_frame = self.body_images[0]
 
     def next_frame(self):
         self.frame = pygame.Surface((self.PLAYER_SIZE, self.PLAYER_SIZE), pygame.SRCALPHA)
 
+        if self.reversed_frame:
+            self.body_frame = pygame.transform.flip(self.body_frame, True, False)
+
         self.frame.blit(self.body_frame, (0, self.PLAYER_SIZE*0.25))
+        
+        if self.reversed_head_frame:
+            self.head_frame = pygame.transform.flip(self.head_frame, True, False)
         self.frame.blit(self.head_frame, ((self.PLAYER_SIZE - self.head_frame.get_width())//2, -3))
         
-        if self.reversed_frame:
-            self.frame = pygame.transform.flip(self.frame, True, False)
-
         self.image = self.frame
     
     def set_body_frame(self):
-        if self.facing == Directions.LEFT:
-            self.y_frame = 2
-            self.reversed_frame = True
-        elif self.facing == Directions.RIGHT:
-            self.y_frame = 2
-        elif self.facing == Directions.UP or self.facing == Directions.DOWN:
-            self.y_frame = 1
-        
-        self.body_frame = self.img.subsurface(pygame.Rect(self.x_legs_frame * 32, self.y_frame * 32, 32, 32))
-        self.body_frame = pygame.transform.scale(self.body_frame, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+        if self.direction == Directions.LEFT or self.direction == Directions.RIGHT:
+            self.x_legs_frame += 10
+            if self.direction == Directions.LEFT: 
+                self.reversed_frame = True
+     
+        self.body_frame = self.body_images[self.x_legs_frame]
+        self.x_legs_frame %= 10
     
     def set_head_frame(self):
-        x = self.next_head_frame
+        x = self.x_head_frame
+        self.reversed_head_frame = False
         if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
             x += 2
             if self.facing == Directions.LEFT:
-                self.reversed_frame = True
+                self.reversed_head_frame = True
             
-        if self.facing == Directions.UP:
+        elif self.facing == Directions.UP:
             x += 4
         
-        self.head_frame = self.img.subsurface(pygame.Rect(x * 32, 0, 32, 32))
+        self.head_frame = self.head_images[x]
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))

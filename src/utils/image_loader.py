@@ -42,17 +42,14 @@ class ImageLoader:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
 
         for mob in self.mobs_:
-            if mob == "legs":
-                img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
-                frames_in_row, frames_in_col = img.get_width()/32, img.get_height()/32
-
-                new_size = ((frames_in_row * self.settings.MOB_SIZE), (frames_in_col * self.settings.MOB_SIZE))
-                self.images_dict[mob] = pygame.transform.scale(img, new_size)
-                print(self.images_dict[mob].get_width(), self.images_dict[mob].get_height())
-            else:
-                self.images_dict[mob] = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
-            
-
+            img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
+            frames_in_row, frames_in_col = img.get_width()/32, img.get_height()/32
+            size = self.settings.MOB_SIZE
+            if mob == "player":
+                size = self.settings.PLAYER_SIZE
+            new_size = (frames_in_row * size), (frames_in_col * size)
+            self.images_dict[mob] = pygame.transform.scale(img, new_size)
+       
         room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.12)
         for room in self.rooms_:
             if room == "controls":

@@ -22,12 +22,17 @@ class Slime(Enemy):
         #SKINS
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image('slime')
-        self.frame = self.img.subsurface(pygame.Rect(0, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image = self.frame
+        
+        self.images = []
+        self.prepare_images()
+        
+        self.frame = None
+        self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
+
         self.frame_x = 0
         self.frame_y = 0
+
         self.animation_jump_time = [0.25, 0.15, 0.05]       # <0.3
         self.animation_afk_time = [0.65, 0.5, 0.35]         # >=0.3 & <=0.7
         self.animation_land_time = [0.99, 0.94, 0.89, 0.84] # >0.7 
@@ -63,6 +68,11 @@ class Slime(Enemy):
         #REST
         self.find_possible_moves() #for first animation to work
         self.prepare_atack = False
+
+    def prepare_images(self):
+        for y in range(3):
+            for x in range(4):
+                self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE)))
 
     def prepare_animation_time(self):
         for index, value in enumerate(self.animation_jump_time):
@@ -209,9 +219,10 @@ class Slime(Enemy):
                 self.frame_y = 0 
 
             if frame_changed:
-                self.frame = self.img.subsurface(pygame.Rect(self.frame_x * 32, self.frame_y * 32, 32, 32))
-                self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+                #self.frame = self.img.subsurface(pygame.Rect(self.frame_x * 32, self.frame_y * 32, 32, 32))
+                #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
                 
+                self.frame = self.images[self.frame_x + self.frame_y * 4]
                 if self.is_jumping_left and self.next_jump_time_left < int(0.3 * self.jump_cd):
                     self.frame = pygame.transform.flip(self.frame, True, False)
    

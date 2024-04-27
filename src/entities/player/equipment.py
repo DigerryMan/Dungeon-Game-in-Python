@@ -254,11 +254,10 @@ class Equipment():
         stats = item["stats"]
         healValue = 0
 
-        "halo".find
-
         if stats.get("description") is not None:
             for key, value in stats.items():
                 if key != "description" and self.extra_stats.get(key) is not None:
+                    
                     if key.find("multiplier") != -1:
                         self.extra_stats[key] *= value
                     else:

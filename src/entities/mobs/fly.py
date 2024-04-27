@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import *
 from entities.enemy import Enemy
@@ -14,35 +15,40 @@ class Fly(Enemy):
         self._shot_cd = int(2.4 * FPS)
 
         #SKIN
-        self.x_frame = 0
-        self.y_frame = 0
-
+        self.curr_frame = 0
         self.next_frame_ticks_cd = 3
         self.time = self.next_frame_ticks_cd
         self.next_frame_time = 3
         self.dead_animation_time = 10 * self.next_frame_time
         self.dead_animation_time_left = self.dead_animation_time
         
-
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("fly")
-        self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image = self.frame
+        
+        self.images = []
+        self.death_images = []
+        self.prepare_images()
 
+        self.frame = None
+        self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
+
+    def prepare_images(self):
+        multi = random.randint(0, 2)
+        for x in range(multi, 2 + multi):
+            self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, 0, self.MOB_SIZE, self.MOB_SIZE)))       
+
+        death_mob_size = self.MOB_SIZE * 2
+        for y in range(1, 4):
+            for x in range(4):
+                self.death_images.append(self.img.subsurface(pygame.Rect(x * death_mob_size, y * death_mob_size, death_mob_size, death_mob_size)))       
 
     def animate(self):
         if not self._is_dead:
             self.time -= 1
             if self.time < 0:
-                self.x_frame += 1
-                self.x_frame %= 2
-    
-                self.frame = self.img.subsurface(pygame.Rect(self.x_frame * 32, self.y_frame * 32, 32, 32))
-                self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-                self.image = self.frame
-
+                self.curr_frame = (self.curr_frame + 1) % 2
+                self.image = self.images[self.curr_frame]
                 self.time = self.next_frame_ticks_cd
         else:
             self.start_dying()
@@ -50,11 +56,8 @@ class Fly(Enemy):
     def start_dying(self):
         self._is_dead = True
         if self.dead_animation_time_left == self.dead_animation_time:
-            self.x_frame = 0
-            self.y_frame = 1
-            self.frame = self.img.subsurface(pygame.Rect(self.x_frame * 64, self.y_frame * 64, 64, 64))
-            self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-            self.image = self.frame
+            self.curr_frame = 0
+            self.image = pygame.transform.scale(self.death_images[self.curr_frame], (self.MOB_SIZE, self.MOB_SIZE))
         
         self.dead_animation_time_left -= 1
         if self.dead_animation_time_left < 0:
@@ -63,14 +66,8 @@ class Fly(Enemy):
             self.next_frame()
 
     def next_frame(self):
-        self.x_frame += 1
-        if self.x_frame % 4 == 0:
-            self.x_frame = 0
-            self.y_frame += 1
-
-        self.frame = self.img.subsurface(pygame.Rect(self.x_frame * 64, self.y_frame * 64, 64, 64))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image = self.frame
+        self.curr_frame += 1
+        self.image = pygame.transform.scale(self.death_images[self.curr_frame], (self.MOB_SIZE, self.MOB_SIZE))
 
     #Actually running away from the player
     def move_because_of_player(self, chase:bool=False):
