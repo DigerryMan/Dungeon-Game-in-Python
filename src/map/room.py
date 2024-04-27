@@ -1,3 +1,4 @@
+from collections import deque
 from config import *
 from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.fly import Fly
@@ -39,6 +40,7 @@ class Room():
         self.select_graphics()
 
         self.crucial_positions = []
+        self.mob_spawn_positions = []
         self.well_generated = False
 
         self.doors = []
@@ -89,7 +91,20 @@ class Room():
                         elif col == 'T':
                             self.trap_door = TrapDoor(self.game, x, y)
 
-                        elif col == 'W':
+                        elif col == 'E':
+                            self.mob_spawn_positions.append((y, x))
+                            self.crucial_positions.append((y, x))
+
+                        else:
+                            if self.room_type not in special_rooms and col != "#" and random.uniform(0, 1) < 0.1: #10% chance of random block that wasn't planned
+                                if random.uniform(0, 1) < 0.5:
+                                    self.blocks.append(DestructableBlock(self.game, x, y))
+                                    room_map[y][x] = 'D'
+                                else:
+                                    self.blocks.append(Block(self.game, x, y))
+                                    room_map[y][x] = 'B'
+                        
+                        """elif col == 'W':
                             self.enemies.append(Wanderer(self.game, x, y))
                             self.crucial_positions.append((y, x))
                         elif col == 'L':
@@ -112,19 +127,12 @@ class Room():
                             self.crucial_positions.append((y, x))
                         elif col == 'G':
                             self.enemies.append(Ghost(self.game, x, y))
-                            self.crucial_positions.append((y, x))
+                            self.crucial_positions.append((y, x))"""
 
-                        else:
-                            if self.room_type not in special_rooms and col != "#" and random.uniform(0, 1) < 0.1: #10% chance of random block that wasn't planned
-                                if random.uniform(0, 1) < 0.5:
-                                    self.blocks.append(DestructableBlock(self.game, x, y))
-                                    room_map[y][x] = 'D'
-                                else:
-                                    self.blocks.append(Block(self.game, x, y))
-                                    room_map[y][x] = 'B'
 
                 if self.check_if_room_well_generated() == False:
                     self.crucial_positions.clear()
+                    self.mob_spawn_positions.clear()
                     self.doors = []
                     self.chest:Chest = None
                     self.enemies = []
@@ -147,6 +155,7 @@ class Room():
                         self.doors.append(Door(self.game, x, y, Directions.RIGHT))
 
                 self.spawn_outer_walls(doors_positions)
+                self.spawn_mobs()
 
                 for door in self.doors:
                     if door.direction == entry_direction.reverse(): #if the door is the one the player came from
@@ -218,29 +227,31 @@ class Room():
         elif entry_direction == Directions.CENTER:
             self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
 
+    def spawn_mobs(self):
+        for (y, x) in self.mob_spawn_positions:
+            self.enemies.append(Fly(self.game, x, y))
+
 
     def get_doors_positions(self):
         doors_positions = []
         for i in range(len(self.doors_to_spawn)):
             if self.doors_to_spawn[i] == Directions.UP:
                 doors_positions.append((0, self.game.settings.MAP_WIDTH / 2 - 0.5))
-                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH / 2 - 1))
-                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH / 2))
+                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH // 2 - 1))
+                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH // 2))
 
             elif self.doors_to_spawn[i] == Directions.DOWN:
                 doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2 - 0.5))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH / 2 - 1))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH / 2))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH // 2 - 1))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH // 2))
 
             elif self.doors_to_spawn[i] == Directions.LEFT:
                 doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, 0))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, 1))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2, 1))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT // 2, 1))
 
             elif self.doors_to_spawn[i] == Directions.RIGHT:
                 doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, self.game.settings.MAP_WIDTH - 1))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, self.game.settings.MAP_WIDTH - 2))
-                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2, self.game.settings.MAP_WIDTH - 2))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT // 2, self.game.settings.MAP_WIDTH - 2))
         
         return doors_positions
 
@@ -296,5 +307,30 @@ class Room():
         screen.blit(self.room_graphics["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
 
     def check_if_room_well_generated(self):
-        #TODO: implement BFS to check if all crucial positions are reachable
-        pass
+        row, col = self.crucial_positions[0]
+        width = len(self.room[0])
+        height = len(self.room)
+        q = deque()
+        q.append([row, col])
+        visited = [[False for _ in range(width)] for _ in range(height)]
+        visited[row][col] = True
+
+        d_row = [0, 0, 1, -1]
+        d_col = [1, -1, 0, 0]
+
+        while len(q) > 0:
+            row, col = q.popleft()
+
+            for i in range(4):
+                new_row = row + d_row[i]
+                new_col = col + d_col[i]
+
+                if new_row > 0 and new_row < height - 1 and new_col > 0 and new_col < width - 1 and not visited[new_row][new_col] and self.room[new_row][new_col] not in ['B', 'D']:
+                    q.append([new_row, new_col])
+                    visited[new_row][new_col] = True
+
+        for y, x in self.crucial_positions:
+            if not visited[y][x]:
+                return False
+            
+        return True
