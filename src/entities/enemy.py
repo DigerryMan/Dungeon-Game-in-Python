@@ -183,7 +183,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def get_mask_colliding_sprite(self, rect_hits):
         for sprite in rect_hits:
-            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked from rough blocks
+            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked by rough blocks
                 block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
                 block_mask = pygame.mask.from_surface(block_surface)
                 offset_x = sprite.rect.x - self.rect.x
