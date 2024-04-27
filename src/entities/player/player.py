@@ -166,7 +166,7 @@ class Player(pygame.sprite.Sprite):
                 additional_v = 0
                 
                 if PLAYER_SHOOT_DIAGONAL:
-                    _, other_axis_index = self.direction.rotate_clockwise().get_axis_tuple()     
+                    _, other_axis_index = self.facing.rotate_clockwise().get_axis_tuple()     
                     if x_y_vel[other_axis_index]:
                         additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
