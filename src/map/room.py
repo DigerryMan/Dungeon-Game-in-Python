@@ -236,16 +236,16 @@ class Room():
             controls_rect = self.room_background["controls"].get_rect()
             screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
 
-        self.game.blocks.draw(screen)
         self.game.doors.draw(screen)
+        self.game.blocks.draw(screen)
         self.game.chest.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
-
-        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
 
         to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
         
         sprite_list = sorted(to_be_sorted, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             screen.blit(sprite.image, sprite.rect)
+
+        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
