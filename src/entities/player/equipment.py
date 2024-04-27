@@ -250,7 +250,7 @@ class Equipment():
 
         self.unpack_item(item)
 
-    def use_pill(self):
+    def use_pill(self, item):
         pass
 
     def unpack_item(self, item):
