@@ -31,7 +31,7 @@ class Item(LootableItem):
 
     def roll_item(self, category):
         #self.item = self.game.items_list.get_random_item(category)
-        self.item = self.game.items_list.epics["PHD"]
+        self.item = self.game.items_list.very_commons["health_pill"]
 
     def picked_up(self):
         if not self.game.space_pressed:

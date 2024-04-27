@@ -129,8 +129,7 @@ class Room():
                             self.enemies.append(Ghost(self.game, x, y))
                             self.crucial_positions.append((y, x))"""
 
-
-                if self.check_if_room_well_generated() == False:
+                if self.check_if_room_well_generated(room_map) == False:
                     self.crucial_positions.clear()
                     self.mob_spawn_positions.clear()
                     self.doors = []
@@ -140,6 +139,7 @@ class Room():
                     self.walls = []
                     self.items = []
                     self.trap_door:TrapDoor = None
+                    self.game.clear_sprites()
                     continue
 
                 self.well_generated = True
@@ -158,10 +158,15 @@ class Room():
                 self.spawn_mobs()
 
                 for door in self.doors:
-                    if door.direction == entry_direction.reverse(): #if the door is the one the player came from
+                    if door.direction == entry_direction.reverse(): #if the door is the one the player used to enter the room
                         door.animate_closing()
 
                 self.room = room_map
+                """print("Room layout:")
+                for row in self.room:
+                    print(' '.join(row))
+
+                print("\n")"""
                 
 
         self.spawn_player(entry_direction)
@@ -306,14 +311,13 @@ class Room():
 
         screen.blit(self.room_graphics["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
 
-    def check_if_room_well_generated(self):
+    def check_if_room_well_generated(self, room_map):
         row, col = self.crucial_positions[0]
-        width = len(self.room[0])
-        height = len(self.room)
+        width = len(room_map[0])
+        height = len(room_map)
         q = deque()
         q.append([row, col])
         visited = [[False for _ in range(width)] for _ in range(height)]
-        visited[row][col] = True
 
         d_row = [0, 0, 1, -1]
         d_col = [1, -1, 0, 0]
@@ -325,9 +329,18 @@ class Room():
                 new_row = row + d_row[i]
                 new_col = col + d_col[i]
 
-                if new_row > 0 and new_row < height - 1 and new_col > 0 and new_col < width - 1 and not visited[new_row][new_col] and self.room[new_row][new_col] not in ['B', 'D']:
-                    q.append([new_row, new_col])
-                    visited[new_row][new_col] = True
+                if new_row > 0 and new_row < height - 1 and new_col > 0 and new_col < width - 1 and not visited[new_row][new_col] and room_map[new_row][new_col] not in ['B', 'C']:
+                    if (new_row, new_col) not in self.crucial_positions:
+                        q.append([new_row, new_col])
+                        visited[new_row][new_col] = True
+
+                    elif room_map[new_row][new_col] != 'D':
+                        q.append([new_row, new_col])
+                        visited[new_row][new_col] = True
+
+        """for row in visited:
+            mapped_row = map(lambda x: '.' if x else '#', row)
+            print(' '.join(mapped_row))"""
 
         for y, x in self.crucial_positions:
             if not visited[y][x]:

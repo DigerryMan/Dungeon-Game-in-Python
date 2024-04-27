@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from config import BASE_BULLET_FLY_TIME, BASE_DMG, BASE_HEALTH, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, BASE_SPEED
@@ -251,7 +252,12 @@ class Equipment():
         self.unpack_item(item)
 
     def use_pill(self, item):
-        pass
+        stats = item["stats"]
+        for key, value in stats.items():
+            if self.stats.get(key) is not None:
+                self.stats[key] += random.choice(value)
+                if self.stats[key] > self.max_stats[key]:
+                    self.stats[key] = self.max_stats[key]
 
     def unpack_item(self, item):
         stats = item["stats"]

@@ -135,12 +135,12 @@ class Game:
 
 
     def render_next_room(self, direction:Directions):
-        self._clear_sprites()
+        self.clear_sprites()
         self.map.render_next_room(direction)
         self._get_new_sprites(self.map.get_current_room())
 
 
-    def _clear_sprites(self):
+    def clear_sprites(self):
         self.all_sprites.empty()
         self.blocks.empty()
         self.doors.empty()
