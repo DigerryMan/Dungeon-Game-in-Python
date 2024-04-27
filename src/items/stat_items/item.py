@@ -30,7 +30,7 @@ class Item(LootableItem):
 
     def roll_item(self, category):
         #self.item = self.game.items_list.get_random_item(category)
-        self.item = self.game.items_list.epics["glass_cannon"]
+        self.item = self.game.items_list.very_commons["health_pill"]
 
     def picked_up(self):
         self.clean_up()

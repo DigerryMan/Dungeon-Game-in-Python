@@ -215,6 +215,9 @@ class Player(pygame.sprite.Sprite):
                 elif type == ItemType.ITEM:
                     self.eq.add_item(item_info)
 
+                elif type == ItemType.PILL:
+                    self.eq.use_pill(item_info)
+
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect
         self.rect.y = y_rect

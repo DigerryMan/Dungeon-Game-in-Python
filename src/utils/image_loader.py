@@ -77,6 +77,7 @@ class ImageLoader:
         self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png")
         self.images_dict["silver_coin"] = pygame.image.load("resources/other/nickel.png")
         self.images_dict["hearts"] = pygame.image.load("resources/items/pickup_hearts.png")
+        self.images_dict["pills"] = pygame.image.load("resources/items/pills.png")
         self.images_dict["small_chest"] = pygame.image.load("resources/other/small_chest.png")
         self.images_dict["medium_chest"] = pygame.image.load("resources/other/medium_chest.png")
         self.images_dict["large_chest"] = pygame.image.load("resources/other/large_chest.png")
@@ -137,6 +138,18 @@ class ImageLoader:
 
         self.lootables["full_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(0, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
         self.lootables["half_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(32, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
+
+        size_to_scale = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
+
+        self.lootables["speed_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(0, 0, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["health_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(32, 32, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["bullet_fly_time_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(32, 0, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["dmg_reduction_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(64, 64, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["dmg_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(0, 64, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["shooting_cooldown_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(32, 64, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["shot_speed_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(64, 0, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["luck_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(0, 32, 32, 32)), size_to_scale).convert_alpha()
+        self.lootables["immortality_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(64, 32, 32, 32)), size_to_scale).convert_alpha()
 
     def load_chests(self):
         for i in range(8):
