@@ -12,18 +12,30 @@ class Legs(Enemy):
 
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("legs")
-        self.frame = self.img.subsurface(pygame.Rect(0, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image = self.frame
+        self.images = []
+        
+        #self.frame = self.img.subsurface(pygame.Rect(0, 0, self.MOB_SIZE, self.MOB_SIZE))
+        #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.frame = None
+        #self.image = self.frame
 
         self.x_frame = 0
         self.y_frame = 0
         self.which_frame = 0
         self.reversed_frame = False
 
+        self.prepare_images()
+        self.image = self.images[0]
+        print(self.image)
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
+        #bounding_rect = self.frame.get_bounding_rect() 
 
+    def prepare_images(self):
+        for y in range(6):
+            for x in range(4):
+                self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE)))
+               
     def attack(self):
         pass
     
@@ -41,19 +53,19 @@ class Legs(Enemy):
             self.next_frame()
 
     def next_frame(self):
-        y = self.which_frame // 4 #for up down
-        x = self.which_frame % 4  #for up down
+        curr_frame = self.which_frame # if up/down
 
         if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
-            y = (10 + self.which_frame) // 4
-            x = (self.which_frame + 2) % 4
+            curr_frame += 10
             if self.facing == Directions.LEFT:
                 self.reversed_frame = True
-            
-        self.frame = self.img.subsurface(pygame.Rect(x * 32, y * 32, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        if self.reversed_frame:
-            self.frame = pygame.transform.flip(self.frame, True, False)
+         
 
-        self.image = self.frame
+        #self.frame = self.img.subsurface(pygame.Rect(x * 32, y * 32, 32, 32))
+        #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        
+        if self.reversed_frame:
+            self.image = pygame.transform.flip(self.images[curr_frame], True, False)
+        else:
+            self.image = self.images[curr_frame]
     

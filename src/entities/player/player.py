@@ -184,32 +184,36 @@ class Player(pygame.sprite.Sprite):
                 self.y_change += 1
                 
     def _collide_blocks(self, direction:str):
-        hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if hits:
-            mask_hits = pygame.sprite.spritecollide(self, self.game.collidables, False, pygame.sprite.collide_mask)
-            if mask_hits:  
+        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
+        if rect_hits:
+            mask_hits = self.get_mask_colliding_sprite(rect_hits)
+            if mask_hits: 
                 if direction == 'x':
                     self.rect.x -= self.x_change
 
                 if direction == 'y':
                     self.rect.y -= self.y_change
 
+    def get_mask_colliding_sprite(self, rect_hits):
+        for sprite in rect_hits:
+            if pygame.sprite.collide_mask(self, sprite):
+                return sprite
+
     def _check_items_pick_up(self):
-        hits = pygame.sprite.spritecollide(self, self.game.items, False)
-        if hits:
-            mask_hits = pygame.sprite.spritecollide(self, self.game.items, False, pygame.sprite.collide_mask)
-            for item in mask_hits:
-                if not item.is_picked_up:
-                    type, item_info = item.picked_up()
-                    
-                    if type == ItemType.COIN:
-                        self.coins += item_info
+        rect_hits = pygame.sprite.spritecollide(self, self.game.items, False)
+        if rect_hits:
+            item = self.get_mask_colliding_sprite(rect_hits)
+            if item and not item.is_picked_up:
+                type, item_info = item.picked_up()
+                
+                if type == ItemType.COIN:
+                    self.coins += item_info
 
-                    elif type == ItemType.PICKUP_HEART:
-                        self.heal(item_info)
+                elif type == ItemType.PICKUP_HEART:
+                    self.heal(item_info)
 
-                    elif type == ItemType.ITEM:
-                        self.eq.add_item(item_info)
+                elif type == ItemType.ITEM:
+                    self.eq.add_item(item_info)
 
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect

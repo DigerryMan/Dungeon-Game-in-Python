@@ -152,9 +152,9 @@ class Enemy(pygame.sprite.Sprite):
             self.correct_facing()
 
     def collide_player(self):
-        hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        if hits:
-            mask_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False, pygame.sprite.collide_mask)
+        rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
+        if rect_hits:
+            mask_hits = self.get_mask_colliding_sprite(rect_hits)
             if mask_hits:
                 self.game.damage_player(self._collision_damage)
                 if self._is_wandering:
@@ -170,13 +170,20 @@ class Enemy(pygame.sprite.Sprite):
             self._shot_time_left = self._shot_cd
 
     def collide_blocks(self, orientation:str):
-        hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if hits:
-            if orientation == 'x':
-                self.rect.x -= self.x_change
+        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
+        if rect_hits:
+            mask_hits = self.get_mask_colliding_sprite(rect_hits)
+            if mask_hits:
+                if orientation == 'x':
+                    self.rect.x -= self.x_change
 
-            if orientation == 'y':
-                self.rect.y -= self.y_change
+                if orientation == 'y':
+                    self.rect.y -= self.y_change
+
+    def get_mask_colliding_sprite(self, rect_hits):
+        for sprite in rect_hits:
+            if pygame.sprite.collide_mask(self, sprite):
+                return sprite
 
     def _correct_rounding(self):
         if self.x_change < 0:

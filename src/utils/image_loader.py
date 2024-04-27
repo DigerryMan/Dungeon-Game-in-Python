@@ -4,6 +4,7 @@ from config import *
 class ImageLoader:
     def __init__(self, settings):
         self.settings = settings
+        self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
         self.mobs_ = ["player", "alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
@@ -34,13 +35,23 @@ class ImageLoader:
         self.chests = {}
         self.load_chests()
 
+        
 
     def __load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
 
         for mob in self.mobs_:
-            self.images_dict[mob] = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
+            if mob == "legs":
+                img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
+                frames_in_row, frames_in_col = img.get_width()/32, img.get_height()/32
+
+                new_size = ((frames_in_row * self.settings.MOB_SIZE), (frames_in_col * self.settings.MOB_SIZE))
+                self.images_dict[mob] = pygame.transform.scale(img, new_size)
+                print(self.images_dict[mob].get_width(), self.images_dict[mob].get_height())
+            else:
+                self.images_dict[mob] = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
+            
 
         room_scaled_size = (self.settings.WIN_WIDTH * 1.08, self.settings.WIN_HEIGHT * 1.12)
         for room in self.rooms_:
@@ -88,12 +99,12 @@ class ImageLoader:
 
 
     def load_blocks(self):
-        self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.blocks["rock2"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(67, 5, 55, 57)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.blocks["rock3"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(131, 1, 55, 63)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.blocks["rock4"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 69, 51, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.blocks["rock5"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 133, 51, 56)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.blocks["rock6"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 135, 53, 55)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+        self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock2"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(67, 5, 55, 57)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock3"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(131, 1, 55, 63)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock4"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 69, 51, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock5"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 133, 51, 56)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock6"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 135, 53, 55)), self.tile_size_tuple).convert_alpha()
 
     def load_tears(self):
         self.tears["blue_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 12, 42, 42)), (self.settings.BULLET_SIZE, self.settings.BULLET_SIZE)).convert_alpha()
@@ -108,8 +119,8 @@ class ImageLoader:
             self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
     def load_trap_door(self):
-        self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-        self.trap_door["closed"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 80, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+        self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), self.tile_size_tuple).convert_alpha()
+        self.trap_door["closed"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 80, 32, 32)), self.tile_size_tuple).convert_alpha()
 
     def load_lootables(self):
         size_to_scale = (self.settings.TILE_SIZE * 1.5, self.settings.TILE_SIZE * 1.5)
@@ -129,9 +140,9 @@ class ImageLoader:
 
     def load_chests(self):
         for i in range(8):
-            self.chests[f"small_chest{i}"] = pygame.transform.scale(self.images_dict["small_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-            self.chests[f"medium_chest{i}"] = pygame.transform.scale(self.images_dict["medium_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
-            self.chests[f"large_chest{i}"] = pygame.transform.scale(self.images_dict["large_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), (self.settings.TILE_SIZE, self.settings.TILE_SIZE)).convert_alpha()
+            self.chests[f"small_chest{i}"] = pygame.transform.scale(self.images_dict["small_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
+            self.chests[f"medium_chest{i}"] = pygame.transform.scale(self.images_dict["medium_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
+            self.chests[f"large_chest{i}"] = pygame.transform.scale(self.images_dict["large_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
 
     def get_image(self, name: str):
         return self.images_dict[name]
