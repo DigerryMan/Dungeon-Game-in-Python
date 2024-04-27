@@ -2,6 +2,7 @@ import pygame
 import random
 from config import *
 from entities.bullet import Bullet
+from map.block import Block
 from utils.directions import Directions
 
 class Enemy(pygame.sprite.Sprite):
@@ -182,6 +183,14 @@ class Enemy(pygame.sprite.Sprite):
 
     def get_mask_colliding_sprite(self, rect_hits):
         for sprite in rect_hits:
+            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked from rough blocks
+                block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
+                block_mask = pygame.mask.from_surface(block_surface)
+                offset_x = sprite.rect.x - self.rect.x
+                offset_y = sprite.rect.y - self.rect.y
+                if self.mask.overlap(block_mask, (offset_x, offset_y)):
+                    return sprite
+                
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
 
