@@ -5,7 +5,6 @@ from config import *
 class LootableItem(pygame.sprite.Sprite):
     def __init__(self, game, x, y, drop_animtion = True):
         self.game = game
-        self._layer = 0
         self.groups = self.game.all_sprites, self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
 
@@ -16,6 +15,8 @@ class LootableItem(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.centery = y
+
+        self._layer = self.rect.centery
 
         self.x = self.rect.x
         self.y = self.rect.y
@@ -37,7 +38,7 @@ class LootableItem(pygame.sprite.Sprite):
 
             self.acceleration = 0.5 * game.settings.SCALE
             self.vertical_velocity = -((self.y - final_y - (self.acceleration * self.drop_animation_time**2)/2) / self.drop_animation_time)
-            self.vertical_velocity *= random.uniform(0.9, 1.1)
+            self.vertical_velocity *= random.uniform(0.95, 1.05)
 
         else:
             self.drop_animation_time = 0
@@ -45,6 +46,7 @@ class LootableItem(pygame.sprite.Sprite):
 
     def update(self):
         self.drop_animation()
+        self._layer = self.rect.centery
 
     def drop_animation(self):
         if self.drop_animation_time > 0:

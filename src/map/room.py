@@ -30,13 +30,16 @@ class Room():
         self.game = game
         self.player = game.player
         self.level = level
+        self.room_type = room_type
         self.is_cleared = False
         self.drawn_once = False
         self.doors_to_spawn = doors_to_spawn
 
-        self.room_background = {}
-
+        self.room_graphics = {}
         self.select_graphics()
+
+        self.crucial_positions = []
+        self.well_generated = False
 
         self.doors = []
         self.chest:Chest = None
@@ -65,58 +68,92 @@ class Room():
 
     def generate_room(self, entry_direction:Directions):
         if not self.drawn_once:
-            doors_positions = self.get_doors_positions()
+            while not self.well_generated:
+                doors_positions = self.get_doors_positions()
+                room_map = [[self.room[y][x] for x in range(len(self.room[y]))] for y in range(len(self.room))]
 
-            for y, row in enumerate(self.room):
-                for x, col in enumerate(row):
-                    if col == 'C':
-                        self.chest = Chest(self.game, x, y, "large")
+                for y, row in enumerate(self.room):
+                    for x, col in enumerate(row):
+                        if col == 'C':
+                            self.chest = Chest(self.game, x, y, "large")
 
-                    elif col == 'B':
-                        self.blocks.append(Block(self.game, x, y))
+                        elif col == 'B':
+                            self.blocks.append(Block(self.game, x, y))
 
-                    elif col == 'D':
-                        self.blocks.append(DestructableBlock(self.game, x, y))
+                        elif col == 'D':
+                            self.blocks.append(DestructableBlock(self.game, x, y))
 
-                    elif col == 's':
-                        self.blocks.append(ShopStand(self.game, x + .5, y + .5))
+                        elif col == 's':
+                            self.blocks.append(ShopStand(self.game, x + .5, y + .5))
 
-                    elif col == 'T':
-                        self.trap_door = TrapDoor(self.game, x, y)
+                        elif col == 'T':
+                            self.trap_door = TrapDoor(self.game, x, y)
 
-                    if not self.is_cleared:
-                        if col == 'W':
+                        elif col == 'W':
                             self.enemies.append(Wanderer(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'L':
                             self.enemies.append(Legs(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'P':
                             self.enemies.append(Parasite(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'M':
                             self.enemies.append(Maggot(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'A':
                             self.enemies.append(AlphaMaggot(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'F':
                             self.enemies.append(Fly(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'S':
                             self.enemies.append(Slime(self.game, x, y))
+                            self.crucial_positions.append((y, x))
                         elif col == 'G':
                             self.enemies.append(Ghost(self.game, x, y))
+                            self.crucial_positions.append((y, x))
 
-            for (y, x) in doors_positions:
-                if(y == 0):
-                    self.doors.append(Door(self.game, x, y, Directions.UP))
-                elif(y == self.game.settings.MAP_HEIGHT - 1):
-                    self.doors.append(Door(self.game, x, y, Directions.DOWN))
-                elif(x == 0):
-                    self.doors.append(Door(self.game, x, y, Directions.LEFT))
-                elif(x == self.game.settings.MAP_WIDTH - 1):
-                    self.doors.append(Door(self.game, x, y, Directions.RIGHT))
+                        else:
+                            if self.room_type not in special_rooms and col != "#" and random.uniform(0, 1) < 0.1: #10% chance of random block that wasn't planned
+                                if random.uniform(0, 1) < 0.5:
+                                    self.blocks.append(DestructableBlock(self.game, x, y))
+                                    room_map[y][x] = 'D'
+                                else:
+                                    self.blocks.append(Block(self.game, x, y))
+                                    room_map[y][x] = 'B'
 
-            self.spawn_outer_walls(doors_positions)
+                if self.check_if_room_well_generated() == False:
+                    self.crucial_positions.clear()
+                    self.doors = []
+                    self.chest:Chest = None
+                    self.enemies = []
+                    self.blocks = []
+                    self.walls = []
+                    self.items = []
+                    self.trap_door:TrapDoor = None
+                    continue
 
-            for door in self.doors:
-                if door.direction == entry_direction.reverse(): #if the door is the one the player came from
-                    door.animate_closing()
+                self.well_generated = True
+
+                for (y, x) in doors_positions:
+                    if(y == 0):
+                        self.doors.append(Door(self.game, x, y, Directions.UP))
+                    elif(y == self.game.settings.MAP_HEIGHT - 1):
+                        self.doors.append(Door(self.game, x, y, Directions.DOWN))
+                    elif(x == 0):
+                        self.doors.append(Door(self.game, x, y, Directions.LEFT))
+                    elif(x == self.game.settings.MAP_WIDTH - 1):
+                        self.doors.append(Door(self.game, x, y, Directions.RIGHT))
+
+                self.spawn_outer_walls(doors_positions)
+
+                for door in self.doors:
+                    if door.direction == entry_direction.reverse(): #if the door is the one the player came from
+                        door.animate_closing()
+
+                self.room = room_map
+                
 
         self.spawn_player(entry_direction)
         self.player.spawn_pets()
@@ -187,15 +224,23 @@ class Room():
         for i in range(len(self.doors_to_spawn)):
             if self.doors_to_spawn[i] == Directions.UP:
                 doors_positions.append((0, self.game.settings.MAP_WIDTH / 2 - 0.5))
+                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH / 2 - 1))
+                self.crucial_positions.append((1, self.game.settings.MAP_WIDTH / 2))
 
             elif self.doors_to_spawn[i] == Directions.DOWN:
                 doors_positions.append((self.game.settings.MAP_HEIGHT - 1, self.game.settings.MAP_WIDTH / 2 - 0.5))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH / 2 - 1))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT - 2, self.game.settings.MAP_WIDTH / 2))
 
             elif self.doors_to_spawn[i] == Directions.LEFT:
                 doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, 0))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, 1))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2, 1))
 
             elif self.doors_to_spawn[i] == Directions.RIGHT:
                 doors_positions.append((self.game.settings.MAP_HEIGHT / 2 - 0.5, self.game.settings.MAP_WIDTH - 1))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2 - 1, self.game.settings.MAP_WIDTH - 2))
+                self.crucial_positions.append((self.game.settings.MAP_HEIGHT / 2, self.game.settings.MAP_WIDTH - 2))
         
         return doors_positions
 
@@ -219,31 +264,37 @@ class Room():
 
     def select_graphics(self):
         if self.room == special_rooms["start"] and self.level == 1:
-            self.room_background["controls"] = self.game.image_loader.get_image("controls")
+            self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
         if self.level == 1:
-            self.room_background["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
 
         if self.room == special_rooms["shop"]:
-            self.room_background["background_image"] = self.game.image_loader.get_image("shop_room")
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("shop_room")
             
-        self.room_background["shading"] = self.game.image_loader.get_image("shading")
+        self.room_graphics["shading"] = self.game.image_loader.get_image("shading")
 
 
     def draw(self, screen):
-        screen.blit(self.room_background["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+        screen.blit(self.room_graphics["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
         if self.room == special_rooms["start"] and self.level == 1:
-            controls_rect = self.room_background["controls"].get_rect()
-            screen.blit(self.room_background["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
+            controls_rect = self.room_graphics["controls"].get_rect()
+            screen.blit(self.room_graphics["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
 
-        self.game.blocks.draw(screen)
         self.game.doors.draw(screen)
+        self.game.blocks.draw(screen)
         self.game.chest.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
 
-        screen.blit(self.room_background["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+        to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
         
-        sprite_list = sorted(self.game.entities, key=lambda sprite: sprite._layer)
+        sprite_list = sorted(to_be_sorted, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
             screen.blit(sprite.image, sprite.rect)
+
+        screen.blit(self.room_graphics["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
+
+    def check_if_room_well_generated(self):
+        #TODO: implement BFS to check if all crucial positions are reachable
+        pass

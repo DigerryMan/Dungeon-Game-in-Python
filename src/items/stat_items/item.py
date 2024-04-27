@@ -1,6 +1,7 @@
 import pygame
 from items.item_types import ItemType
 from items.lootable_item import LootableItem
+from items.stat_items.categories import Categories
 from items.stat_items.items_list import ItemsList
 
 class Item(LootableItem):
@@ -30,11 +31,17 @@ class Item(LootableItem):
 
     def roll_item(self, category):
         #self.item = self.game.items_list.get_random_item(category)
-        self.item = self.game.items_list.epics["glass_cannon"]
+        self.item = self.game.items_list.epics["PHD"]
 
     def picked_up(self):
+        if not self.game.space_pressed:
+            return None, None
+        
         self.clean_up()
         self.kill()
         self.is_picked_up = True
+
+        if self.item["category"] == Categories.VERY_COMMON:
+            return ItemType.PILL, self.item
         
         return ItemType.ITEM, self.item

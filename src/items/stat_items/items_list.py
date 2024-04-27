@@ -1,5 +1,4 @@
 from items.stat_items.categories import Categories
-from utils.image_loader import ImageLoader
 import pygame
 import random
 
@@ -7,9 +6,91 @@ class ItemsList():
     def __init__(self, game):
         self.game = game
 
+        self.very_commons = {}
         self.commons = {}
         self.epics = {}
-        self.legendaries ={}
+        self.legendaries = {}
+
+        self.very_commons["health_pill"] = {
+            "name": "Health pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "health": [-1, -0.5, 0.5, 1]
+            },
+            "image": game.image_loader.lootables["health_pill"]
+        }
+
+        self.very_commons["dmg_pill"] = {
+            "name": "Damage pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "dmg": [-0.2, -0.1, 0.1, 0.2]
+            },
+            "image": game.image_loader.lootables["dmg_pill"]
+        }
+
+        self.very_commons["dmg_reduction_pill"] = {
+            "name": "Damage reduction pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "dmg_reduction": [-0.1, -0.05, 0.05, 0.1]
+            },
+            "image": game.image_loader.lootables["dmg_reduction_pill"]
+        }
+
+        self.very_commons["shooting_cooldown_pill"] = {
+            "name": "Shooting cooldown pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "shooting_cooldown": [-0.8, -0.04, 0.04, 0.8]
+            },
+            "image": game.image_loader.lootables["shooting_cooldown_pill"]
+        }
+
+        self.very_commons["shot_speed_pill"] = {
+            "name": "Shot speed pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "shot_speed": [-1, -0.5, 0.5, 1]
+            },
+            "image": game.image_loader.lootables["shot_speed_pill"]
+        }
+
+        self.very_commons["bullet_fly_time_pill"] = {
+            "name": "Bullet fly time pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "bullet_fly_time": [-1, -0.5, 0.5, 1]
+            },
+            "image": game.image_loader.lootables["bullet_fly_time_pill"]
+        }
+
+        self.very_commons["speed_pill"] = {
+            "name": "Speed pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "speed": [-0.5, -0.25, 0.25, 0.5]
+            },
+            "image": game.image_loader.lootables["speed_pill"]
+        }
+
+        self.very_commons["luck_pill"] = {
+            "name": "Luck pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "luck": [-0.05, -0.025, 0.025, 0.05]
+            },
+            "image": game.image_loader.lootables["luck_pill"]
+        }
+
+        self.very_commons["immortality_pill"] = {
+            "name": "Immortality pill",
+            "category": Categories.VERY_COMMON,
+            "stats": {
+                "immortality": [-0.25, -0.125, 0.125, 0.25]
+            },
+            "image": game.image_loader.lootables["immortality_pill"]
+        }
 
         self.commons["heart"] = {
             "name": "Heart",
@@ -98,6 +179,14 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(7 * 32, 17 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
+        self.epics["PHD"] = {
+            "name": "PHD",
+            "category": Categories.EPIC,
+            "stats":{
+                "description": "You are immune to negative effects of the pills!",
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
 
         #DOBRAC IKONKE
         self.legendaries["friendly_ghost"] = {
@@ -130,11 +219,16 @@ class ItemsList():
 
 
     def get_random_item(self, category):
-        if category == Categories.COMMON:
+        if category == Categories.VERY_COMMON:
+            return random.choice(list(self.very_commons.values()))
+
+        elif category == Categories.COMMON:
             return random.choice(list(self.commons.values()))
+        
         elif category == Categories.EPIC:
             return random.choice(list(self.epics.values()))
+        
         elif category == Categories.LEGENDARY:
             return random.choice(list(self.legendaries.values()))
-        else:
-            return None
+        
+        return None

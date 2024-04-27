@@ -14,7 +14,7 @@ class Block(pygame.sprite.Sprite):
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
 
-        self.image = game.image_loader.blocks["rock" + str(random.randint(1, 6))].copy()
+        self.image = game.image_loader.blocks["rock" + str(random.randint(1, 4))].copy()
         self.mask = pygame.mask.from_surface(self.image)
         
         self.rect = self.image.get_rect()
