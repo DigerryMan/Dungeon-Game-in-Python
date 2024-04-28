@@ -258,6 +258,8 @@ class Equipment():
                 self.stats[key] += random.choice(value)
                 if self.stats[key] > self.max_stats[key]:
                     self.stats[key] = self.max_stats[key]
+                if self.stats[key] < -2:
+                    self.stats[key] = -2
 
     def unpack_item(self, item):
         stats = item["stats"]
