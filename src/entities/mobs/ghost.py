@@ -26,19 +26,18 @@ class Ghost(Enemy):
         self.which_frame = 0
         self.last_rigth_left_facing = Directions.RIGHT
     
-        self.prepare_images()
+        self.__prepare_images()
         self.image = self.images[0]
 
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
 
-    def prepare_images(self):
+    def __prepare_images(self):
         for x in range(6):
             self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, 0, self.MOB_SIZE, self.MOB_SIZE)))
 
     def animate(self):
         self.time -= 1
-   
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd 
             self.which_frame += 1
