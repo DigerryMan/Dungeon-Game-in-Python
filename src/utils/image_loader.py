@@ -7,7 +7,7 @@ class ImageLoader:
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
-        self.mobs_ = ["player", "alpha_maggot", "fly","legs", "maggot", "parasite", "slime"]
+        self.mobs_ = ["player", "alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer"]
         self.rooms_ = ["controls", "shading", "shop_room", "basement1", "basement2", "basement3", "basement4"]
         self.doors_ = ["angel_door", "boss_door", "devil_door", "basement_door1", "red_door"]
         self.blocks_ = ["rocks2"]

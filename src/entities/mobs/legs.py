@@ -15,8 +15,6 @@ class Legs(Enemy):
         self.images = []
         self.frame = None
 
-        self.x_frame = 0
-        self.y_frame = 0
         self.which_frame = 0
         self.reversed_frame = False
     
