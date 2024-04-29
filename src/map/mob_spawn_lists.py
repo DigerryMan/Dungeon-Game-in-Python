@@ -7,15 +7,25 @@
 # S - slime
 # W - wanderer
 
+from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.fly import Fly
+from entities.mobs.ghost import Ghost
+from entities.mobs.legs import Legs
+from entities.mobs.maggot import Maggot
+from entities.mobs.parasite import Parasite
+from entities.mobs.slime import Slime
+from entities.mobs.wanderer import Wanderer
+
+
 EASY = [
-['W','W'],
-['F','F','F'],
-['S'],
-['M','M','M'],
-['M','M','F','F'],
-['A'],
-['L','L'],
-['P', 'P','F']
+[Wanderer, Wanderer],
+[Fly, Fly, Fly],
+[Slime],
+[Maggot, Maggot, Maggot],
+[Maggot, Maggot, Fly, Fly],
+[AlphaMaggot],
+[Legs, Legs],
+[Parasite, Parasite, Legs]
 ]
 
 MEDIUM = [
@@ -28,7 +38,6 @@ MEDIUM = [
 ['A','A','P','P'],
 ['M','M','G','L'],
 ['P','F','L','L','L']
-
 ]
 
 HARD = [
@@ -39,5 +48,4 @@ HARD = [
 ['M','A','A','S','P'],
 ['F','F','F','F','G','G'],
 ['A','A','A']
-
 ]

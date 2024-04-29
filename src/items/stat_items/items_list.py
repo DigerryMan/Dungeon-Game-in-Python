@@ -183,20 +183,19 @@ class ItemsList():
             "name": "PHD",
             "category": Categories.EPIC,
             "stats":{
-                "description": "You are immune to negative effects of the pills!",
+                "description": "You are immune to negative effects of the pills",
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
-        #DOBRAC IKONKE
         self.legendaries["friendly_ghost"] = {
             "name": "Friendly ghost",
             "category": Categories.LEGENDARY,
             "stats": {
-                "description": "It's so cute! It will follow you and give you a lot of love! <3",
+                "description": "A friendly ghost is there to assist you",
                 "friendly_ghost": 1
             },
-            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(36 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+            "image": pygame.transform.scale(game.image_loader.get_image("friend_ghost").subsurface(pygame.Rect(0, 0, game.settings.MOB_SIZE, game.settings.MOB_SIZE)), (game.settings.TILE_SIZE // 2, game.settings.TILE_SIZE // 2))
         }
 
         self.legendaries["eye_of_horus"] = {

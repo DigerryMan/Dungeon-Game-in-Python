@@ -47,6 +47,7 @@ class Game:
         self.trap_door = pygame.sprite.LayeredUpdates()
         self.collidables = pygame.sprite.LayeredUpdates()
 
+        self.difficulty = 1
         self.map = None
         self.current_level = 1
         self.player = None
