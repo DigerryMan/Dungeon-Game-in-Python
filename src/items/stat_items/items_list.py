@@ -1,3 +1,4 @@
+from config import DROP_LOOT_EVERYTIME
 from items.stat_items.categories import Categories
 import pygame
 import random
@@ -219,16 +220,21 @@ class ItemsList():
 
 
     def get_random_item(self, category):
-        if category == Categories.VERY_COMMON:
-            return random.choice(list(self.very_commons.values()))
+        if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
+            if category == Categories.VERY_COMMON:
+                return random.choice(list(self.very_commons.values()))
+            return self.epics.get("PHD")
+        else:
+            if category == Categories.VERY_COMMON:
+                return random.choice(list(self.very_commons.values()))
 
-        elif category == Categories.COMMON:
-            return random.choice(list(self.commons.values()))
-        
-        elif category == Categories.EPIC:
-            return random.choice(list(self.epics.values()))
-        
-        elif category == Categories.LEGENDARY:
-            return random.choice(list(self.legendaries.values()))
-        
+            elif category == Categories.COMMON:
+                return random.choice(list(self.commons.values()))
+            
+            elif category == Categories.EPIC:
+                return random.choice(list(self.epics.values()))
+            
+            elif category == Categories.LEGENDARY:
+                return random.choice(list(self.legendaries.values()))
+            
         return None
