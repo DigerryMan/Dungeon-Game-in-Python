@@ -62,6 +62,7 @@ class Fly(Enemy):
         self.dead_animation_time_left -= 1
         if self.dead_animation_time_left < 0:
             self.kill()
+            self.drop_lootable()
         elif self.dead_animation_time_left % self.next_frame_time == 0:
             self.next_frame()
 

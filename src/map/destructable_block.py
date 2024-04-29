@@ -14,10 +14,10 @@ class DestructableBlock(Block):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        self.durability = 5
+        self.durability = 3
 
-    def get_hit(self, dmg):
-        self.durability -= dmg
+    def get_hit(self):
+        self.durability -= 1
         if self.durability <= 0:
             self.kill()
             self.game.map.get_current_room().remove_block(self)

@@ -76,8 +76,14 @@ class Room():
 
                 for y, row in enumerate(self.room):
                     for x, col in enumerate(row):
-                        if col == 'C':
-                            self.chest = Chest(self.game, x, y, "large")
+                        if col == 'C' and not self.chest and random.uniform(0, 1) < 0.60: # 60% chance to actually spawn a chest
+                            rand = random.uniform(0, 1)
+                            if rand < 0.45:
+                                self.chest = Chest(self.game, x, y, "small")
+                            elif rand < 0.80:
+                                self.chest = Chest(self.game, x, y, "medium")
+                            else:
+                                self.chest = Chest(self.game, x, y, "large")
 
                         elif col == 'B':
                             self.blocks.append(Block(self.game, x, y))
@@ -103,31 +109,7 @@ class Room():
                                 else:
                                     self.blocks.append(Block(self.game, x, y))
                                     room_map[y][x] = 'B'
-                        
-                        """elif col == 'W':
-                            self.enemies.append(Wanderer(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'L':
-                            self.enemies.append(Legs(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'P':
-                            self.enemies.append(Parasite(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'M':
-                            self.enemies.append(Maggot(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'A':
-                            self.enemies.append(AlphaMaggot(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'F':
-                            self.enemies.append(Fly(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'S':
-                            self.enemies.append(Slime(self.game, x, y))
-                            self.crucial_positions.append((y, x))
-                        elif col == 'G':
-                            self.enemies.append(Ghost(self.game, x, y))
-                            self.crucial_positions.append((y, x))"""
+
 
                 if self.check_if_room_well_generated(room_map) == False:
                     self.crucial_positions.clear()
@@ -155,13 +137,13 @@ class Room():
                         self.doors.append(Door(self.game, x, y, Directions.RIGHT))
 
                 self.spawn_outer_walls(doors_positions)
-                self.spawn_mobs()
 
                 for door in self.doors:
                     if door.direction == entry_direction.reverse(): #if the door is the one the player used to enter the room
                         door.animate_closing()
 
                 self.room = room_map
+                self.spawn_mobs()
                 """print("Room layout:")
                 for row in self.room:
                     print(' '.join(row))
@@ -234,7 +216,7 @@ class Room():
 
     def spawn_mobs(self):
         for (y, x) in self.mob_spawn_positions:
-            self.enemies.append(Fly(self.game, x, y))
+            self.enemies.append(Wanderer(self.game, x, y))
 
 
     def get_doors_positions(self):
@@ -268,7 +250,9 @@ class Room():
             door.open()
 
         if self.chest and not self.chest.is_open:
-            self.items = self.chest.open()
+            items_dropped = self.chest.open()
+            for item in items_dropped:
+                self.items.append(item)
 
         if self.trap_door:
             self.trap_door.open()
@@ -279,7 +263,7 @@ class Room():
     
 
     def select_graphics(self):
-        if self.room == special_rooms["start"] and self.level == 1:
+        if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
         if self.level == 1:
@@ -293,7 +277,7 @@ class Room():
 
     def draw(self, screen):
         screen.blit(self.room_graphics["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
-        if self.room == special_rooms["start"] and self.level == 1:
+        if self.room_type == "start" and self.level == 1:
             controls_rect = self.room_graphics["controls"].get_rect()
             screen.blit(self.room_graphics["controls"], ((self.game.settings.WIN_WIDTH - controls_rect.width) // 2.1, (self.game.settings.WIN_HEIGHT - controls_rect.height) // 2))
 

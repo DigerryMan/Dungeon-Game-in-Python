@@ -2,6 +2,11 @@ import pygame
 import random
 from config import *
 from entities.bullet import Bullet
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 from map.block import Block
 from utils.directions import Directions
 
@@ -57,6 +62,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self._is_dead = False
         self.game = game
+        self.room = game.map.get_current_room()
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
    
@@ -263,6 +269,19 @@ class Enemy(pygame.sprite.Sprite):
     def start_dying(self):
         self._is_dead = True
         self.kill()
+        self.drop_lootable()
+
+    def drop_lootable(self):
+        if random.random() < 0.3: #chance to have any drop at all
+            if random.random() < 0.7: # chance to have a lootable (coin, heart, etc.)
+                if random.random() < 0.5:
+                    self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                elif random.uniform(0, 0.5) < 0.3:
+                    self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                else:
+                    self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+            else:
+                self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
 
     @staticmethod
     def check_group_attacked():

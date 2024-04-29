@@ -158,7 +158,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.is_alive = False
                 for block_hit in mask_block_hits:
                     if isinstance(block_hit, DestructableBlock):
-                        block_hit.get_hit(self.dmg)
+                        block_hit.get_hit()
                         
     def get_mask_colliding_sprite(self, rect_hits):
         for sprite in rect_hits:

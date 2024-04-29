@@ -2,11 +2,10 @@ import pygame
 from items.item_types import ItemType
 from items.lootable_item import LootableItem
 from items.stat_items.categories import Categories
-from items.stat_items.items_list import ItemsList
 
 class Item(LootableItem):
-    def __init__(self, game, x, y, category):
-        super().__init__(game, x, y)
+    def __init__(self, game, x, y, category, drop_animtion = True):
+        super().__init__(game, x, y, drop_animtion)
         
         self.item = None
 
@@ -30,8 +29,8 @@ class Item(LootableItem):
         
 
     def roll_item(self, category):
-        #self.item = self.game.items_list.get_random_item(category)
-        self.item = self.game.items_list.legendaries["friendly_ghost"]
+        self.item = self.game.items_list.get_random_item(category)
+        #self.item = self.game.items_list.legendaries["friendly_ghost"]
 
     def picked_up(self):
         if not self.game.space_pressed:

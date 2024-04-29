@@ -62,26 +62,37 @@ class Chest(pygame.sprite.Sprite):
             for _ in range(random.randint(2, 4)):
                 items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
+            for _ in range(random.randint(0, 1)):
+                items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+            for _ in range(random.randint(0, 1)):
+                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
         elif self.type == "medium":
             for _ in range(random.randint(3, 5)):
                 items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-            for _ in range(random.randint(1, 2)):
+            for _ in range(random.randint(3, 4)):
                 items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
-            for _ in range(random.randint(0, 1)):
+            for _ in range(1):
                 items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
         elif self.type == "large":
             for _ in range(random.randint(5, 10)):
                 items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-            for _ in range(random.randint(2, 5)):
+            for _ in range(random.randint(5, 7)):
                 items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
-            for _ in range(1):
+            for _ in range(1, 2):
                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
-            items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
+            if random.uniform(0, 1) < 0.6:
+                items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
+
+            elif random.uniform(0, 0.4) < 0.35:
+                items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.EPIC))
+
+            else:
+                items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
