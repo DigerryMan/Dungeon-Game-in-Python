@@ -3,10 +3,14 @@ import random
 from config import *
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, is_collidable = True):
         self.game = game
         self._layer = BLOCK_LAYER
-        self.groups = self.game.all_sprites, self.game.blocks, self.game.collidables
+        if is_collidable:
+            self.groups = self.game.all_sprites, self.game.blocks, self.game.collidables
+        else:
+            self.groups = self.game.all_sprites, self.game.shop_stands
+
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * game.settings.TILE_SIZE

@@ -42,6 +42,7 @@ class Room():
         self.chest:Chest = None
         self.enemies = []
         self.blocks = []
+        self.shop_stands = []
         self.walls = []
         self.items = []
         self.trap_door:TrapDoor = None
@@ -52,6 +53,7 @@ class Room():
             "chest": self.chest,
             "enemies": self.enemies,
             "blocks": self.blocks,
+            "shop_stands": self.shop_stands,
             "walls": self.walls,
             "items": self.items,
             "trap_door": self.trap_door
@@ -63,9 +65,12 @@ class Room():
     def remove_block(self, block:Block):
         self.blocks.remove(block)
 
+    def remove_shop_stand(self, shop_stand:ShopStand):
+        self.shop_stands.remove(shop_stand)
+
     def generate_room(self, entry_direction:Directions):
         if not self.drawn_once:
-            random_block_density_factor = random.uniform(0.05, 0.3)
+            random_block_density_factor = random.uniform(0.05, 0.1)
             while not self.well_generated:
                 doors_positions = self.get_doors_positions()
                 room_map = [[self.room[y][x] for x in range(len(self.room[y]))] for y in range(len(self.room))]
@@ -88,7 +93,7 @@ class Room():
                             self.blocks.append(DestructableBlock(self.game, x, y))
 
                         elif col == 's':
-                            self.blocks.append(ShopStand(self.game, x + .5, y + .5))
+                            self.shop_stands.append(ShopStand(self.game, x + .5, y + .5))
 
                         elif col == 'T':
                             self.trap_door = TrapDoor(self.game, x, y)
@@ -292,6 +297,7 @@ class Room():
         self.game.chest.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
+        self.game.shop_stands.draw(screen)
 
         to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
         

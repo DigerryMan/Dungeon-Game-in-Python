@@ -38,6 +38,7 @@ class Game:
         self.entities = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.shop_stands = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
@@ -92,6 +93,7 @@ class Game:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.entities = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.shop_stands = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
@@ -144,6 +146,7 @@ class Game:
     def clear_sprites(self):
         self.all_sprites.empty()
         self.blocks.empty()
+        self.shop_stands.empty()
         self.doors.empty()
         self.attacks.empty()
         self.enemies.empty()
@@ -168,6 +171,10 @@ class Game:
         if objects["trap_door"]:
             self.trap_door.add(objects["trap_door"])
             self.all_sprites.add(objects["trap_door"])
+
+        if objects["shop_stands"]:
+            self.shop_stands.add(objects["shop_stands"])
+            self.all_sprites.add(self.shop_stands)
 
         self.items.add(objects["items"])
         self.enemies.add(objects["enemies"])
