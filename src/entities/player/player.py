@@ -112,7 +112,7 @@ class Player(pygame.sprite.Sprite):
 
     def _move(self, keys, x_y_vel):
         if keys[pygame.K_a]:
-            self.x_change -= self.__speed
+            self.x_change -= int(self.__speed)
             self.facing = Directions.LEFT
             self.direction = Directions.LEFT
             self.last_horizontall_facing = Directions.LEFT
@@ -120,7 +120,7 @@ class Player(pygame.sprite.Sprite):
             self.is_moving = True
         
         if keys[pygame.K_d]:
-            self.x_change += self.__speed
+            self.x_change += int(self.__speed)
             self.facing = Directions.RIGHT
             self.direction = Directions.RIGHT
             self.last_horizontall_facing = Directions.RIGHT
@@ -128,14 +128,14 @@ class Player(pygame.sprite.Sprite):
             self.is_moving = True
 
         if keys[pygame.K_w]: 
-            self.y_change -= self.__speed
+            self.y_change -= int(self.__speed)
             self.facing = Directions.UP
             self.direction = Directions.UP
             x_y_vel[1] -= 1
             self.is_moving = True
 
         if keys[pygame.K_s]:
-            self.y_change += self.__speed
+            self.y_change += int(self.__speed)
             self.facing = Directions.DOWN
             self.direction = Directions.DOWN
             x_y_vel[1] += 1

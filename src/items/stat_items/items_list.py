@@ -223,7 +223,7 @@ class ItemsList():
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
-            return self.epics.get("PHD")
+            return random.choice(list(self.legendaries.values()))
         else:
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
