@@ -9,8 +9,9 @@ from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from map.block import Block
 from utils.directions import Directions
+from abc import ABC, abstractmethod
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite, ABC):
     is_group_attacked:bool = False
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
                  is_wandering:bool=True, bullet_decay_sec:float=0):
@@ -253,6 +254,7 @@ class Enemy(pygame.sprite.Sprite):
     def roll_next_shot_cd(self):
         self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
 
+    @abstractmethod
     def animate(self):
         pass
             
