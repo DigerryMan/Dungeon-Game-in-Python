@@ -37,9 +37,8 @@ class Enemy(pygame.sprite.Sprite, ABC):
         
         #SKINS
         self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(GREEN)
         self.animation_loop = 1
-        self.mask = pygame.mask.from_surface(self.image) #USTAWIC DLA KAZDEGO SKINA PO 1 KLATCE ANIMACJI
+        self.mask = pygame.mask.from_surface(self.image) 
 
         #HITBOX
         self.rect = self.image.get_rect()
@@ -284,6 +283,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
                     self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
             else:
                 self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
+
+    @abstractmethod
+    def draw_additional_images(self, screen):
+        pass
 
     @staticmethod
     def check_group_attacked():

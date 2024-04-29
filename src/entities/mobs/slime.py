@@ -22,7 +22,9 @@ class Slime(Enemy):
         #SKINS
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image('slime')
-        
+        self.img_shadow = game.image_loader.get_image('slime_shadow')
+        self.img_shadow = pygame.transform.scale(self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6)))
+
         self.images = []
         self.prepare_images()
         
@@ -37,11 +39,12 @@ class Slime(Enemy):
         self.animation_afk_time = [0.65, 0.5, 0.35]         # >=0.3 & <=0.7
         self.animation_land_time = [0.99, 0.94, 0.89, 0.84] # >0.7 
         self.prepare_animation_time()
+        self.v_shadow_y = 0
 
         #POSITION
         self.x = x
         self.y = y
-
+        
         #MOVES
         self.room_layout = self.game.map.get_current_room().get_block_layout()
         self.possible_jumps = [(x_i, y_j) for x_i in range(-self._jump_range, self._jump_range + 1) 
@@ -67,6 +70,8 @@ class Slime(Enemy):
 
         #REST
         self.find_possible_moves() #for first animation to work
+        self.shadow_y = y * game.settings.TILE_SIZE
+        self.shadow_x = x * game.settings.TILE_SIZE
         self.prepare_atack = False
 
     def prepare_images(self):
@@ -95,7 +100,6 @@ class Slime(Enemy):
         for y in range(-1, 2):
             self.possible_jumps.remove((-1, y))
             self.possible_jumps.remove((1, y))
-        
 
     def move(self):
         if self.is_jumping:
@@ -126,6 +130,10 @@ class Slime(Enemy):
             self.rect.x = int(x * self.game.settings.TILE_SIZE) 
             self.rect.y = int(y * self.game.settings.TILE_SIZE)
 
+            #FOR SHADOW DISPLAY
+            self.shadow_y = int((self.old_jump_y + self.v_shadow_y * elapsed_time_sec) * self.game.settings.TILE_SIZE)
+            self.shadow_x = self.rect.x
+
     def find_possible_moves(self):
         possible_moves = []
         for jump in self.possible_jumps:
@@ -152,6 +160,7 @@ class Slime(Enemy):
     def calculate_parabolic_jump(self):
         self.z = self.new_jump_x - self.old_jump_x
         self.v_x = self.z / (self.t)
+        self.v_shadow_y = (self.new_jump_y - self.old_jump_y) / self.t
         self.tg = ((self.new_jump_y - self.old_jump_y) - 0.5 * 9.81 * (self.t) ** 2) / (self.v_x * (self.t))
 
     def calculate_current_y(self, t:float):
@@ -219,9 +228,6 @@ class Slime(Enemy):
                 self.frame_y = 0 
 
             if frame_changed:
-                #self.frame = self.img.subsurface(pygame.Rect(self.frame_x * 32, self.frame_y * 32, 32, 32))
-                #self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-                
                 self.frame = self.images[self.frame_x + self.frame_y * 4]
                 if self.is_jumping_left and self.next_jump_time_left < int(0.3 * self.jump_cd):
                     self.frame = pygame.transform.flip(self.frame, True, False)
@@ -232,7 +238,7 @@ class Slime(Enemy):
                 if unconvention_change:
                     self.frame_x = 0
                     self.frame_y = 1
-    
+
     def change_of_frame(self, frame_changed: list, unconvention_change=False):
         if not unconvention_change:
             self.frame_x += 1
@@ -240,3 +246,7 @@ class Slime(Enemy):
             self.frame_x = 0
             self.frame_y = 0
         frame_changed.append(True)
+    
+    def draw_additional_images(self, screen):
+        if self.is_jumping:
+            screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))
