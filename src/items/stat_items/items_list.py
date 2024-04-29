@@ -60,7 +60,7 @@ class ItemsList():
             "name": "Bullet fly time pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "bullet_fly_time": [-1, -0.5, 0.5, 1]
+                "bullet_fly_time": [-0.1, 0.1]
             },
             "image": game.image_loader.lootables["bullet_fly_time_pill"]
         }

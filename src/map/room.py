@@ -65,6 +65,7 @@ class Room():
 
     def generate_room(self, entry_direction:Directions):
         if not self.drawn_once:
+            random_block_density_factor = random.uniform(0.05, 0.3)
             while not self.well_generated:
                 doors_positions = self.get_doors_positions()
                 room_map = [[self.room[y][x] for x in range(len(self.room[y]))] for y in range(len(self.room))]
@@ -97,7 +98,7 @@ class Room():
                             self.crucial_positions.append((y, x))
 
                         else:
-                            if self.room_type not in special_rooms and col != "#" and random.uniform(0, 1) < 0.1: #10% chance of random block that wasn't planned
+                            if self.room_type not in special_rooms and col != "#" and random.uniform(0, 1) < random_block_density_factor: # chance of random block that wasn't planned
                                 if random.uniform(0, 1) < 0.5:
                                     self.blocks.append(DestructableBlock(self.game, x, y))
                                     room_map[y][x] = 'D'
