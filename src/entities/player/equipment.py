@@ -103,6 +103,7 @@ class Equipment():
 
         #font
         self.font_path = 'resources/fonts/IsaacGame.ttf'
+        self.font_path_2 = 'resources/fonts/LuckiestGuy-Regular.ttf'
         self.font_color = (54, 47, 45)
 
         #stats
@@ -146,13 +147,17 @@ class Equipment():
         x = self.big_item_x + self.big_item_size//2
         y = self.big_item_y + self.big_item_size + self.big_item_size//4
         
-        big_font = pygame.font.Font(self.font_path, 33)
-        font = pygame.font.Font(self.font_path, 23)
+        #big_font = pygame.font.Font(self.font_path, 33)
+        #font = pygame.font.Font(self.font_path, 23)
         small_font = pygame.font.Font(self.font_path, 20)
+
+        big_font_2 = pygame.font.Font(self.font_path_2, 33)
+        font_2 = pygame.font.Font(self.font_path_2, 23)
+        #small_font_2 = pygame.font.Font(self.font_path_2, 20)
 
         #item_name
         name_text = item["name"]
-        name = big_font.render(name_text, True, self.font_color)
+        name = big_font_2.render(name_text, True, self.font_color)
         name_rect = name.get_rect(center=(x, y))
         screen.blit(name, name_rect)
 
@@ -169,15 +174,14 @@ class Equipment():
             description_lines = []
             self.prepare_desc_lines(description, description_lines)
             for i, line in enumerate(description_lines):
-                description_text = font.render(line, True, self.font_color)
+                description_text = font_2.render(line, True, self.font_color)
                 description_rect = description_text.get_rect(center=(x, y + i * self.big_item_size // 4))
                 screen.blit(description_text, description_rect)
     
         else:
             for key, value in item["stats"].items():
                 char = "+" if key != "shooting_cooldown" else "-"
-                key = key.upper()
-                stat = font.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
+                stat = font_2.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
                 y += self.big_item_size//4
