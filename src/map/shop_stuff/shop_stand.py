@@ -10,9 +10,9 @@ class ShopStand(Block):
         super().__init__(game, x, y, is_collidable = False)
         self.content = self.get_random_item()
         self.image = self.content.image
-        self.price = 0
 
     def buy_item(self):
+        print(self.game.player.coins, self.price)
         if self.game.player.coins >= self.price:
             self.game.player.coins -= self.price
             self.game.player.eq.add_item(self.content.item)
