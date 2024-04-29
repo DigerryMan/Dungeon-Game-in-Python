@@ -284,7 +284,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
             else:
                 self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
 
-    @abstractmethod
     def draw_additional_images(self, screen):
         pass
 

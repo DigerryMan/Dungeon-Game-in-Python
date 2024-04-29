@@ -151,7 +151,8 @@ class Equipment():
         small_font = pygame.font.Font(self.font_path, 20)
 
         #item_name
-        name = big_font.render(item["name"], True, self.font_color)
+        name_text = item["name"]
+        name = big_font.render(name_text, True, self.font_color)
         name_rect = name.get_rect(center=(x, y))
         screen.blit(name, name_rect)
 
@@ -171,11 +172,11 @@ class Equipment():
                 description_text = font.render(line, True, self.font_color)
                 description_rect = description_text.get_rect(center=(x, y + i * self.big_item_size // 4))
                 screen.blit(description_text, description_rect)
-        
-
+    
         else:
             for key, value in item["stats"].items():
                 char = "+" if key != "shooting_cooldown" else "-"
+                key = key.upper()
                 stat = font.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
