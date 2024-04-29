@@ -59,7 +59,13 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         self.shot_try = False
+
+        self.head_tear_anime_cd = 4
         self.head_tear_anime_time_left = -1
+        
+        #SECOND SHOOT
+        self.shoot_second_bullet = False
+        self.shoot_second_time = 0
 
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -143,6 +149,7 @@ class Player(pygame.sprite.Sprite):
 
     def _shoot(self, keys, x_y_vel):
         self.__shot_time_left -= 1
+        self.shoot_second_bullet -= 1
         self.shot_try = False
         if keys[pygame.K_LEFT]:
             self.facing = Directions.LEFT
@@ -160,24 +167,33 @@ class Player(pygame.sprite.Sprite):
             self.facing = Directions.DOWN
             self.shot_try = True
         
-        if self.shot_try:
+        if self.shot_try or self.shoot_second_bullet >= 0:
             if self.__shot_time_left <= 0:
-                self.__shot_time_left = self.get_shooting_cooldown()
-                additional_v = 0
-                
-                if PLAYER_SHOOT_DIAGONAL:
-                    _, other_axis_index = self.facing.rotate_clockwise().get_axis_tuple()     
-                    if x_y_vel[other_axis_index]:
-                        additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
+                self.__shot_time_left = self.get_shooting_cooldown() 
+                if self.eq.extra_stats["extra_shot_time"]:
+                    self.shoot_second_bullet = self.eq.extra_stats["extra_shot_time"]
+                self.shoot_one_bullet(x_y_vel)
 
-                x, y = self.calculate_bullet_position()
-                self.head_tear_anime_time_left = 8
-                Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
-                        (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
-                       additional_speed=additional_v)
+            elif self.shoot_second_bullet == 0:
+                self.shoot_one_bullet(x_y_vel)
+                self.__shot_time_left = self.get_shooting_cooldown()
             else:
                 self.shot_try = False
 
+    def shoot_one_bullet(self, x_y_vel):
+        additional_v = 0
+        
+        if PLAYER_SHOOT_DIAGONAL:
+            _, other_axis_index = self.facing.rotate_clockwise().get_axis_tuple()     
+            if x_y_vel[other_axis_index]:
+                additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
+
+        x, y = self.calculate_bullet_position()
+        self.head_tear_anime_time_left = self.head_tear_anime_cd
+        Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
+                (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
+                additional_speed=additional_v)  
+        
     def calculate_bullet_position(self):
         x, y = self.rect.centerx, self.rect.centery
         if self.facing == Directions.LEFT:
@@ -294,21 +310,19 @@ class Player(pygame.sprite.Sprite):
             self.x_legs_frame = (self.x_legs_frame + 1) % 10
         
         self.set_body_frame()
-
         if not self.is_moving:
             self.set_standing_frame()
 
-        if self.shot_try or self.head_tear_anime_time_left >= 0:
-            if self.shot_try or self.head_tear_anime_time_left == 0:
-                self.x_head_frame = (self.x_head_frame + 1) % 2
-            self.head_tear_anime_time_left -= 1
-
+        self.check_tear_animation()
         self.set_head_frame()
-
         
         self.next_frame()
 
-    
+    def check_tear_animation(self):
+        self.head_tear_anime_time_left -= 1
+        if self.head_tear_anime_time_left == self.head_tear_anime_cd - 1 or self.head_tear_anime_time_left == 1:
+            self.x_head_frame = (self.x_head_frame + 1) % 2
+
     def set_standing_frame(self):
         self.body_frame = self.body_images[0]
 

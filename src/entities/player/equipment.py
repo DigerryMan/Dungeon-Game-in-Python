@@ -56,16 +56,17 @@ class Equipment():
             "friendly_ghost": 0,
             "dmg_multiplier": 1,
             "dmg_taken_multiplier": 1,
-            "PHD_obtained": 0
+            "PHD_obtained": 0,
+            "extra_shot_time": 0
         }
 
         self.extra_stats_max = {
             "friendly_ghost": 2,
             "dmg_multiplier": 3,
             "dmg_taken_multiplier": 3,
-            "PHD_obtained": float("inf")
-        }
-
+            "PHD_obtained": float("inf"),
+            "extra_shot_time": 4 # higher number -> higher time for extra shot to spawn
+        }                        # MINIMUM 4 for animation to work properly                
         self.player = player
 
         #background
