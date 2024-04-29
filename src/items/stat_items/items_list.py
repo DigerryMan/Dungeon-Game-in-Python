@@ -217,20 +217,20 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
-        self.legendaries["NAZWA"] = {
-            "name": "NAZWA",
+        self.legendaries["bulls_eye"] = {
+            "name": "Bull's eye",
             "category": Categories.LEGENDARY,
             "stats": {
-                "description": "A friendly ghost is there to assist you",
+                "description": "Double shot",
                 "extra_shot_time": 5
             },
-            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(5 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            return self.legendaries["NAZWA"]
+            return self.legendaries["bulls_eye"]
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
             return random.choice(list(self.legendaries.values()))
