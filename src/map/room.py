@@ -7,6 +7,7 @@ from entities.mobs.ghost import Ghost
 from entities.mobs.maggot import Maggot
 from entities.mobs.slime import Slime
 from entities.mobs.wanderer import Wanderer
+from map.mob_spawn_lists import *
 from map.trap_door import TrapDoor
 from .room_types import rooms, special_rooms
 from .block import *
@@ -41,6 +42,7 @@ class Room():
 
         self.crucial_positions = []
         self.mob_spawn_positions = []
+        self.mobs_amount = game.difficulty * 2 + level // 2 + 1
         self.well_generated = False
 
         self.doors = []
@@ -215,8 +217,18 @@ class Room():
             self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
 
     def spawn_mobs(self):
+        if self.game.difficulty == 1:
+            mobs = random.choice(EASY)
+
+        self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions), len(mobs))
+        self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
+
+        index = 0
+
         for (y, x) in self.mob_spawn_positions:
-            self.enemies.append(Wanderer(self.game, x, y))
+            new_mob = mobs[index]
+            self.enemies.append(new_mob(self.game, x, y))
+            index = (index + 1) % len(mobs)
 
 
     def get_doors_positions(self):
