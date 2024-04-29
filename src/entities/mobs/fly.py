@@ -32,6 +32,7 @@ class Fly(Enemy):
         self.frame = None
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
+        Fly.init_group_not_attacked()
 
     def prepare_images(self):
         multi = random.randint(0, 2)
@@ -42,6 +43,15 @@ class Fly(Enemy):
         for y in range(1, 4):
             for x in range(4):
                 self.death_images.append(self.img.subsurface(pygame.Rect(x * death_mob_size, y * death_mob_size, death_mob_size, death_mob_size)))       
+
+    def collide_blocks(self, orientation:str):
+        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
+        if rect_hits:
+            if orientation == 'x':
+                self.rect.x -= self.x_change
+
+            if orientation == 'y':
+                self.rect.y -= self.y_change
 
     def animate(self):
         if not self._is_dead:
@@ -81,3 +91,7 @@ class Fly(Enemy):
     @staticmethod
     def group_attacked():
         Fly.is_group_attacked = True
+    
+    @staticmethod
+    def init_group_not_attacked():
+        Fly.is_group_attacked = False
