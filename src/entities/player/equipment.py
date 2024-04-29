@@ -40,6 +40,18 @@ class Equipment():
             "immortality": 1.25
         }
 
+        self.min_stats = {
+            "health": -2,
+            "dmg": -0.5,
+            "dmg_reduction": 0,
+            "shooting_cooldown": -0.5,
+            "bullet_fly_time": -3,
+            "shot_speed": -10,
+            "speed": -3,
+            "luck": 0,
+            "immortality": -0.5
+        }
+
         self.extra_stats = {
             "friendly_ghost": 0,
             "dmg_multiplier": 1,
@@ -258,8 +270,8 @@ class Equipment():
                 self.stats[key] += random.choice(value)
                 if self.stats[key] > self.max_stats[key]:
                     self.stats[key] = self.max_stats[key]
-                if self.stats[key] < -2:
-                    self.stats[key] = -2
+                if self.stats[key] < self.min_stats[key]:
+                    self.stats[key] = self.min_stats[key]
 
     def unpack_item(self, item):
         stats = item["stats"]

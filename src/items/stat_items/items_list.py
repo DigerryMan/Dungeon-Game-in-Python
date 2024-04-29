@@ -172,9 +172,9 @@ class ItemsList():
             "name": "Glass cannon",
             "category": Categories.EPIC,
             "stats": {
-                "description": "You deal a lot of damage, but you are very fragile",
-                "dmg multiplier": 2,
-                "dmg taken multiplier": 0.5
+                "description": "You deal twice the damage, but take twice the damage!",
+                "dmg_multiplier": 2,
+                "dmg_taken_multiplier": 2
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(7 * 32, 17 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
