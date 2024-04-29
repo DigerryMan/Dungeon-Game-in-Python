@@ -297,7 +297,10 @@ class Room():
         
         sprite_list = sorted(to_be_sorted, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:
+            if isinstance(sprite, Enemy):
+                sprite.draw_additional_images(screen)
             screen.blit(sprite.image, sprite.rect)
+            
 
         screen.blit(self.room_graphics["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))
 
