@@ -188,7 +188,6 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
-        #DOBRAC IKONKE
         self.legendaries["friendly_ghost"] = {
             "name": "Friendly ghost",
             "category": Categories.LEGENDARY,

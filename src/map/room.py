@@ -1,12 +1,5 @@
 from collections import deque
 from config import *
-from entities.mobs.alpha_maggot import AlphaMaggot
-from entities.mobs.fly import Fly
-from entities.mobs.friendly_ghost import FriendlyGhost
-from entities.mobs.ghost import Ghost
-from entities.mobs.maggot import Maggot
-from entities.mobs.slime import Slime
-from entities.mobs.wanderer import Wanderer
 from map.mob_spawn_lists import *
 from map.trap_door import TrapDoor
 from .room_types import rooms, special_rooms
