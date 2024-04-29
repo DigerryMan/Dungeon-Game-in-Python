@@ -102,7 +102,7 @@ class Equipment():
         self.big_item_image = None
 
         #font
-        self.font_path = 'resources/fonts/LuckiestGuy-Regular.ttf'
+        self.font_path = 'resources/fonts/IsaacGame.ttf'
         self.font_color = (54, 47, 45)
 
         #stats

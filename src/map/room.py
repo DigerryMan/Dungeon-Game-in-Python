@@ -297,7 +297,9 @@ class Room():
         self.game.chest.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
-        self.game.shop_stands.draw(screen)
+
+        for shop_stand in self.shop_stands:
+            shop_stand.draw()
 
         to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
         

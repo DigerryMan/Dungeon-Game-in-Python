@@ -11,6 +11,12 @@ class ShopStand(Block):
         self.content = self.get_random_item()
         self.image = self.content.image
 
+        self.font_path = 'resources/fonts/IsaacGame.ttf'
+        self.font = pygame.font.Font(self.font_path, 40)
+        self.font_color = (255, 255, 255)
+        self.text_pos = (self.rect.left, self.rect.bottom)
+        self.text = self.font.render(str(self.price), True, self.font_color)
+
     def buy_item(self):
         print(self.game.player.coins, self.price)
         if self.game.player.coins >= self.price:
@@ -29,22 +35,12 @@ class ShopStand(Block):
 
     def get_random_item(self):
         if random.random() < 0.75:
-            self.price = 10
+            self.price = 25
             return Item(self.game, -1000, -1000, Categories.COMMON, drop_animtion = False)
         
-        self.price = 30
+        self.price = 60
         return Item(self.game, -1000, -1000, Categories.EPIC, drop_animtion = False)
     
-    def draw(self, surface):
-        # Rysuj obrazek
-        surface.blit(self.image, self.rect)
-
-        # Stwórz powierzchnię z tekstem
-        font = pygame.font.Font(None, 24)  # Wybierz czcionkę
-        text = font.render(str(self.price), True, (255, 255, 255))  # Stwórz tekst
-
-        # Oblicz pozycję tekstu
-        text_pos = self.rect.bottomleft
-
-        # Rysuj tekst
-        surface.blit(text, text_pos)
+    def draw(self):
+        self.game.screen.blit(self.image, self.rect)
+        self.game.screen.blit(self.text, self.text_pos)
