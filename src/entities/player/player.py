@@ -274,7 +274,7 @@ class Player(pygame.sprite.Sprite):
 
     def update_player_stats(self):
         self.max_health = BASE_HEALTH + self.eq.stats["health"]
-        self.__speed = BASE_SPEED + self.eq.stats["speed"]
+        self.__speed = (BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
     
     def get_shooting_cooldown(self):
         return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
