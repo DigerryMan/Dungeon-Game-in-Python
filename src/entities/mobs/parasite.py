@@ -14,14 +14,14 @@ class Parasite(Enemy):
         self.shoot_cd_after_dig_out = int(0.7 * FPS)
 
         #SKIN
-        self.x_frame = 0
-        self.img = game.image_loader.get_image("parasite")
-        
         self.MOB_SIZE = game.settings.MOB_SIZE
-
-        self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image = self.frame
+        self.curr_frame = 0
+        self.img = game.image_loader.get_image("parasite")
+        self.images = []
+        self.prepare_images()
+        
+        self.frame = None
+        self.image = self.images[0]
 
         #REST
         self.is_dig = True
@@ -29,8 +29,11 @@ class Parasite(Enemy):
         self.diging_time_left = self._dig_cooldown
         self.time_left_to_shoot = self.shoot_cd_after_dig_out
 
-        
         self.change_dmg_vulnerability(self.is_dig)
+
+    def prepare_images(self):
+        for x in range(8):
+            self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, 0, self.MOB_SIZE, self.MOB_SIZE)))
 
     def move(self):
         self.diging_time_left -= 1
@@ -77,11 +80,9 @@ class Parasite(Enemy):
             if self.time_left_to_shoot == int(0.2 * self.shoot_cd_after_dig_out):
                 self.nextFrame()
 
-
     def nextFrame(self, player_shoot_frame=False):
-        self.x_frame = (self.x_frame + 32) % (8 * 32)
-        self.frame = self.img.subsurface(pygame.Rect(self.x_frame, 0, 32, 32))
-        self.frame = pygame.transform.scale(self.frame, (self.MOB_SIZE, self.MOB_SIZE))
+        self.curr_frame = (self.curr_frame + 1) % 8 
+        self.frame = self.images[self.curr_frame]
         
         if player_shoot_frame:
             x_p, _ = self.game.player.get_center_position()

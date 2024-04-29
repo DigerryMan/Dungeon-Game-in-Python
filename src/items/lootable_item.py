@@ -5,19 +5,8 @@ from config import *
 class LootableItem(pygame.sprite.Sprite):
     def __init__(self, game, x, y, drop_animtion = True):
         self.game = game
-        self._layer = 0
         self.groups = self.game.all_sprites, self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE
-        self.vertical_velocity = (10 - abs(self.horizontal_velocity)) * game.settings.SCALE
-        self.acceleration = (0.6 - abs(self.horizontal_velocity) / 12) * game.settings.SCALE
-
-        if drop_animtion:
-            self.drop_animation_time = 40
-
-        else:
-            self.drop_animation_time = 0
 
         self.image = pygame.Surface([30, 30])
         self.image.fill(WHITE)
@@ -27,6 +16,8 @@ class LootableItem(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.rect.centery = y
 
+        self._layer = self.rect.centery
+
         self.x = self.rect.x
         self.y = self.rect.y
         self.width = self.image.get_width()
@@ -34,9 +25,28 @@ class LootableItem(pygame.sprite.Sprite):
 
         self.is_picked_up = False
 
+        if drop_animtion:
+            TS = game.settings.TILE_SIZE
+            self.drop_animation_time = 40
+            self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE
+
+            x = self.horizontal_velocity * self.drop_animation_time
+            y = -(((5/4) * TS**2 - x**2)**0.5)
+
+            #final_x = x + self.x
+            final_y = y + self.y + TS//4
+
+            self.acceleration = 0.5 * game.settings.SCALE
+            self.vertical_velocity = -((self.y - final_y - (self.acceleration * self.drop_animation_time**2)/2) / self.drop_animation_time)
+            self.vertical_velocity *= random.uniform(0.95, 1.05)
+
+        else:
+            self.drop_animation_time = 0
+
 
     def update(self):
         self.drop_animation()
+        self._layer = self.rect.centery
 
     def drop_animation(self):
         if self.drop_animation_time > 0:

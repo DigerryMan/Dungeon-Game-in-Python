@@ -1,4 +1,5 @@
 import pygame
+import os
 from items.stat_items.items_list import ItemsList
 from map.map import *
 from entities.player.player import *
@@ -10,12 +11,9 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        #nie ruszac
-        #self.screen = pygame.display.set_mode((0, 0))
-        #window_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-
         window_size = (1920, 1080)
         #window_size = (1280, 720)
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
         
 
@@ -30,6 +28,7 @@ class Game:
         self.paused = False
 
         self.e_pressed = False
+        self.space_pressed = False
 
         self.handle_resolution_change(window_size)  
                 
@@ -39,6 +38,7 @@ class Game:
         self.entities = pygame.sprite.LayeredUpdates()
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.shop_stands = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
@@ -46,10 +46,9 @@ class Game:
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
         self.trap_door = pygame.sprite.LayeredUpdates()
-
-        #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
+        self.difficulty = 1
         self.map = None
         self.current_level = 1
         self.player = None
@@ -61,13 +60,13 @@ class Game:
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
 
-        self.intro_background = pygame.transform.smoothscale(self.image_loader.get_image("introbackground"), self.screen.get_size())
-        self.menu_card = pygame.transform.smoothscale(self.image_loader.get_image("menucard"), self.screen.get_size())
-        self.settings_card = pygame.transform.smoothscale(self.image_loader.get_image("settingscard"), self.screen.get_size())
-        self.menu_background = pygame.transform.smoothscale(self.image_loader.get_image("menuoverlay"), self.screen.get_size())
-        self.pause_card = pygame.transform.smoothscale(self.image_loader.get_image("pausecard2"), (self.image_loader.get_image("pausecard2").get_height() * self.settings.SCALE, self.image_loader.get_image("pausecard2").get_width() * self.settings.SCALE))
-        self.arrow = pygame.transform.smoothscale(self.image_loader.get_image("arrow2"), (self.image_loader.get_image("arrow2").get_width() * 0.7 * self.settings.SCALE, self.image_loader.get_image("arrow2").get_height() * 0.7 * self.settings.SCALE))
-        self.main_title = pygame.transform.scale(self.image_loader.get_image("maintitle"), (self.image_loader.get_image("maintitle").get_width() * 2.8 * self.settings.SCALE, self.image_loader.get_image("maintitle").get_height() * 2.8 * self.settings.SCALE))
+        self.intro_background = self.image_loader.get_image("introbackground")
+        self.menu_card = self.image_loader.get_image("menucard")
+        self.settings_card = self.image_loader.get_image("settingscard")
+        self.menu_background = self.image_loader.get_image("menuoverlay")
+        self.pause_card = self.image_loader.get_image("pausecard2")
+        self.arrow = self.image_loader.get_image("arrow2")
+        self.main_title = self.image_loader.get_image("maintitle")
 
 
     def run(self):
@@ -94,6 +93,7 @@ class Game:
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.entities = pygame.sprite.LayeredUpdates()
         self.blocks = pygame.sprite.LayeredUpdates()
+        self.shop_stands = pygame.sprite.LayeredUpdates()
         self.doors = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.not_voulnerable = pygame.sprite.LayeredUpdates()
@@ -101,8 +101,6 @@ class Game:
         self.chest = pygame.sprite.LayeredUpdates()
         self.items = pygame.sprite.LayeredUpdates()
         self.trap_door = pygame.sprite.LayeredUpdates()
-
-        #for collision detection
         self.collidables = pygame.sprite.LayeredUpdates()
 
         self.player = Player(self, 0, 0)
@@ -111,6 +109,9 @@ class Game:
 
 
     def events(self):
+        self.e_pressed = False
+        self.space_pressed = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -122,32 +123,30 @@ class Game:
                 if event.key == pygame.K_e:
                     self.e_pressed = True
 
+                if event.key == pygame.K_SPACE:
+                    self.space_pressed = True
+
                 if event.key == pygame.K_TAB:
                     self.player.eq_opened = not self.player.eq_opened
-
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_e:
-                    self.e_pressed = False
 
 
     def update(self):
         self.all_sprites.update()
-        #self.blocks.update()
-        #self.items.update()
-        if len(self.enemies) == 0 or ADMIN:
+        if not self.map.get_current_room().is_cleared and len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
 
     def render_next_room(self, direction:Directions):
-        self._clear_sprites()
+        self.clear_sprites()
         self.map.render_next_room(direction)
         self._get_new_sprites(self.map.get_current_room())
 
 
-    def _clear_sprites(self):
+    def clear_sprites(self):
         self.all_sprites.empty()
         self.blocks.empty()
+        self.shop_stands.empty()
         self.doors.empty()
         self.attacks.empty()
         self.enemies.empty()
@@ -173,6 +172,10 @@ class Game:
             self.trap_door.add(objects["trap_door"])
             self.all_sprites.add(objects["trap_door"])
 
+        if objects["shop_stands"]:
+            self.shop_stands.add(objects["shop_stands"])
+            self.all_sprites.add(self.shop_stands)
+
         self.items.add(objects["items"])
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
@@ -194,19 +197,8 @@ class Game:
 
         self.map.get_current_room().draw(self.screen)
 
-        self.blocks.draw(self.screen)
-        self.doors.draw(self.screen)
-        self.chest.draw(self.screen)
-        self.items.draw(self.screen)
-        self.trap_door.draw(self.screen)
-        
-        sprite_list = sorted(self.entities, key=lambda sprite: sprite._layer)
-        for sprite in sprite_list:
-            self.screen.blit(sprite.image, sprite.rect)
-
-        
         self.clock.tick(FPS)
-        pygame.display.flip()
+        pygame.display.update()
 
 
     def game_over(self):

@@ -36,10 +36,11 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.animated = True
 
         if distance <= self.game.settings.TILE_SIZE / 2 and self.animated:
-            print("Trap door is open")
+            print("Next level")
 
 
     def open(self):
+        print("Opening trap door")
         if self.opened:
             return
         

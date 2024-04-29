@@ -1,3 +1,4 @@
+import random
 import pygame
 
 from config import BASE_BULLET_FLY_TIME, BASE_DMG, BASE_HEALTH, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, BASE_SPEED
@@ -39,18 +40,33 @@ class Equipment():
             "immortality": 1.25
         }
 
+        self.min_stats = {
+            "health": -2,
+            "dmg": -0.5,
+            "dmg_reduction": 0,
+            "shooting_cooldown": -0.5,
+            "bullet_fly_time": -3,
+            "shot_speed": -10,
+            "speed": -3,
+            "luck": 0,
+            "immortality": -0.5
+        }
+
         self.extra_stats = {
             "friendly_ghost": 0,
             "dmg_multiplier": 1,
-            "dmg_taken_multiplier": 1
+            "dmg_taken_multiplier": 1,
+            "PHD_obtained": 0,
+            "extra_shot_time": 0
         }
 
         self.extra_stats_max = {
             "friendly_ghost": 2,
             "dmg_multiplier": 3,
-            "dmg_taken_multiplier": 3
-        }
-
+            "dmg_taken_multiplier": 3,
+            "PHD_obtained": float("inf"),
+            "extra_shot_time": 4 # higher number -> higher time for extra shot to spawn
+        }                        # MINIMUM 4 for animation to work properly                
         self.player = player
 
         #background
@@ -61,8 +77,8 @@ class Equipment():
 
         #items
         self.items = []
-        self.first_item_x = self.x + 22
-        self.first_item_y = self.y + 22
+        self.first_item_x = self.x + 69
+        self.first_item_y = self.y + 65
         self.item_distance = 73
         self.item_size = self.item_distance - 3
         self.item_in_row = 4
@@ -89,12 +105,13 @@ class Equipment():
         self.big_item_image = None
 
         #font
-        self.font_path = 'resources/fonts/LuckiestGuy-Regular.ttf'
+        self.font_path = 'resources/fonts/IsaacGame.ttf'
+        self.font_path_2 = 'resources/fonts/LuckiestGuy-Regular.ttf'
         self.font_color = (54, 47, 45)
 
         #stats
-        self.stats_x = self.x + 430
-        self.stats_y = self.y + 46
+        self.stats_x = self.x + 475
+        self.stats_y = self.y + 90
         self.stats_y_change = 58
 
     def draw(self, screen):
@@ -133,12 +150,17 @@ class Equipment():
         x = self.big_item_x + self.big_item_size//2
         y = self.big_item_y + self.big_item_size + self.big_item_size//4
         
-        big_font = pygame.font.Font(self.font_path, 33)
-        font = pygame.font.Font(self.font_path, 23)
+        #big_font = pygame.font.Font(self.font_path, 33)
+        #font = pygame.font.Font(self.font_path, 23)
         small_font = pygame.font.Font(self.font_path, 20)
 
+        big_font_2 = pygame.font.Font(self.font_path_2, 33)
+        font_2 = pygame.font.Font(self.font_path_2, 23)
+        #small_font_2 = pygame.font.Font(self.font_path_2, 20)
+
         #item_name
-        name = big_font.render(item["name"], True, self.font_color)
+        name_text = item["name"]
+        name = big_font_2.render(name_text, True, self.font_color)
         name_rect = name.get_rect(center=(x, y))
         screen.blit(name, name_rect)
 
@@ -155,15 +177,14 @@ class Equipment():
             description_lines = []
             self.prepare_desc_lines(description, description_lines)
             for i, line in enumerate(description_lines):
-                description_text = font.render(line, True, self.font_color)
+                description_text = font_2.render(line, True, self.font_color)
                 description_rect = description_text.get_rect(center=(x, y + i * self.big_item_size // 4))
                 screen.blit(description_text, description_rect)
-        
-
+    
         else:
             for key, value in item["stats"].items():
                 char = "+" if key != "shooting_cooldown" else "-"
-                stat = font.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
+                stat = font_2.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
                 y += self.big_item_size//4
@@ -250,11 +271,25 @@ class Equipment():
 
         self.unpack_item(item)
 
+    def use_pill(self, item):
+        stats = item["stats"]
+        for key, value in stats.items():
+            if self.stats.get(key) is not None:
+                val = random.choice(value)
+                if self.extra_stats["PHD_obtained"]:
+                    val = abs(val)
+
+                self.stats[key] += val
+                if self.stats[key] > self.max_stats[key]:
+                    self.stats[key] = self.max_stats[key]
+                if self.stats[key] < self.min_stats[key]:
+                    self.stats[key] = self.min_stats[key]
+
+        self.player.update_player_stats()
+
     def unpack_item(self, item):
         stats = item["stats"]
         healValue = 0
-
-        "halo".find
 
         if stats.get("description") is not None:
             for key, value in stats.items():

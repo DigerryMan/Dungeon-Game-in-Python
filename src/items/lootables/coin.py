@@ -5,8 +5,8 @@ from items.item_types import ItemType
 from ..lootable_item import LootableItem
 
 class Coin(LootableItem):
-    def __init__(self, game, x, y, type:str):
-        super().__init__(game, x, y)
+    def __init__(self, game, x, y, type:str, drop_animtion = True):
+        super().__init__(game, x, y, drop_animtion)
 
         self.value = 0
         self.is_picked_up = False
@@ -19,12 +19,13 @@ class Coin(LootableItem):
         self.shine_timer = self.shine_interval
 
         self.type = type # "silver" or "gold"
+        
+        self.image = game.image_loader.lootables[f"{self.type}_coin_shine0"].copy()
+        self.mask = pygame.mask.from_surface(self.image)
 
         if self.drop_animation_time > 0:
             self.image = game.image_loader.lootables[f"{self.type}_coin_drop0"].copy()
 
-        else:
-            self.image = game.image_loader.lootables[f"{self.type}_coin_shine0"].copy()
 
         self.rect = self.image.get_rect()
         self.rect.centerx = x
@@ -37,11 +38,9 @@ class Coin(LootableItem):
 
         self.time_per_frame_shine = 3
         self.time_per_frame_drop = self.drop_animation_time // 8
-        self.time_per_frame_pickup = 3
+        self.time_per_frame_pickup = 1
 
         self.pickup_timer = self.time_per_frame_pickup * 9
-
-        self.mask = pygame.mask.from_surface(self.image)
 
 
     def picked_up(self):
