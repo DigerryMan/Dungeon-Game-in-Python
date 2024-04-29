@@ -184,6 +184,7 @@ class ItemsList():
             "category": Categories.EPIC,
             "stats":{
                 "description": "You are immune to negative effects of the pills",
+                "PHD_obtained": 1,
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }

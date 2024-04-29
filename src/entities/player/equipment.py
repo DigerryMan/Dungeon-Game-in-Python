@@ -56,13 +56,14 @@ class Equipment():
             "friendly_ghost": 0,
             "dmg_multiplier": 1,
             "dmg_taken_multiplier": 1,
-            "PHD_obtained": False
+            "PHD_obtained": 0
         }
 
         self.extra_stats_max = {
             "friendly_ghost": 2,
             "dmg_multiplier": 3,
-            "dmg_taken_multiplier": 3
+            "dmg_taken_multiplier": 3,
+            "PHD_obtained": float("inf")
         }
 
         self.player = player
@@ -286,17 +287,12 @@ class Equipment():
         self.player.update_player_stats()
 
     def unpack_item(self, item):
-        name = item["name"]
         stats = item["stats"]
         healValue = 0
-
-        if name == "PHD":
-            self.extra_stats["PHD_obtained"] = True
 
         if stats.get("description") is not None:
             for key, value in stats.items():
                 if key != "description" and self.extra_stats.get(key) is not None:
-                    
                     if key.find("multiplier") != -1:
                         self.extra_stats[key] *= value
                     else:

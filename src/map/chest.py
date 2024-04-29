@@ -58,41 +58,47 @@ class Chest(pygame.sprite.Sprite):
         self.image = self.images[self.current_frame]
 
     def drop_loot(self, items_to_craft:list):
-        if self.type == "small":
-            for _ in range(random.randint(2, 4)):
-                items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(random.randint(0, 1)):
-                items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(random.randint(0, 1)):
-                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        elif self.type == "medium":
-            for _ in range(random.randint(3, 5)):
-                items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(random.randint(3, 4)):
-                items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(1):
-                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        elif self.type == "large":
-            for _ in range(random.randint(5, 10)):
-                items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(random.randint(5, 7)):
-                items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-            for _ in range(1, 2):
-               items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-            if random.uniform(0, 1) < 0.6:
+        if DROP_LOOT_EVERYTIME: # FOR TESTING PURPOSES
                 items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
-
-            elif random.uniform(0, 0.4) < 0.35:
                 items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.EPIC))
-
-            else:
                 items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
+        else:
+            if self.type == "small":
+                for _ in range(random.randint(2, 4)):
+                    items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(random.randint(0, 1)):
+                    items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(random.randint(0, 1)):
+                    items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+            elif self.type == "medium":
+                for _ in range(random.randint(3, 5)):
+                    items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(random.randint(3, 4)):
+                    items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(1):
+                    items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+            elif self.type == "large":
+                for _ in range(random.randint(5, 10)):
+                    items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(random.randint(5, 7)):
+                    items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+                for _ in range(1, 2):
+                    items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+                if random.uniform(0, 1) < 0.6:
+                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
+
+                elif random.uniform(0, 0.4) < 0.35:
+                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.EPIC))
+
+                else:
+                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
+            

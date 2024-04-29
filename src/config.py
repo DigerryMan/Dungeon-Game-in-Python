@@ -59,3 +59,4 @@ SILVER = (192, 192, 192)
 
 ADMIN = False
 GOD_MODE = False
+DROP_LOOT_EVERYTIME = True
