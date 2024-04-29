@@ -35,7 +35,7 @@ class Room():
 
         self.crucial_positions = []
         self.mob_spawn_positions = []
-        self.mobs_amount = game.difficulty * 2 + level // 2 + 1
+        self.mobs_amount = game.difficulty * 2 + level // 2 + 2
         self.well_generated = False
 
         self.doors = []
@@ -216,18 +216,16 @@ class Room():
             self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
 
     def spawn_mobs(self):
-        if self.game.difficulty == 1:
-            mobs = random.choice(EASY)
-
-        self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions), len(mobs))
+        self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
         self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
 
-        index = 0
+        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        index = random.randint(0, len(mobs) - 1)
 
         for (y, x) in self.mob_spawn_positions:
             new_mob = mobs[index]
             self.enemies.append(new_mob(self.game, x, y))
-            index = (index + 1) % len(mobs)
+            index = random.randint(0, len(mobs) - 1)
 
 
     def get_doors_positions(self):
@@ -348,3 +346,4 @@ class Room():
                 return False
             
         return True
+    

@@ -55,7 +55,8 @@ class Equipment():
         self.extra_stats = {
             "friendly_ghost": 0,
             "dmg_multiplier": 1,
-            "dmg_taken_multiplier": 1
+            "dmg_taken_multiplier": 1,
+            "PHD_obtained": False
         }
 
         self.extra_stats_max = {
@@ -272,15 +273,25 @@ class Equipment():
         stats = item["stats"]
         for key, value in stats.items():
             if self.stats.get(key) is not None:
-                self.stats[key] += random.choice(value)
+                val = random.choice(value)
+                if self.extra_stats["PHD_obtained"]:
+                    val = abs(val)
+
+                self.stats[key] += val
                 if self.stats[key] > self.max_stats[key]:
                     self.stats[key] = self.max_stats[key]
                 if self.stats[key] < self.min_stats[key]:
                     self.stats[key] = self.min_stats[key]
 
+        self.player.update_player_stats()
+
     def unpack_item(self, item):
+        name = item["name"]
         stats = item["stats"]
         healValue = 0
+
+        if name == "PHD":
+            self.extra_stats["PHD_obtained"] = True
 
         if stats.get("description") is not None:
             for key, value in stats.items():

@@ -2,7 +2,7 @@ STARTING_ROOM = [
   '################',
   '#..............#',
   '#..............#',
-  '#........C.....#',
+  '#..............#',
   '#..............#',
   '#..............#',
   '#..............#',
@@ -76,9 +76,6 @@ ROOM_4 = [
   '################']
 
 
-
-#rooms = [ROOM_1, ROOM_2]
-#rooms = [EASY_ROOM_1, EASY_ROOM_2, EASY_ROOM_3, EASY_ROOM_4, MEDIUM_ROOM_1, MEDIUM_ROOM_2, HARD_ROOM_1, HARD_ROOM_2]
 rooms = [ROOM_1, ROOM_2, ROOM_3, ROOM_4]
 
 special_rooms = {
