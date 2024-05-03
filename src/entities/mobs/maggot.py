@@ -1,6 +1,6 @@
 import random
 import pygame
-from config import *
+from config import FPS
 from entities.enemy import Enemy
 from utils.directions import Directions
 
@@ -20,19 +20,16 @@ class Maggot(Enemy):
         self.next_frame_ticks_cd = 5
         self.time = self.next_frame_ticks_cd
 
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("maggot")
 
-        self.images = []
-        self.prepared_images()
+        self.prepare_images()
 
-        self.frame = None
         self.head_frame = None
         self.body_frame = None
 
         #REST
         self.moving_clockwise = moving_clockwise
-        self._change_of_direction_time_left = self._random_dir_change_cd
+        self.change_of_direction_time_left = self._random_dir_change_cd
 
         self.facing = Directions.DOWN
         self.set_new_image()
@@ -44,7 +41,8 @@ class Maggot(Enemy):
 
         self.next_frame()
 
-    def prepared_images(self):
+    def prepare_images(self):
+        self.images.clear()
         for y in range(4):
             for x in range(4):
                 self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE)))
@@ -159,10 +157,10 @@ class Maggot(Enemy):
                 self.rect.y = hits[0].rect.top - self.game.settings.MOB_SIZE        
          
     def random_change_of_direction(self):
-        self._change_of_direction_time_left -= 1
-        if self._change_of_direction_time_left <= 0:
+        self.change_of_direction_time_left -= 1
+        if self.change_of_direction_time_left <= 0:
             self.roll_rotation_cd(int(1.2 * FPS), int(2.2 * FPS))
-            self._change_of_direction_time_left = self._random_dir_change_cd
+            self.change_of_direction_time_left = self._random_dir_change_cd
             
             self.rotate_face_dir()
 
@@ -247,4 +245,3 @@ class Maggot(Enemy):
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd
             self.next_frame()
-    

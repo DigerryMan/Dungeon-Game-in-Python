@@ -1,9 +1,8 @@
 import pygame
-from config import *
+from config import FPS
 from entities.bullet import Bullet
 from utils.directions import Directions
 from ..enemy import Enemy
-
 
 class Parasite(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -14,13 +13,9 @@ class Parasite(Enemy):
         self.shoot_cd_after_dig_out = int(0.7 * FPS)
 
         #SKIN
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.curr_frame = 0
         self.img = game.image_loader.get_image("parasite")
-        self.images = []
         self.prepare_images()
-        
-        self.frame = None
         self.image = self.images[0]
 
         #REST

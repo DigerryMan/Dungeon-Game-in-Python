@@ -1,6 +1,6 @@
 import random
 import pygame
-from config import *
+from config import FPS, WALL_MARKS
 from entities.bullet import Bullet
 from entities.enemy import Enemy
 from utils.directions import Directions
@@ -17,18 +17,14 @@ class Slime(Enemy):
         self.t = random.random() * 0.5 + 0.8 #time of jump in sec
         self.jump_time = int(self.t * FPS) 
         self.jump_cd = int((random.random() * 0.8 + 1.2) * FPS)
-        self._jump_range = 3 # has to be min 2
+        self.jump_range = 3 # has to be min 2
 
         #SKINS
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image('slime')
         self.img_shadow = game.image_loader.get_image('slime_shadow')
         self.img_shadow = pygame.transform.scale(self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6)))
 
-        self.images = []
         self.prepare_images()
-        
-        self.frame = None
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -47,8 +43,8 @@ class Slime(Enemy):
         
         #MOVES
         self.room_layout = self.game.map.get_current_room().get_block_layout()
-        self.possible_jumps = [(x_i, y_j) for x_i in range(-self._jump_range, self._jump_range + 1) 
-                               for y_j in range(-self._jump_range, self._jump_range + 1)]
+        self.possible_jumps = [(x_i, y_j) for x_i in range(-self.jump_range, self.jump_range + 1) 
+                               for y_j in range(-self.jump_range, self.jump_range + 1)]
         self.correct_possible_jumps()
 
         #JUMPING
@@ -92,7 +88,7 @@ class Slime(Enemy):
     def correct_possible_jumps(self):
         self.possible_jumps.remove((0, 0))
          #remove diagonal jumps
-        for y in range(1, self._jump_range + 1):
+        for y in range(1, self.jump_range + 1):
             self.possible_jumps.remove((0, y))
             self.possible_jumps.remove((0, -y))
         
@@ -167,10 +163,9 @@ class Slime(Enemy):
         return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t ** 2
 
     def is_valid_move(self, x, y):
-        # '#' walls
         if x <= 0 or x >= self.game.settings.MAP_WIDTH - 1 or y <= 0  or y >= self.game.settings.MAP_HEIGHT - 1:
             return False
-        return (self.room_layout[y][x] not in WALL_MARKS) and (self.room_layout[y][x] != 'C')
+        return self.room_layout[y][x] not in WALL_MARKS
 
     def attack(self):
         if self.prepare_atack:

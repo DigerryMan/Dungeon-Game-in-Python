@@ -30,15 +30,15 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
 
         #POSITION
-        self.width = game.settings.MOB_SIZE
-        self.height = game.settings.MOB_SIZE
+        self.MOB_SIZE = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
         
         #SKINS
-        self.image = pygame.Surface([self.width, self.height])
-        self.animation_loop = 1
+        self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
         self.mask = pygame.mask.from_surface(self.image) 
+        self.frame = None
+        self.images = []
 
         #HITBOX
         self.rect = self.image.get_rect()
@@ -252,10 +252,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
     def roll_next_shot_cd(self):
         self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
-
-    @abstractmethod
-    def animate(self):
-        pass
             
     def correct_layer(self):
         self._layer = self.rect.bottom
@@ -288,6 +284,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
                     self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
 
     def draw_additional_images(self, screen):
+        pass
+
+    @abstractmethod
+    def animate(self):
         pass
 
     @staticmethod

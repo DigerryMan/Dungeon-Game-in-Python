@@ -1,6 +1,6 @@
 import random
 import pygame
-from config import *
+from config import FPS
 from entities.enemy import Enemy
 
 class Fly(Enemy):
@@ -22,14 +22,11 @@ class Fly(Enemy):
         self.dead_animation_time = 10 * self.next_frame_time
         self.dead_animation_time_left = self.dead_animation_time
         
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("fly")
         
-        self.images = []
         self.death_images = []
         self.prepare_images()
 
-        self.frame = None
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
         Fly.init_group_not_attacked()

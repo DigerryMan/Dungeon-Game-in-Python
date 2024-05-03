@@ -12,12 +12,10 @@ class Wanderer(Enemy):
         self.time = 0
         self.head_time_left = 0
 
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img_legs = game.image_loader.get_image("legs")
         self.img_head = game.image_loader.get_image("wanderer")
         self.images_legs = []
         self.images_head = []
-        self.frame = None
 
         self.legs_frame = 0
         self.head_frame = 0
@@ -41,10 +39,8 @@ class Wanderer(Enemy):
 
     def animate(self):
         self.reversed_frame = False
-
         if not self._is_wandering or not self._is_idling:
             self.time -= 1
-
         else:
             self.image = self.images_legs[0]
 
@@ -54,8 +50,6 @@ class Wanderer(Enemy):
             self.legs_frame %= 10
 
         self.next_frame()
-
-
 
     def next_frame(self):
         legs_frame = self.set_up_legs_frame() 

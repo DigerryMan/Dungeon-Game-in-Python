@@ -1,4 +1,3 @@
-from config import *
 from entities.enemy import Enemy
 import pygame
 
@@ -18,10 +17,7 @@ class Ghost(Enemy):
         self.next_frame_ticks_cd = 10
         self.time = 0
 
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("ghost")
-        self.images = []
-        self.frame = None
 
         self.which_frame = 0
         self.last_rigth_left_facing = Directions.RIGHT
