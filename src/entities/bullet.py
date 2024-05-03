@@ -1,5 +1,5 @@
 import pygame
-from config import *
+from config import FPS
 from utils.directions import Directions
 from map.destructable_block import DestructableBlock
 
@@ -9,35 +9,24 @@ class Bullet(pygame.sprite.Sprite):
         #MAIN
         self.dmg = dmg
         self.direction = direction
-        self.is_friendly = is_friendly
         self.speed = speed * game.settings.SCALE
+        self.is_friendly = is_friendly
+        
         self.additional_speed = additional_speed
         self.time_decay = int(time_decay_in_seconds * FPS)
         self.time_left = self.time_decay
-
-        #SIZE
-        self.width = game.settings.BULLET_SIZE
-        self.height = game.settings.BULLET_SIZE
+        self.game = game
 
         #SKIN
-        #self.image = pygame.Surface([self.width, self.height])
-        #self.image.fill(BROWN)
         self._layer = 2000
-        if self.is_friendly:
-            self.color = "blue"
-        else:
-            self.color = "red"
-            
+        self.color = self.get_right_color()
         self.image = game.image_loader.tears[self.color + "_tear"].copy()
 
         #HITBOX / POSITION
+        self.BULLET_SIZE = self.game.settings.BULLET_SIZE
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.mask = pygame.mask.from_surface(self.image)
-
-        #REST
-        self.x_change = 0
-        self.y_change = 0
 
         #DEATH ANIMATION
         self.is_alive = True
@@ -45,14 +34,25 @@ class Bullet(pygame.sprite.Sprite):
         self.animation_time = 45
         self.time_per_frame = self.animation_time // 15
 
-        self.game = game
+        #REST
         self.groups = self.game.all_sprites, self.game.attacks, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
 
+        self.x_change = 0
+        self.y_change = 0
+        self.calculate_correct_speed()
+        
+
+    def get_right_color(self):
+        if self.is_friendly:
+            return "blue"
+        return "red"
+
+    def calculate_correct_speed(self):
         if self.direction == Directions.PLAYER: 
-            self._calculate_speed_to_player()
+            self.calculate_speed_to_player()
         elif self.direction == Directions.ENEMY:
-            self._calculate_speed_to_enemy()
+            self.calculate_speed_to_enemy()
         else:
             self.calculate_speed()
 
@@ -61,7 +61,7 @@ class Bullet(pygame.sprite.Sprite):
             self.rect.x += self.x_change
             self.rect.y += self.y_change
             
-            self._collide()
+            self.collide()
             if self.time_decay:
                 self.decay()
             self._layer = self.rect.bottom + 2000
@@ -72,13 +72,10 @@ class Bullet(pygame.sprite.Sprite):
     def calculate_speed(self):
         if(self.direction == Directions.UP):
             self.y_change = -self.speed
-
         elif(self.direction == Directions.DOWN):
             self.y_change = self.speed
-
         elif(self.direction == Directions.LEFT):
             self.x_change = -self.speed
-
         elif(self.direction == Directions.RIGHT):
             self.x_change = self.speed
         
@@ -91,7 +88,7 @@ class Bullet(pygame.sprite.Sprite):
         elif axis == 'y':
             self.x_change = self.additional_speed
             
-    def _calculate_speed_to_player(self):
+    def calculate_speed_to_player(self):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         bullet_vector = pygame.math.Vector2(self.rect.center)
         distance = (player_vector - bullet_vector).magnitude()
@@ -106,7 +103,7 @@ class Bullet(pygame.sprite.Sprite):
         self.x_change = int(velocity.x)
         self.y_change = int(velocity.y)
 
-    def _calculate_speed_to_enemy(self):
+    def calculate_speed_to_enemy(self):
         self.enemies = self.game.enemies.sprites()
         closest_enemy = min(self.enemies, key=lambda enemy: pygame.math.Vector2(enemy.rect.center).distance_to(pygame.math.Vector2(self.rect.center)))
 
@@ -124,7 +121,7 @@ class Bullet(pygame.sprite.Sprite):
         self.x_change = int(velocity.x)
         self.y_change = int(velocity.y)
 
-    def _collide(self):
+    def collide(self):
         if self.is_friendly:       
             mob_hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if mob_hits :
@@ -170,19 +167,16 @@ class Bullet(pygame.sprite.Sprite):
         if self.time_left <= 0:
             self.is_alive = False
 
-        
     def animate_and_destroy(self):
         if self.animation_time == 45:
-            self.rect.x -= self.game.settings.BULLET_SIZE
-            self.rect.y -= self.game.settings.BULLET_SIZE
+            self.rect.x -= self.BULLET_SIZE
+            self.rect.y -= self.BULLET_SIZE
             self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
 
         self.animation_time -= 1
-
         if self.animation_time % self.time_per_frame == 0:
             self.frame += 1
             self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()
 
         if self.animation_time <= 0:
             self.kill()
-            return

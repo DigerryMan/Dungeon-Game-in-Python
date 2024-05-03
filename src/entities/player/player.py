@@ -3,7 +3,8 @@ from config import *
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
 from items.item_types import ItemType
-from ..bullet import *
+from utils.directions import Directions
+from ..bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -11,61 +12,59 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         self.max_health = BASE_HEALTH
         self.health = BASE_HEALTH
-        self.__speed = BASE_SPEED * game.settings.SCALE
+        self.speed = BASE_SPEED * game.settings.SCALE
+        self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
         
         #SKIN
-        self.x_legs_frame = 0
-        self.x_head_frame = 0
-        self.reversed_frame = False
-        self.reversed_head = False
-        
-        #ANIMATION SPEED
-        self.next_frame_ticks_cd = 3
-        self.time = 0
-        self.next_head_frame_ticks_cd = 20
-        self.head_frame_time = 0
-
-        self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.img = game.image_loader.get_image("player")
-
         self.body_images = []
         self.head_images = []
-        self.frame = None
-
         self.prepare_images()
+        self.frame = None
         self.image = self.body_images[0]
 
-        self.head_frame = None
-        self.body_frame = None
-        self.is_moving = False
-        
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
         self.rect.x = x * self.PLAYER_SIZE
         self.rect.y = y * self.PLAYER_SIZE
-        
-        #EQ
-        self.eq = Equipment(self)
-        self.eq_opened = False
-        
-        #REST
-        self._layer = self.rect.bottom
-        self.__immortality_time_left = 0
-        self.__shot_time_left = 0
+        self.x_change = 0
+        self.y_change = 0
+        self.is_moving = False
+
+        #DIRECTION
         self.facing = Directions.DOWN
         self.direction = Directions.DOWN
         self.last_horizontall_facing = Directions.RIGHT
-        self.x_change = 0
-        self.y_change = 0
-        self.shot_try = False
 
+        #EQ
+        self.eq = Equipment(self)
+        self.eq_opened = False
+
+        #ANIMATION
+        self.x_legs_frame = 0
+        self.body_frame = None
+        self.reversed_body_frame = False
+        self.x_head_frame = 0
+        self.head_frame = None
+        self.reversed_head = False
         self.head_tear_anime_cd = 4
         self.head_tear_anime_time_left = -1
         
+        self.next_frame_ticks_cd = 3
+        self.time = 0
+        self._layer = self.rect.bottom
+        
+        #SHOOTING
+        self.shot_time_left = 0
+        self.shot_try = False
+
         #SECOND SHOOT
         self.shoot_second_bullet = False
         self.shoot_second_time = 0
+
+        #REST
+        self.immortality_time_left = 0
 
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -93,32 +92,32 @@ class Player(pygame.sprite.Sprite):
         self.mask.erase(cut_mask_top, (0, 0))
 
     def update(self):
-        self._user_input()
-        self._correct_diagonal_movement()
+        self.user_input()
+        self.correct_diagonal_movement()
 
         self.rect.x += self.x_change
-        self._collide_blocks('x')
+        self.collide_blocks('x')
         self.rect.y += self.y_change
-        self._collide_blocks('y')
+        self.collide_blocks('y')
 
-        self._check_items_pick_up()
+        self.check_items_pick_up()
         self._layer = self.rect.bottom
         self.animate()
 
-        self.__immortality_time_left -= 1
+        self.immortality_time_left -= 1
         self.x_change = 0
         self.y_change = 0
 
-    def _user_input(self):
+    def user_input(self):
         keys = pygame.key.get_pressed()
         x_y_vel = [0,0]
         self.is_moving = False
-        self._move(keys, x_y_vel)
-        self._shoot(keys, x_y_vel)
+        self.move(keys, x_y_vel)
+        self.shoot(keys, x_y_vel)
 
-    def _move(self, keys, x_y_vel):
+    def move(self, keys, x_y_vel):
         if keys[pygame.K_a]:
-            self.x_change -= int(self.__speed)
+            self.x_change -= int(self.speed)
             self.facing = Directions.LEFT
             self.direction = Directions.LEFT
             self.last_horizontall_facing = Directions.LEFT
@@ -126,7 +125,7 @@ class Player(pygame.sprite.Sprite):
             self.is_moving = True
         
         if keys[pygame.K_d]:
-            self.x_change += int(self.__speed)
+            self.x_change += int(self.speed)
             self.facing = Directions.RIGHT
             self.direction = Directions.RIGHT
             self.last_horizontall_facing = Directions.RIGHT
@@ -134,55 +133,51 @@ class Player(pygame.sprite.Sprite):
             self.is_moving = True
 
         if keys[pygame.K_w]: 
-            self.y_change -= int(self.__speed)
+            self.y_change -= int(self.speed)
             self.facing = Directions.UP
             self.direction = Directions.UP
             x_y_vel[1] -= 1
             self.is_moving = True
 
         if keys[pygame.K_s]:
-            self.y_change += int(self.__speed)
+            self.y_change += int(self.speed)
             self.facing = Directions.DOWN
             self.direction = Directions.DOWN
             x_y_vel[1] += 1
             self.is_moving = True
 
-    def _shoot(self, keys, x_y_vel):
-        self.__shot_time_left -= 1
+    def shoot(self, keys, x_y_vel):
+        self.shot_time_left -= 1
         self.shoot_second_bullet -= 1
         self.shot_try = False
-        if keys[pygame.K_LEFT]:
-            self.facing = Directions.LEFT
-            self.shot_try = True
 
-        if keys[pygame.K_RIGHT]:
-            self.facing = Directions.RIGHT
-            self.shot_try = True
+        key_to_direction = {
+            pygame.K_LEFT: Directions.LEFT,
+            pygame.K_RIGHT: Directions.RIGHT,
+            pygame.K_UP: Directions.UP,
+            pygame.K_DOWN: Directions.DOWN
+        }
 
-        if keys[pygame.K_UP]:
-            self.facing = Directions.UP
-            self.shot_try = True
-
-        if keys[pygame.K_DOWN]:
-            self.facing = Directions.DOWN
-            self.shot_try = True
-        
+        for key, direction in key_to_direction.items():
+            if keys[key]:
+                self.facing = direction
+                self.shot_try = True
+            
         if self.shot_try or self.shoot_second_bullet >= 0:
-            if self.__shot_time_left <= 0:
-                self.__shot_time_left = self.get_shooting_cooldown() 
+            if self.shot_time_left <= 0:
+                self.shot_time_left = self.get_shooting_cooldown() 
                 if self.eq.extra_stats["extra_shot_time"]:
                     self.shoot_second_bullet = self.eq.extra_stats["extra_shot_time"]
                 self.shoot_one_bullet(x_y_vel)
 
             elif self.shoot_second_bullet == 0:
                 self.shoot_one_bullet(x_y_vel)
-                self.__shot_time_left = self.get_shooting_cooldown()
+                self.shot_time_left = self.get_shooting_cooldown()
             else:
                 self.shot_try = False
 
     def shoot_one_bullet(self, x_y_vel):
         additional_v = 0
-        
         if PLAYER_SHOOT_DIAGONAL:
             _, other_axis_index = self.facing.rotate_clockwise().get_axis_tuple()     
             if x_y_vel[other_axis_index]:
@@ -206,7 +201,7 @@ class Player(pygame.sprite.Sprite):
             y += self.PLAYER_SIZE//2
         return x, y
 
-    def _correct_diagonal_movement(self):
+    def correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
             self.x_change //= 1.41
             self.y_change //= 1.41
@@ -215,15 +210,14 @@ class Player(pygame.sprite.Sprite):
             if self.y_change < 0:
                 self.y_change += 1
                 
-    def _collide_blocks(self, direction:str):
+    def collide_blocks(self, direction:str):
         rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
         if rect_hits:
             mask_hits = self.get_mask_colliding_sprite(rect_hits)
             if mask_hits: 
                 if direction == 'x':
                     self.rect.x -= self.x_change
-
-                if direction == 'y':
+                elif direction == 'y':
                     self.rect.y -= self.y_change
 
     def get_mask_colliding_sprite(self, rect_hits):
@@ -231,50 +225,46 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
 
-    def _check_items_pick_up(self):
+    def check_items_pick_up(self):
         rect_hits = pygame.sprite.spritecollide(self, self.game.items, False)
         if rect_hits:
             items = [self.get_mask_colliding_sprite([rect_hit]) for rect_hit in rect_hits]
             for item in items:
                 if item and not item.is_picked_up:
                     type, item_info = item.picked_up()
-                    
                     if type == ItemType.COIN:
                         self.coins += item_info
-
                     elif type == ItemType.PICKUP_HEART:
                         self.heal(item_info)
-
                     elif type == ItemType.ITEM:
                         self.eq.add_item(item_info)
-
                     elif type == ItemType.PILL:
                         self.eq.use_pill(item_info)
 
+    def get_center_position(self):
+        return self.rect.centerx, self.rect.centery
+    
     def set_rect_position(self, x_rect, y_rect):
         self.rect.x = x_rect
         self.rect.y = y_rect
 
     def get_hit(self, dmg:int):
-        if self.__immortality_time_left <= 0:
+        if self.immortality_time_left <= 0:
             self.health -= dmg * (1 - self.eq.stats["dmg_reduction"]) * self.eq.extra_stats["dmg_taken_multiplier"]
-            self.__immortality_time_left = self.get_immortality_time()
+            self.immortality_time_left = self.get_immortality_time()
             print(self.health)
-            self._check_is_dead()
+            self.check_is_dead()
 
-    def _check_is_dead(self):
+    def check_is_dead(self):
         if self.health <= 0 and not GOD_MODE:
             self.game.game_over()
-    
-    def get_center_position(self):
-        return self.rect.centerx, self.rect.centery
     
     def heal(self, amount:int):
         self.health = min(self.max_health, self.health + amount)
 
     def update_player_stats(self):
         self.max_health = BASE_HEALTH + self.eq.stats["health"]
-        self.__speed = (BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
+        self.speed = (BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
     
     def get_shooting_cooldown(self):
         return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
@@ -299,9 +289,7 @@ class Player(pygame.sprite.Sprite):
                               self.rect.centery//self.game.settings.TILE_SIZE, i%2==1)
      
     def animate(self):
-        frame_change = False
-        self.reversed_frame = False
-
+        self.reversed_body_frame = False
         if self.is_moving:
             self.time -= 1
         
@@ -315,7 +303,6 @@ class Player(pygame.sprite.Sprite):
 
         self.check_tear_animation()
         self.set_head_frame()
-        
         self.next_frame()
 
     def check_tear_animation(self):
@@ -328,23 +315,21 @@ class Player(pygame.sprite.Sprite):
 
     def next_frame(self):
         self.frame = pygame.Surface((self.PLAYER_SIZE, self.PLAYER_SIZE), pygame.SRCALPHA)
-
-        if self.reversed_frame:
+        if self.reversed_body_frame:
             self.body_frame = pygame.transform.flip(self.body_frame, True, False)
 
         self.frame.blit(self.body_frame, (0, self.PLAYER_SIZE*0.25))
-        
         if self.reversed_head_frame:
             self.head_frame = pygame.transform.flip(self.head_frame, True, False)
-        self.frame.blit(self.head_frame, ((self.PLAYER_SIZE - self.head_frame.get_width())//2, -3))
         
+        self.frame.blit(self.head_frame, ((self.PLAYER_SIZE - self.head_frame.get_width())//2, -3))
         self.image = self.frame
     
     def set_body_frame(self):
         if self.direction == Directions.LEFT or self.direction == Directions.RIGHT:
             self.x_legs_frame += 10
             if self.direction == Directions.LEFT: 
-                self.reversed_frame = True
+                self.reversed_body_frame = True
      
         self.body_frame = self.body_images[self.x_legs_frame]
         self.x_legs_frame %= 10
@@ -356,7 +341,6 @@ class Player(pygame.sprite.Sprite):
             x += 2
             if self.facing == Directions.LEFT:
                 self.reversed_head_frame = True
-            
         elif self.facing == Directions.UP:
             x += 4
         
