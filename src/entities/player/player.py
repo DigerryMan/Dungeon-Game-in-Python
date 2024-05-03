@@ -2,6 +2,7 @@ import pygame
 from config import *
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
+from entities.player.stat_bars import StatBars
 from items.item_types import ItemType
 from utils.directions import Directions
 from ..bullet import Bullet
@@ -40,6 +41,9 @@ class Player(pygame.sprite.Sprite):
         #EQ
         self.eq = Equipment(self)
         self.eq_opened = False
+
+        #STAT_BARS
+        self.stat_bar = StatBars(game, self)
 
         #ANIMATION
         self.x_legs_frame = 0
@@ -103,6 +107,7 @@ class Player(pygame.sprite.Sprite):
         self.check_items_pick_up()
         self._layer = self.rect.bottom
         self.animate()
+        self.stat_bar.update()
 
         self.immortality_time_left -= 1
         self.x_change = 0

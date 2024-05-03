@@ -33,6 +33,9 @@ class ImageLoader:
         self.chests = {}
         self.load_chests()
 
+        self.stat_bar = {}
+        self.load_stat_bar()
+
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
@@ -154,6 +157,14 @@ class ImageLoader:
             self.chests[f"small_chest{i}"] = pygame.transform.scale(self.images_dict["small_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
             self.chests[f"medium_chest{i}"] = pygame.transform.scale(self.images_dict["medium_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
             self.chests[f"large_chest{i}"] = pygame.transform.scale(self.images_dict["large_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
+
+    def load_stat_bar(self):
+        self.images = ["coin", "empty_heart", "full_heart", "half_heart"]
+        for image in self.images:
+            self.stat_bar[image] = pygame.image.load(f"resources/stat_bar/{image}.png").convert_alpha()
+
+    def get_stat_bar_image(self, name:str):
+        return self.stat_bar[name]
 
     def get_image(self, name: str):
         return self.images_dict[name]
