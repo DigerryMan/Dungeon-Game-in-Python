@@ -1,12 +1,10 @@
 import pygame
-from config import *
 from items.item_types import ItemType
 from ..lootable_item import LootableItem
 
 class PickupHeart(LootableItem):
-    def __init__(self, game, x, y, heal_value = 1, drop_animtion = True):
-        super().__init__(game, x, y, drop_animtion)
-        self.image.fill(RED)
+    def __init__(self, game, x, y, heal_value=1, drop_animation=True):
+        super().__init__(game, x, y, drop_animation)
         if heal_value == 1:
             self.image = game.image_loader.lootables["full_heart"]
 

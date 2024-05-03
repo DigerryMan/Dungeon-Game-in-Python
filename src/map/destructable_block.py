@@ -1,6 +1,5 @@
 import random
 import pygame
-from config import *
 from .block import Block
 
 class DestructableBlock(Block):

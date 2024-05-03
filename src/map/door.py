@@ -1,5 +1,5 @@
 import pygame
-from config import *
+from config import BLOCK_LAYER
 from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):

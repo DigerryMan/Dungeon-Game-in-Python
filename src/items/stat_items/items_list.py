@@ -1,7 +1,7 @@
-from config import DROP_LOOT_EVERYTIME
-from items.stat_items.categories import Categories
 import pygame
 import random
+from config import DROP_LOOT_EVERYTIME
+from items.stat_items.categories import Categories
 
 class ItemsList():
     def __init__(self, game):

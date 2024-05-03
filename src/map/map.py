@@ -1,10 +1,11 @@
-from config import *
-from .room_types import rooms, special_rooms
-from .room import Room
-from entities.player.player import *
 import random
-from math import inf
 from collections import deque
+from math import inf
+from config import ROOM_NUMBER
+from .room_types import rooms
+from .room import Room
+from entities.player.player import Player
+from utils.directions import Directions
 
 class Map():
     def __init__(self, game, player:Player, level):

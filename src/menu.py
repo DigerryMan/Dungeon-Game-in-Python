@@ -1,5 +1,5 @@
 import pygame
-from config import *
+from config import FPS
 
 class Menu():
     def __init__(self, game):

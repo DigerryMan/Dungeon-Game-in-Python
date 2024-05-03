@@ -1,6 +1,6 @@
 import pygame
 import random
-from config import *
+from config import BLOCK_LAYER
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, game, x, y, is_collidable = True):

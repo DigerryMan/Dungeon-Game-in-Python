@@ -1,12 +1,11 @@
 import random
 import pygame
-from config import *
 from items.item_types import ItemType
 from ..lootable_item import LootableItem
 
 class Coin(LootableItem):
-    def __init__(self, game, x, y, type:str, drop_animtion = True):
-        super().__init__(game, x, y, drop_animtion)
+    def __init__(self, game, x, y, type:str, drop_animation=True):
+        super().__init__(game, x, y, drop_animation)
 
         self.value = 0
         self.is_picked_up = False

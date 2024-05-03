@@ -1,6 +1,6 @@
 import pygame
 import random
-from config import *
+from config import BLOCK_LAYER, DROP_LOOT_EVERYTIME
 from items.lootables.silver_coin import SilverCoin
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart

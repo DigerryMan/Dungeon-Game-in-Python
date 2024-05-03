@@ -1,15 +1,13 @@
 import pygame
 import random
-from config import *
 
 class LootableItem(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, drop_animtion = True):
+    def __init__(self, game, x, y, drop_animation=True):
         self.game = game
         self.groups = self.game.all_sprites, self.game.items
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.image = pygame.Surface([30, 30])
-        self.image.fill(WHITE)
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
@@ -25,7 +23,7 @@ class LootableItem(pygame.sprite.Sprite):
 
         self.is_picked_up = False
 
-        if drop_animtion:
+        if drop_animation:
             TS = game.settings.TILE_SIZE
             self.drop_animation_time = 40
             self.horizontal_velocity = random.uniform(-3, 3) * game.settings.SCALE

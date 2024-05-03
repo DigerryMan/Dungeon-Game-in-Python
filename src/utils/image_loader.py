@@ -1,5 +1,4 @@
 import pygame
-from config import *
 
 class ImageLoader:
     def __init__(self, settings):
@@ -33,8 +32,6 @@ class ImageLoader:
 
         self.chests = {}
         self.load_chests()
-
-        
 
     def load_images_to_dict(self):
         for menu_element in self.menu_:
@@ -93,7 +90,6 @@ class ImageLoader:
         
         self.images_dict["maintitle"] = pygame.transform.scale(self.images_dict["maintitle"],
                                                                (self.images_dict["maintitle"].get_width() * 2.8 * self.settings.SCALE, self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE)).convert_alpha()
-
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()

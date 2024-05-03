@@ -270,18 +270,18 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
+            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
         else: 
             if random.random() < 0.3: #chance to have any drop at all
                 if random.random() < 0.7: # chance to have a lootable (coin, heart, etc.)
                     if random.random() < 0.5:
-                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, False))
                     elif random.uniform(0, 0.5) < 0.3:
-                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, False))
                     else:
-                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, False))
                 else:
-                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
+                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
 
     def draw_additional_images(self, screen):
         pass
