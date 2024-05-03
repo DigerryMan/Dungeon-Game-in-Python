@@ -1,12 +1,13 @@
 import pygame
 import os
+from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
-from map.map import *
-from entities.player.player import *
-from config import *
+from map.map import Map
+from entities.player.player import Player
 from menu import Menu
+from utils.directions import Directions
 from utils.image_loader import ImageLoader
-from utils.settings import *
+from utils.settings import Settings
 
 class Game:
     def __init__(self):
@@ -17,7 +18,6 @@ class Game:
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.screen = pygame.display.set_mode(window_size)
         
-
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
@@ -29,30 +29,20 @@ class Game:
         self.running = True
         self.paused = False
 
-        self.e_pressed = False
-        self.space_pressed = False
-
         self.handle_resolution_change(window_size)
-        
-        self.player_sprite = pygame.sprite.LayeredUpdates()
-        self.entities = pygame.sprite.LayeredUpdates()
-        self.all_sprites = pygame.sprite.LayeredUpdates()
-        self.blocks = pygame.sprite.LayeredUpdates()
-        self.shop_stands = pygame.sprite.LayeredUpdates()
-        self.doors = pygame.sprite.LayeredUpdates()
-        self.enemies = pygame.sprite.LayeredUpdates()
-        self.not_voulnerable = pygame.sprite.LayeredUpdates()
-        self.attacks = pygame.sprite.LayeredUpdates()
-        self.chest = pygame.sprite.LayeredUpdates()
-        self.items = pygame.sprite.LayeredUpdates()
-        self.trap_door = pygame.sprite.LayeredUpdates()
-        self.collidables = pygame.sprite.LayeredUpdates()
+        self.sprite_groups = ["player_sprite", "entities", "all_sprites", "blocks", "shop_stands", "doors", 
+                              "enemies", "not_voulnerable", "attacks", "chest", "items", "trap_door", "collidables"]
+        self.not_clearable_groups = ["player_sprite"]
+        self.init_empty_sprite_groups()
 
-        self.difficulty = 1
+
         self.map = None
-        self.current_level = 1
         self.player = None
 
+        self.difficulty = 1
+        self.current_level = 1
+        self.e_pressed = False
+        self.space_pressed = False
 
     def handle_resolution_change(self, window_size):
         self.screen = pygame.display.set_mode(window_size)
@@ -61,26 +51,15 @@ class Game:
         self.items_list = ItemsList(self)
         self.menu.update_images()
 
+    def init_empty_sprite_groups(self):
+        for group_name in self.sprite_groups:
+            setattr(self, group_name, pygame.sprite.LayeredUpdates())
 
     def render_new_map(self):
-        self.player_sprite = pygame.sprite.LayeredUpdates()
-        self.all_sprites = pygame.sprite.LayeredUpdates()
-        self.entities = pygame.sprite.LayeredUpdates()
-        self.blocks = pygame.sprite.LayeredUpdates()
-        self.shop_stands = pygame.sprite.LayeredUpdates()
-        self.doors = pygame.sprite.LayeredUpdates()
-        self.enemies = pygame.sprite.LayeredUpdates()
-        self.not_voulnerable = pygame.sprite.LayeredUpdates()
-        self.attacks = pygame.sprite.LayeredUpdates()
-        self.chest = pygame.sprite.LayeredUpdates()
-        self.items = pygame.sprite.LayeredUpdates()
-        self.trap_door = pygame.sprite.LayeredUpdates()
-        self.collidables = pygame.sprite.LayeredUpdates()
-
+        self.init_empty_sprite_groups()
         self.player = Player(self, 0, 0)
         self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
-
 
     def run(self):
         self.menu.intro_screen()
@@ -103,7 +82,6 @@ class Game:
 
         pygame.quit()
 
-
     def events(self):
         self.e_pressed = False
         self.space_pressed = False
@@ -125,35 +103,22 @@ class Game:
                 if event.key == pygame.K_TAB:
                     self.player.eq_opened = not self.player.eq_opened
 
-
     def update(self):
         self.all_sprites.update()
         if not self.map.get_current_room().is_cleared and len(self.enemies) == 0 or ADMIN:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
-
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
         self.map.render_next_room(direction)
         self.get_new_sprites(self.map.get_current_room())
 
-
     def clear_sprites(self):
-        self.all_sprites.empty()
-        self.blocks.empty()
-        self.shop_stands.empty()
-        self.doors.empty()
-        self.attacks.empty()
-        self.enemies.empty()
-        self.collidables.empty()
-        self.not_voulnerable.empty()
-        self.chest.empty()
-        self.items.empty()
-        self.entities.empty()
-        self.trap_door.empty()
+        for group_name in self.sprite_groups:
+            if group_name not in self.not_clearable_groups:
+                getattr(self, group_name).empty()
      
-
     def get_new_sprites(self, room):
         self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
@@ -179,14 +144,11 @@ class Game:
         self.all_sprites.add(self.collidables, self.doors, self.enemies, self.attacks, self.items)
         self.entities.add(self.enemies, self.player_sprite)
 
-
     def damage_player(self, enemy_dmg:int):
         self.player.get_hit(enemy_dmg)
 
-
     def get_player_rect(self):
         return self.player.rect
-
 
     def draw(self):
         self.screen.fill(BLACK)
@@ -196,10 +158,8 @@ class Game:
         self.clock.tick(FPS)
         pygame.display.update()
 
-
     def game_over(self):
         pass
-
 
     def display_eq(self):
         self.player.eq.user_eq_input(None) #show big_item first time
