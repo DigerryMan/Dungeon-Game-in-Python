@@ -4,6 +4,7 @@ from items.stat_items.items_list import ItemsList
 from map.map import *
 from entities.player.player import *
 from config import *
+from menu import Menu
 from utils.image_loader import ImageLoader
 from utils.settings import *
 
@@ -14,12 +15,13 @@ class Game:
         #window_size = (1920, 1080)
         window_size = (1280, 720)
         os.environ['SDL_VIDEO_CENTERED'] = '1'
-        self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
+        self.screen = pygame.display.set_mode(window_size)
         
 
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
+        self.menu = Menu(self)
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
@@ -30,9 +32,7 @@ class Game:
         self.e_pressed = False
         self.space_pressed = False
 
-        self.handle_resolution_change(window_size)  
-                
-        self.font = pygame.font.SysFont("arialblack", 30)
+        self.handle_resolution_change(window_size)
         
         self.player_sprite = pygame.sprite.LayeredUpdates()
         self.entities = pygame.sprite.LayeredUpdates()
@@ -55,7 +55,7 @@ class Game:
 
 
     def handle_resolution_change(self, window_size):
-        self.screen = pygame.display.set_mode((window_size[0], window_size[1]))
+        self.screen = pygame.display.set_mode(window_size)
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
@@ -68,24 +68,7 @@ class Game:
         self.arrow = self.image_loader.get_image("arrow2")
         self.main_title = self.image_loader.get_image("maintitle")
 
-
-    def run(self):
-        self.intro_screen()
-        while self.running:
-            self.events()
-            self.main_menu()
-
-            if not self.paused and self.running:
-                self.update()
-                self.draw()
-
-            if self.paused:
-                self.display_pause()
-            
-            if self.player is not None and self.player.eq_opened:
-                self.display_eq()
-
-        pygame.quit()
+        self.menu.update_images()
 
 
     def render_new_map(self):
@@ -106,6 +89,28 @@ class Game:
         self.player = Player(self, 0, 0)
         self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
+
+
+    def run(self):
+        self.menu.intro_screen()
+
+        while self.running:
+            self.events()
+
+            if self.menu_playing:
+                self.menu.main_menu()
+
+            if not self.paused and self.running:
+                self.update()
+                self.draw()
+
+            if self.paused:
+                self.menu.display_pause()
+            
+            if self.player is not None and self.player.eq_opened:
+                self.display_eq()
+
+        pygame.quit()
 
 
     def events(self):
@@ -203,158 +208,6 @@ class Game:
 
     def game_over(self):
         pass
-
-
-    def intro_screen(self):
-        while self.intro_playing:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.intro_playing = False
-                    self.running = False
-
-                if event.type == pygame.MOUSEBUTTONDOWN or (event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN)):
-                    self.intro_playing = False
-                    self.menu_playing = True
-
-            self.screen.blit(self.intro_background, (0, 0))
-            self.clock.tick(FPS)
-            pygame.display.update()
-
-
-    def main_menu(self):
-        arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
-                           (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
-                           (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
-        current_arrow = 0
-
-        while self.menu_playing:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.menu_playing = False
-                    self.running = False
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
-
-                    if event.key == pygame.K_UP:
-                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
-
-                    if event.key == pygame.K_RETURN:
-                        if current_arrow == 0:
-                            self.menu_playing = False
-                            self.render_new_map()
-                            self.paused = False
-
-                        elif current_arrow == 1:
-                            self.menu_playing = False
-                            self.settings_playing = True
-                            self.display_settings()
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.35, self.settings.WIN_HEIGHT//3.13), 
-                                            (self.settings.WIN_WIDTH//2.44, self.settings.WIN_HEIGHT//2.15), 
-                                            (self.settings.WIN_WIDTH//2.27, self.settings.WIN_HEIGHT//1.67)]
-                            
-                            if not self.menu_playing:
-                                return
-
-                        elif current_arrow == 2:
-                            self.menu_playing = False
-                            self.running = False
-
-            self.screen.blit(self.menu_card, (0, 0))
-            self.screen.blit(self.menu_background, (0, 0))
-            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
-
-            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
-
-            self.clock.tick(FPS)
-            pygame.display.update()
-
-
-    def display_settings(self):
-        settings_playing = True
-
-        arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
-                    (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
-                    (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
-        current_arrow = 0
-
-        while settings_playing:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    settings_playing = False
-                    self.menu_playing = False
-                    self.running = False
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_DOWN:
-                        current_arrow = current_arrow + 1 if current_arrow < 2 else 0
-
-                    if event.key == pygame.K_UP:
-                        current_arrow = current_arrow - 1 if current_arrow > 0 else 2
-
-                    if event.key == pygame.K_RETURN:
-                        if current_arrow == 0:
-                            self.handle_resolution_change((1920, 1080))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
-                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
-                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
-                        elif current_arrow == 1:
-                            self.handle_resolution_change((1600, 900))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
-                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
-                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
-                        elif current_arrow == 2:
-                            self.handle_resolution_change((1280, 720))
-                            arrow_positions = [(self.settings.WIN_WIDTH//2.52, self.settings.WIN_HEIGHT//2.78), 
-                                        (self.settings.WIN_WIDTH//2.48, self.settings.WIN_HEIGHT//2.13), 
-                                        (self.settings.WIN_WIDTH//2.43, self.settings.WIN_HEIGHT//1.72)]
-
-                    if event.key == pygame.K_ESCAPE:
-                        settings_playing = False
-                        self.menu_playing = True
-
-
-            self.screen.blit(self.settings_card, (0, 0))
-            self.screen.blit(self.menu_background, (0, 0))
-            self.screen.blit(self.main_title, (self.settings.WIN_WIDTH//8, 0))
-
-            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
-
-            self.clock.tick(FPS)
-            pygame.display.update()
-
-
-    def display_pause(self):
-        arrow_positions = [(self.settings.WIN_WIDTH//2.82, self.settings.WIN_HEIGHT//1.55),
-                           (self.settings.WIN_WIDTH//2.62, self.settings.WIN_HEIGHT//1.38)]
-        current_arrow = 0
-
-        while self.paused:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.paused = False
-                    self.running = False
-
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        self.paused = False
-                    
-                    if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
-                        current_arrow = current_arrow + 1 if current_arrow == 0 else 0
-
-                    if event.key == pygame.K_RETURN:
-                        if current_arrow == 0:
-                            self.paused = False
-                        elif current_arrow == 1:
-                            self.paused = False
-                            self.menu_playing = True
-
-            self.screen.blit(self.pause_card, (self.settings.WIN_WIDTH//4, self.settings.WIN_HEIGHT//20))
-            self.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
-
-            self.clock.tick(FPS)
-            pygame.display.update()
 
 
     def display_eq(self):
