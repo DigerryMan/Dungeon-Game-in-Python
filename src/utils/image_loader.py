@@ -13,7 +13,7 @@ class ImageLoader:
         self.blocks_ = ["rocks2"]
 
         self.images_dict = {}
-        self.__load_images_to_dict()
+        self.load_images_to_dict()
         self.scale_menu_images()
 
         self.blocks = {}
@@ -36,7 +36,7 @@ class ImageLoader:
 
         
 
-    def __load_images_to_dict(self):
+    def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
 

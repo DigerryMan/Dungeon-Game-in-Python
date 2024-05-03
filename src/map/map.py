@@ -14,11 +14,10 @@ class Map():
         self.level = level
         self.current_position = [0, 0]
         self.map_scheme = self.create_map_scheme()
-        self._generate_rooms()
+        self.generate_rooms()
 
 
     def create_map_scheme(self):
-        #setting row, col for starting room
         row = 7
         col = 7
 
@@ -57,7 +56,7 @@ class Map():
 
         return distance_array
 
-    def _generate_rooms(self):
+    def generate_rooms(self):
         for row in range(len(self.map_scheme)):
             for col in range(len(self.map_scheme[row])):
                 if self.map_scheme[row][col] == -inf:
@@ -99,13 +98,13 @@ class Map():
 
 
     def render_next_room(self, direction:Directions):
-        self._change_position_on_map(direction)
+        self.change_position_on_map(direction)
         row, col = self.current_position
 
         room = self.room_map[row][col]
         room.generate_room(direction)
         
-    def _change_position_on_map(self, direction:Directions):
+    def change_position_on_map(self, direction:Directions):
         if direction == Directions.UP:
             self.current_position[0] -= 1
 

@@ -43,10 +43,7 @@ class Coin(LootableItem):
         self.pickup_timer = self.time_per_frame_pickup * 9
 
 
-    def picked_up(self):
-        if self.is_picked_up:
-            return 0
-        
+    def picked_up(self):       
         self.is_picked_up = True
         self.clean_up()
         return ItemType.COIN, self.value

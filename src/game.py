@@ -59,15 +59,6 @@ class Game:
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
-
-        self.intro_background = self.image_loader.get_image("introbackground")
-        self.menu_card = self.image_loader.get_image("menucard")
-        self.settings_card = self.image_loader.get_image("settingscard")
-        self.menu_background = self.image_loader.get_image("menuoverlay")
-        self.pause_card = self.image_loader.get_image("pausecard2")
-        self.arrow = self.image_loader.get_image("arrow2")
-        self.main_title = self.image_loader.get_image("maintitle")
-
         self.menu.update_images()
 
 
@@ -145,7 +136,7 @@ class Game:
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
         self.map.render_next_room(direction)
-        self._get_new_sprites(self.map.get_current_room())
+        self.get_new_sprites(self.map.get_current_room())
 
 
     def clear_sprites(self):
@@ -163,7 +154,7 @@ class Game:
         self.trap_door.empty()
      
 
-    def _get_new_sprites(self, room):
+    def get_new_sprites(self, room):
         self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
         self.blocks.add(objects["blocks"])
