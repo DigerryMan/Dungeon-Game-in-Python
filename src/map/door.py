@@ -3,7 +3,10 @@ from config import BLOCK_LAYER
 from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, direction:Directions):
+    types = {"boss_door": {"name": "boss_door", "frames": 11},
+             "basement_door1": {"name": "basement_door1", "frames": 19}}
+    
+    def __init__(self, game, x, y, direction:Directions, door_type:str="basement_door1"):
         self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER
@@ -15,8 +18,8 @@ class Door(pygame.sprite.Sprite):
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
 
-        self.animation_frames = 19
-        self.images = [game.image_loader.doors[f"basement_door1_{i}"].copy() for i in range(self.animation_frames)]
+        self.animation_frames = Door.types[door_type]['frames']
+        self.images = [game.image_loader.doors[f"{Door.types[door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -91,7 +94,7 @@ class Door(pygame.sprite.Sprite):
 
     def animate_closing(self):
         self.timer = self.time_per_frame * (self.animation_frames - 1)
-        self.current_frame = 18
+        self.current_frame = self.animation_frames - 1
         self.reverse_animation = True
 
     def animate_opening(self):
