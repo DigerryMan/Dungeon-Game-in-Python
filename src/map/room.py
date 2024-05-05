@@ -229,13 +229,15 @@ class Room():
         self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
         self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
 
-        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        #mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        mobs = [Boss]
         index = random.randint(0, len(mobs) - 1)
 
         for (y, x) in self.mob_spawn_positions:
             new_mob = mobs[index]
             self.enemies.append(new_mob(self.game, x, y))
             index = random.randint(0, len(mobs) - 1)
+            break # ADDED FOR ONLY 1 MOB TO SPAWN
 
 
     def get_doors_positions(self):

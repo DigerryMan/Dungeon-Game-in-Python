@@ -174,10 +174,9 @@ class ImageLoader:
             self.stat_bar[image] = pygame.image.load(f"resources/stat_bar/{image}.png").convert_alpha()
             self.stat_bar[image] = pygame.transform.scale(self.stat_bar[image], (self.settings.STAT_BARS_HEALTH_SIZE, self.settings.STAT_BARS_HEALTH_SIZE))
 
-        bar_images = ["full_bar", "empty_bar"]
+        bar_images = ["full_bar", "empty_bar", "boss_full_bar", "boss_empty_bar"]
         for image in bar_images:
             self.stat_bar[image] = pygame.image.load(f"resources/stat_bar/{image}.png").convert_alpha()
-            #self.stat_bar[image] = pygame.transform.scale(self.stat_bar[image], (self.settings.STAT_BARS_HEALTH_SIZE, self.settings.STAT_BARS_HEALTH_SIZE))
 
     def get_stat_bar_image(self, name:str):
         return self.stat_bar[name]
