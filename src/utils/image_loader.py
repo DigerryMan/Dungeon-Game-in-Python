@@ -36,6 +36,9 @@ class ImageLoader:
         self.stat_bar = {}
         self.load_stat_bar()
 
+        self.minimap = {}
+        self.load_minimap()
+
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
@@ -77,6 +80,7 @@ class ImageLoader:
         self.images_dict["small_chest"] = pygame.image.load("resources/other/small_chest.png")
         self.images_dict["medium_chest"] = pygame.image.load("resources/other/medium_chest.png")
         self.images_dict["large_chest"] = pygame.image.load("resources/other/large_chest.png")
+        self.images_dict["minimap"] = pygame.image.load("resources/other/minimap.png")
 
     def scale_menu_images(self):
         screen_size = (self.settings.WIN_WIDTH, self.settings.WIN_HEIGHT)
@@ -165,6 +169,20 @@ class ImageLoader:
 
     def get_stat_bar_image(self, name:str):
         return self.stat_bar[name]
+    
+    def load_minimap(self):
+        background_size = (self.images_dict["minimap"].subsurface(pygame.Rect(0, 0, 101, 81)).get_width() * self.settings.SCALE * 2,
+                            self.images_dict["minimap"].subsurface(pygame.Rect(0, 0, 101, 81)).get_height() * self.settings.SCALE * 2)
+                                                                  
+        cell_size = (self.images_dict["minimap"].subsurface(pygame.Rect(111, 0, 19, 15)).get_width() * self.settings.SCALE * 2,
+                            self.images_dict["minimap"].subsurface(pygame.Rect(111, 0, 19, 15)).get_height() * self.settings.SCALE * 2)
+
+        self.minimap["background"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(0, 0, 101, 81)), background_size).convert_alpha()
+        self.minimap["current_room"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 0, 19, 15)), cell_size).convert_alpha()
+        self.minimap["discovered_room"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 15, 19, 15)), cell_size).convert_alpha()
+        self.minimap["undiscovered_room"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 30, 19, 15)), cell_size).convert_alpha()
+        self.minimap["shop_icon"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 45, 19, 15)), cell_size).convert_alpha()
+        self.minimap["boss_icon"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 60, 19, 15)), cell_size).convert_alpha()
 
     def get_image(self, name: str):
         return self.images_dict[name]

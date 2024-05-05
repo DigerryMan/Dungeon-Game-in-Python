@@ -1,5 +1,7 @@
 import random
 from math import inf
+from config import MAP_RANGE
+from map.minimap import Minimap
 from utils.map_generator import MapGenerator
 from .room_types import rooms
 from .room import Room
@@ -8,13 +10,14 @@ from utils.directions import Directions
 
 class Map():
     def __init__(self, game, player:Player, level):
-        self.room_map = [[None for _ in range(15)] for _ in range(15)]
+        self.room_map = [[None for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
         self.game = game
         self.player = player
         self.level = level
         self.current_position = None
         self.map_scheme = MapGenerator.create_map_scheme()
         self.generate_rooms()
+        self.minimap = Minimap(self)
 
     def generate_rooms(self):
         for row in range(len(self.map_scheme)):
@@ -32,7 +35,7 @@ class Map():
                     new_row = row + d_row[i]
                     new_col = col + d_col[i]
 
-                    if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and self.map_scheme[new_row][new_col] != -inf:
+                    if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and self.map_scheme[new_row][new_col] != -inf:
                         doors_to_spawn.append(door_directions[i])
 
                 if self.map_scheme[row][col] == 'S':
@@ -55,6 +58,7 @@ class Map():
 
         room = self.room_map[row][col]
         room.generate_room(Directions.CENTER)
+        self.minimap.update_minimap()
 
 
     def render_next_room(self, direction:Directions):
@@ -63,6 +67,7 @@ class Map():
 
         room = self.room_map[row][col]
         room.generate_room(direction)
+        self.minimap.update_minimap()
         
     def change_position_on_map(self, direction:Directions):
         if direction == Directions.UP:
@@ -84,3 +89,6 @@ class Map():
     def set_room_cleared(self):
         x, y = self.current_position
         self.room_map[x][y].set_room_cleared()
+
+    def draw_minimap(self, screen):
+        self.minimap.draw(screen)

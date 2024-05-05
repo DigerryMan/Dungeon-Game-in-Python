@@ -2,7 +2,7 @@ from collections import deque
 from math import inf
 import random
 
-from config import ROOM_NUMBER
+from config import MAP_RANGE, ROOM_NUMBER
 
 
 class MapGenerator():
@@ -11,21 +11,21 @@ class MapGenerator():
 
     @staticmethod
     def create_map_scheme():
-        row = 7
-        col = 7
+        root_row = MAP_RANGE//2
+        root_col = MAP_RANGE//2
 
         satisfied = False
 
         while not satisfied:
-            arr = [[0 for _ in range(15)] for _ in range(15)]
-            arr[row][col] = 1
+            arr = [[0 for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
+            arr[root_row][root_col] = 1
 
-            MapGenerator._create_map_shape(arr, row, col)
+            MapGenerator._create_map_shape(arr, root_row, root_col)
 
-            distance_array = [[-inf for _ in range(15)] for _ in range(15)]
-            distance_array[row][col] = 0
+            distance_array = [[-inf for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
+            distance_array[root_row][root_col] = 0
 
-            MapGenerator._fill_distances(arr, distance_array, row, col)
+            MapGenerator._fill_distances(arr, distance_array, root_row, root_col)
 
             row_max = 0
             col_max = 0
@@ -46,6 +46,12 @@ class MapGenerator():
         distance_array[boss_row][boss_col] = 'B'
         distance_array[start_row][start_col] = 'T'
 
+        #here
+        for row in distance_array:
+            for cell in row:
+                print("{:5}".format(str(cell)), end=' ')
+            print()
+
         return distance_array
     
     @staticmethod
@@ -61,20 +67,20 @@ class MapGenerator():
             d_row, d_col = random.choice(directions)
             row, col = row + d_row, col + d_col
 
-            if row < 0 or col < 0 or row >= 15 or col >= 15:
+            if row < 0 or col < 0 or row >= MAP_RANGE or col >= MAP_RANGE:
                 row, col = row - d_row, col - d_col
 
             while arr[row][col] == 1:
                 d_row, d_col = random.choice(directions)
                 row, col = row + d_row, col + d_col
-                if row < 0 or col < 0 or row >= 15 or col >= 15:
+                if row < 0 or col < 0 or row >= MAP_RANGE or col >= MAP_RANGE:
                     row, col = row - d_row, col - d_col
 
     @staticmethod
     def _fill_distances(arr, distance_array, row, col):
         q = deque()
         q.append([row, col])
-        visited = [[False for _ in range(15)] for _ in range(15)]
+        visited = [[False for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
         visited[row][col] = True
 
         d_row = [0, 0, 1, -1]
@@ -87,7 +93,7 @@ class MapGenerator():
                 new_row = row + d_row[i]
                 new_col = col + d_col[i]
 
-                if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and not visited[new_row][new_col] and arr[new_row][new_col] == 1:
+                if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and not visited[new_row][new_col] and arr[new_row][new_col] == 1:
                     distance_array[new_row][new_col] = distance_array[row][col] + 1
                     q.append([new_row, new_col])
                     visited[new_row][new_col] = True
@@ -97,7 +103,7 @@ class MapGenerator():
     def _check_if_map_valid(arr, row_, col_):
         q = deque()
         q.append([row_, col_])
-        visited = [[False for _ in range(15)] for _ in range(15)]
+        visited = [[False for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
         visited[row_][col_] = True
 
         d_row = [0, 0, 1, -1]
@@ -112,7 +118,7 @@ class MapGenerator():
                 new_row = row + d_row[i]
                 new_col = col + d_col[i]
 
-                if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and not visited[new_row][new_col] and arr[new_row][new_col] >= 0:
+                if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and not visited[new_row][new_col] and arr[new_row][new_col] >= 0:
                     arr[new_row][new_col] = arr[row][col] + 1
                     furthest_distance = max(furthest_distance, arr[new_row][new_col])
                     q.append([new_row, new_col])
@@ -132,7 +138,7 @@ class MapGenerator():
                         new_row = row + d_row[i]
                         new_col = col + d_col[i]
 
-                        if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and arr[new_row][new_col] > 0:
+                        if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and arr[new_row][new_col] > 0:
                             neighbors += 1
 
                     if neighbors == 1:
@@ -147,7 +153,7 @@ class MapGenerator():
                         new_row = row + d_row[i]
                         new_col = col + d_col[i]
 
-                        if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and arr[new_row][new_col] > 0:
+                        if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and arr[new_row][new_col] > 0:
                             neighbors += 1
 
                     if neighbors == 1:
@@ -159,7 +165,7 @@ class MapGenerator():
                         new_row = row + d_row[i]
                         new_col = col + d_col[i]
 
-                        if new_row >= 0 and new_row < 15 and new_col >= 0 and new_col < 15 and arr[new_row][new_col] > 0:
+                        if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and arr[new_row][new_col] > 0:
                             neighbors += 1
 
                     if neighbors == 1:

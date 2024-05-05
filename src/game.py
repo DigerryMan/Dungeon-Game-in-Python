@@ -13,8 +13,8 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        #window_size = (1920, 1080)
-        window_size = (1280, 720)
+        window_size = (1920, 1080)
+        #window_size = (1280, 720)
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.screen = pygame.display.set_mode(window_size)
         
@@ -109,6 +109,18 @@ class Game:
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
+    def draw(self):
+        self.screen.fill(BLACK)
+
+        self.map.get_current_room().draw(self.screen)
+        self.map.draw_minimap(self.screen)
+
+        self.clock.tick(FPS)
+        pygame.display.update()
+
+    def game_over(self):
+        pass
+
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
         self.map.render_next_room(direction)
@@ -149,17 +161,6 @@ class Game:
 
     def get_player_rect(self):
         return self.player.rect
-
-    def draw(self):
-        self.screen.fill(BLACK)
-
-        self.map.get_current_room().draw(self.screen)
-
-        self.clock.tick(FPS)
-        pygame.display.update()
-
-    def game_over(self):
-        pass
 
     def display_eq(self):
         self.player.eq.user_eq_input(None) #show big_item first time
