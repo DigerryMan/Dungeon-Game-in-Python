@@ -1,3 +1,4 @@
+from entities.player.stat_bars import StatBars
 import pygame
 import os
 from config import ADMIN, BLACK, FPS
@@ -58,6 +59,7 @@ class Game:
     def render_new_map(self):
         self.init_empty_sprite_groups()
         self.player = Player(self, 0, 0)
+        self.stat_bars = StatBars(self, self.player)
         self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
 
@@ -114,7 +116,7 @@ class Game:
 
         self.map.get_current_room().draw(self.screen)
         self.map.draw_minimap(self.screen)
-
+        self.stat_bars.update_and_draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
 

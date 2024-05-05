@@ -42,9 +42,6 @@ class Player(pygame.sprite.Sprite):
         self.eq = Equipment(self)
         self.eq_opened = False
 
-        #STAT_BARS
-        self.stat_bar = StatBars(game, self)
-
         #ANIMATION
         self.x_legs_frame = 0
         self.body_frame = None
@@ -107,7 +104,6 @@ class Player(pygame.sprite.Sprite):
         self.check_items_pick_up()
         self._layer = self.rect.bottom
         self.animate()
-        self.stat_bar.update()
 
         self.immortality_time_left -= 1
         self.x_change = 0

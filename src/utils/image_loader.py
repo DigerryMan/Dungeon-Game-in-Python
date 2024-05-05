@@ -166,7 +166,8 @@ class ImageLoader:
         self.images = ["coin", "empty_heart", "full_heart", "half_heart"]
         for image in self.images:
             self.stat_bar[image] = pygame.image.load(f"resources/stat_bar/{image}.png").convert_alpha()
-
+            self.stat_bar[image] = pygame.transform.scale(self.stat_bar[image], (self.settings.STAT_BARS_HEALTH_SIZE, self.settings.STAT_BARS_HEALTH_SIZE))
+            print(self.settings.TILE_SIZE*0.4)
     def get_stat_bar_image(self, name:str):
         return self.stat_bar[name]
     
