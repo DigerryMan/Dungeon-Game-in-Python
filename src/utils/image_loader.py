@@ -39,6 +39,9 @@ class ImageLoader:
         self.minimap = {}
         self.load_minimap()
 
+        self.player_animation = {}
+        self.load_player_animation()
+
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
@@ -187,6 +190,22 @@ class ImageLoader:
         self.minimap["undiscovered_room"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 30, 19, 15)), cell_size).convert_alpha()
         self.minimap["shop_icon"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 45, 19, 15)), cell_size).convert_alpha()
         self.minimap["boss_icon"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 60, 19, 15)), cell_size).convert_alpha()
+
+    def load_player_animation(self):
+        img = pygame.image.load(f"resources/mobs/player.png")
+        frame_names = ["die2", "like0", "like1", "die4", 
+                       "die0", "pick", "die3", "bad1",
+                       "die1", "sit", "happy0", "happy1"]
+        index = 0
+        for y in range(2, 5):
+            for x in range(4):
+               sub_img = img.subsurface(pygame.Rect(x * 64, y * 64, 64, 64))
+               new_size = int(1.95*self.settings.PLAYER_SIZE), int(1.95*self.settings.PLAYER_SIZE)
+               self.player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
+               index += 1
+        
+        for key, value in self.player_animation.items():
+            print(key, value)
 
     def get_image(self, name: str):
         return self.images_dict[name]

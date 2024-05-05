@@ -65,6 +65,14 @@ class Player(pygame.sprite.Sprite):
         self.shoot_second_bullet = False
         self.shoot_second_time = 0
 
+        #DEATH ANIMATION
+        self.is_alive = True
+        self.end_of_death_animation = False
+        self.death_frame_cd = 12
+        self.death_time_left = self.death_frame_cd
+        self.death_index = 0
+        self.last_death_index = 4
+
         #REST
         self.immortality_time_left = 0
 
@@ -94,21 +102,27 @@ class Player(pygame.sprite.Sprite):
         self.mask.erase(cut_mask_top, (0, 0))
 
     def update(self):
-        self.user_input()
-        self.correct_diagonal_movement()
+        if self.is_alive:
+            self.user_input()
+            self.correct_diagonal_movement()
 
-        self.rect.x += self.x_change
-        self.collide_blocks('x')
-        self.rect.y += self.y_change
-        self.collide_blocks('y')
+            self.rect.x += self.x_change
+            self.collide_blocks('x')
+            self.rect.y += self.y_change
+            self.collide_blocks('y')
 
-        self.check_items_pick_up()
-        self._layer = self.rect.bottom
-        self.animate()
+            self.check_items_pick_up()
+            self._layer = self.rect.bottom
+            self.animate()
 
-        self.immortality_time_left -= 1
-        self.x_change = 0
-        self.y_change = 0
+            self.immortality_time_left -= 1
+            self.x_change = 0
+            self.y_change = 0
+        else:
+            if not self.end_of_death_animation:
+                self.play_death_animation() 
+            else:
+                self.game.game_over()
 
     def user_input(self):
         keys = pygame.key.get_pressed()
@@ -254,12 +268,11 @@ class Player(pygame.sprite.Sprite):
         if self.immortality_time_left <= 0:
             self.health -= dmg * (1 - self.eq.stats["dmg_reduction"]) * self.eq.extra_stats["dmg_taken_multiplier"]
             self.immortality_time_left = self.get_immortality_time()
-            print(self.health)
             self.check_is_dead()
 
     def check_is_dead(self):
         if self.health <= 0 and not GOD_MODE:
-            self.game.game_over()
+            self.is_alive = False
     
     def heal(self, amount:int):
         self.health = min(self.max_health, self.health + amount)
@@ -306,7 +319,7 @@ class Player(pygame.sprite.Sprite):
         self.check_tear_animation()
         self.set_head_frame()
         self.next_frame()
-
+        
     def check_tear_animation(self):
         self.head_tear_anime_time_left -= 1
         if self.head_tear_anime_time_left == self.head_tear_anime_cd - 1 or self.head_tear_anime_time_left == 1:
@@ -348,3 +361,23 @@ class Player(pygame.sprite.Sprite):
         
         self.head_frame = self.head_images[x]
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
+    
+    def play_death_animation(self):
+        center_x = self.rect.centerx
+        cetner_y = self.rect.centery
+        self.death_time_left -= 1
+        if self.death_time_left <= 0:
+            if self.death_index > self.last_death_index:
+                self.end_of_death_animation = True
+                return
+            
+            frame_name = "die" + str(self.death_index)
+            self.image = self.game.image_loader.player_animation[frame_name]
+            self.rect.width = self.image.get_width()
+            self.rect.height = self.image.get_height()
+            self.rect.centerx = center_x
+            self.rect.centery = cetner_y
+
+            self.death_time_left = self.death_frame_cd
+            self.death_index += 1
+            
