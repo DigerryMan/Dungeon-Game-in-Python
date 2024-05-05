@@ -203,9 +203,6 @@ class ImageLoader:
                new_size = int(1.95*self.settings.PLAYER_SIZE), int(1.95*self.settings.PLAYER_SIZE)
                self.player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
                index += 1
-        
-        for key, value in self.player_animation.items():
-            print(key, value)
 
     def get_image(self, name: str):
         return self.images_dict[name]

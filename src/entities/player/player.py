@@ -17,6 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
         self.bombs = 0
+        self.rooms_cleared = 0
 
         #SKIN
         self.img = game.image_loader.get_image("player")
@@ -380,4 +381,8 @@ class Player(pygame.sprite.Sprite):
 
             self.death_time_left = self.death_frame_cd
             self.death_index += 1
-            
+    
+    def update_rooms_cleared(self):
+        print("updejt byl")
+        self.rooms_cleared += 1
+        self.rooms_cleared = min(self.rooms_cleared, ROOM_NUMBER - 2)

@@ -1,6 +1,6 @@
 import math
 import pygame
-from config import BLACK
+from config import BLACK, FPS, ROOM_NUMBER
 
 class StatBars():
     def __init__(self, game, player):
@@ -35,13 +35,28 @@ class StatBars():
         self.empty_hearts_cntr = 0
         self.heart_x = 100
         self.hearts_drawn = 0
+
+        # TIME
+        self.time_font = pygame.font.Font(self.font_path, int(self.STAT_BARS_HEALTH_SIZE))
+        self.TIME_X = 500
+        self.TIME_Y = 500
+        self.ticks_passed = 0
+        self.h = 0
+        self.min = 0
+        self.sec = 0
         
+
+        # PROGRESS
+        self.MAX_ROOMS_TO_CLEAR = ROOM_NUMBER - 2
+        self.current_rooms_cleared = 0
 
     def update_and_draw(self, screen):
         self.calculate_hearts_cntrs()
         self.draw_health_bar(screen)
         self.draw_coin(screen)
         self.draw_bomb(screen)
+        self.draw_time(screen)
+        self.draw_progress(screen)
 
     def calculate_hearts_cntrs(self):
         health = self.player.health
@@ -93,3 +108,26 @@ class StatBars():
         text = self.font.render(str(self.player.bombs), True, (255, 255, 255))
         screen.blit(self.bomb, (self.COIN_X, self.COIN_Y + self.BOMB_Y_OFFSET))
         screen.blit(text, (self.COIN_X + self.TILE_SIZE//3, self.COIN_Y + self.BOMB_Y_OFFSET))
+
+    def update_time_values(self):
+        self.ticks_passed += 1
+        if self.ticks_passed == FPS:
+            self.ticks_passed = 0
+            self.sec += 1
+            if self.sec == 60:
+                self.sec = 0
+                self.min += 1
+                if self.min == 60:
+                    self.min = 0
+                    self.h += 1
+
+    def draw_time(self, screen):
+        self.update_time_values()
+        time = f'{self.h // 10}{self.h % 10}:{self.min // 10}{self.min % 10}:{self.sec // 10}{self.sec % 10}'
+        text = self.time_font.render(time, True, (255, 255, 255))
+        screen.blit(text, (self.TIME_X, self.TIME_Y))
+    
+    def draw_progress(self, screen):
+        progress = f'{self.player.rooms_cleared}/{self.MAX_ROOMS_TO_CLEAR}'
+        text = self.time_font.render(progress, True, (255, 255, 255))
+        screen.blit(text, (self.TIME_X + 100, self.TIME_Y + 100))

@@ -262,6 +262,7 @@ class Room():
         return doors_positions
 
     def set_room_cleared(self):
+        self.update_player_rooms_cleared()
         self.is_cleared = True
         self.enemies.clear()
 
@@ -276,11 +277,13 @@ class Room():
         if self.trap_door:
             self.trap_door.open()
             
-    
+    def update_player_rooms_cleared(self):
+        if not self.is_cleared and self.room_type != "start" and self.room_type != "shop":
+            self.game.player.update_rooms_cleared()
+
     def get_block_layout(self):
         return self.room
     
-
     def select_graphics(self):
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
