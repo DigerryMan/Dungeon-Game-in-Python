@@ -28,7 +28,7 @@ class TrapDoor(pygame.sprite.Sprite):
         trap_door_pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         distance = player_pos.distance_to(trap_door_pos)
         
-        if not self.animated:
+        if not self.animated and self.opened:
             self.timer -= 1
             if self.timer <= 0:
                 self.image = self.game.image_loader.trap_door["opened"]

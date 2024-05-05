@@ -126,15 +126,27 @@ class Room():
                 self.well_generated = True
 
                 for (y, x) in doors_positions:
-                    if(y == 0):
-                        self.doors.append(Door(self.game, x, y, Directions.UP))
-                    elif(y == self.game.settings.MAP_HEIGHT - 1):
-                        self.doors.append(Door(self.game, x, y, Directions.DOWN))
-                    elif(x == 0):
-                        self.doors.append(Door(self.game, x, y, Directions.LEFT))
-                    elif(x == self.game.settings.MAP_WIDTH - 1):
-                        self.doors.append(Door(self.game, x, y, Directions.RIGHT))
+                    direction = None
 
+                    if(y == 0):
+                        direction = Directions.UP
+                    elif(y == self.game.settings.MAP_HEIGHT - 1):
+                        direction = Directions.DOWN
+                    elif(x == 0):
+                        direction = Directions.LEFT
+                    elif(x == self.game.settings.MAP_WIDTH - 1):
+                        direction = Directions.RIGHT
+
+                    if self.room_type == "boss":
+                        self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                    else:
+                        current_position = self.game.map.current_position
+                        neighbor_room = self.game.map.room_map[current_position[0] + direction.value[0]][current_position[1] + direction.value[1]]
+                        if neighbor_room.room_type == "boss":
+                            self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                        else:
+                            self.doors.append(Door(self.game, x, y, direction))
+                    
                 self.spawn_outer_walls(doors_positions)
 
                 for door in self.doors:

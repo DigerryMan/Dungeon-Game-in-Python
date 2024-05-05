@@ -46,12 +46,6 @@ class MapGenerator():
         distance_array[boss_row][boss_col] = 'B'
         distance_array[start_row][start_col] = 'T'
 
-        #here
-        for row in distance_array:
-            for cell in row:
-                print("{:5}".format(str(cell)), end=' ')
-            print()
-
         return distance_array
     
     @staticmethod
