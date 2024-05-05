@@ -59,8 +59,6 @@ class StatBars():
             self.check_to_draw_second_row_hearts()
             self.draw_and_update_variables(screen, self.empty_heart)
 
-
-
     def draw_and_update_variables(self, screen, what_to_draw):
         screen.blit(what_to_draw, (self.heart_x, self.heart_y))
         self.hearts_drawn += 1
