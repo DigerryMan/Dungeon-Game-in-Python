@@ -6,16 +6,26 @@ class StatBars():
     def __init__(self, game, player):
         self.game = game
         self.player = player
-        self.font_path = 'resources/fonts/IsaacGame.ttf'
-        self.font = pygame.font.Font(self.font_path, 36)
-        self.font_color = BLACK
+        
         self.TILE_SIZE = game.settings.TILE_SIZE
         self.STAT_BARS_HEALTH_SIZE = game.settings.STAT_BARS_HEALTH_SIZE
         self.HEARTS_IN_ROW = 6
-        self.HEARTS_STARTING_X = self.TILE_SIZE * 2
+        self.HEARTS_STARTING_X = self.TILE_SIZE
         self.HEARTS_STARTING_Y = self.STAT_BARS_HEALTH_SIZE * 0.5
 
+        self.font_path = 'resources/fonts/IsaacGame.ttf'
+        self.font_size_offset = self.get_font_size_offset()
+        self.font = pygame.font.Font(self.font_path, int(self.STAT_BARS_HEALTH_SIZE + self.font_size_offset))
+        self.font_color = BLACK
+
         self.coin = game.image_loader.get_stat_bar_image("coin")
+        self.COIN_X = self.TILE_SIZE // 5
+        self.COIN_Y = self.TILE_SIZE * 1.25
+        self.COIN_CENTER_Y = self.COIN_Y + self.coin.get_height() // 2
+
+        self.bomb = game.image_loader.get_stat_bar_image("bomb")
+        self.BOMB_Y_OFFSET = self.coin.get_height() + math.ceil(11 * self.game.settings.SCALE)
+
         self.empty_heart = game.image_loader.get_stat_bar_image("empty_heart")
         self.full_heart = game.image_loader.get_stat_bar_image("full_heart")
         self.half_heart = game.image_loader.get_stat_bar_image("half_heart")
@@ -25,8 +35,15 @@ class StatBars():
         self.empty_hearts_cntr = 0
         self.heart_x = 100
         self.hearts_drawn = 0
+        
 
-    def calculate_hearts(self):
+    def update_and_draw(self, screen):
+        self.calculate_hearts_cntrs()
+        self.draw_health_bar(screen)
+        self.draw_coin(screen)
+        self.draw_bomb(screen)
+
+    def calculate_hearts_cntrs(self):
         health = self.player.health
         floor_health = int(health)
         ceil_health = math.ceil(health)
@@ -38,15 +55,10 @@ class StatBars():
         self.empty_hearts_cntr = self.player.max_health - self.full_hearts_cntr
         self.empty_hearts_cntr -= self.is_half_heart_cntr
 
-    def update_and_draw(self, screen):
-        self.calculate_hearts()
-        self.draw_health_bar(screen)
-        self.draw_money(screen)
-
     def draw_health_bar(self, screen):
         self.heart_x = self.HEARTS_STARTING_X
         self.heart_y = self.HEARTS_STARTING_Y
-        self.hearts_drawn = False
+        self.hearts_drawn = 0
         for _ in range(self.full_hearts_cntr):
             self.check_to_draw_second_row_hearts()
             self.draw_and_update_variables(screen, self.full_heart)
@@ -69,8 +81,15 @@ class StatBars():
             self.heart_y += self.STAT_BARS_HEALTH_SIZE
             self.heart_x = self.HEARTS_STARTING_X
 
-    def draw_money(self, screen):
-        pass
-        #font = pygame.font.Font(self.font_path, 36)
-        #text = font.render(f'Money: {self.player.coins}', True, (255, 255, 255))
-        #screen.blit(text, (10, 40))
+    def get_font_size_offset(self):
+        return math.ceil(11 * self.game.settings.SCALE)
+
+    def draw_coin(self, screen):
+        text = self.font.render(str(self.player.coins), True, (255, 255, 255))
+        screen.blit(self.coin, (self.COIN_X, self.COIN_Y))
+        screen.blit(text, (self.COIN_X + self.TILE_SIZE//3, self.COIN_Y))
+    
+    def draw_bomb(self, screen):
+        text = self.font.render(str(self.player.bombs), True, (255, 255, 255))
+        screen.blit(self.bomb, (self.COIN_X, self.COIN_Y + self.BOMB_Y_OFFSET))
+        screen.blit(text, (self.COIN_X + self.TILE_SIZE//3, self.COIN_Y + self.BOMB_Y_OFFSET))

@@ -16,7 +16,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = BASE_SPEED * game.settings.SCALE
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
-        
+        self.bombs = 0
+
         #SKIN
         self.img = game.image_loader.get_image("player")
         self.body_images = []

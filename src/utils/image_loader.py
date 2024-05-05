@@ -166,7 +166,7 @@ class ImageLoader:
             self.chests[f"large_chest{i}"] = pygame.transform.scale(self.images_dict["large_chest"].subsurface(pygame.Rect(i * 32, 0, 32, 32)), self.tile_size_tuple).convert_alpha()
 
     def load_stat_bar(self):
-        self.images = ["coin", "empty_heart", "full_heart", "half_heart"]
+        self.images = ["coin", "bomb", "empty_heart", "full_heart", "half_heart"]
         for image in self.images:
             self.stat_bar[image] = pygame.image.load(f"resources/stat_bar/{image}.png").convert_alpha()
             self.stat_bar[image] = pygame.transform.scale(self.stat_bar[image], (self.settings.STAT_BARS_HEALTH_SIZE, self.settings.STAT_BARS_HEALTH_SIZE))

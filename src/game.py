@@ -36,7 +36,6 @@ class Game:
         self.not_clearable_groups = ["player_sprite"]
         self.init_empty_sprite_groups()
 
-
         self.map = None
         self.player = None
 
