@@ -7,7 +7,7 @@ class ImageLoader:
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
         self.mobs_ = ["player", "alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
-        self.rooms_ = ["controls", "shading", "shop_room", "basement1", "basement2", "basement3", "basement4"]
+        self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
         self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
         self.blocks_ = ["rocks2"]
 
@@ -63,7 +63,16 @@ class ImageLoader:
                 self.images_dict[room] = pygame.transform.scale(original_image, new_size)
                 continue
 
-            self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
+            elif room == "basement":
+                for i in range(1, 5):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/basement/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "cave":
+                for i in range(1, 6):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/cave/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            else:
+                self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
 
         for door in self.doors_:
             self.images_dict[door] = pygame.image.load("resources/doors/" + door + ".png").convert_alpha()

@@ -94,7 +94,7 @@ class Room():
                             self.shop_stands.append(ShopStand(self.game, x + .5, y + .5))
 
                         elif col == 'T':
-                            self.trap_door = TrapDoor(self.game, x, y)
+                            self.trap_door = TrapDoor(self.game, x + 1, y)
 
                         elif col == 'E':
                             self.mob_spawn_positions.append((y, x))
@@ -293,8 +293,11 @@ class Room():
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
-        if self.level == 1 or self.level == 2:
+        if self.level == 1:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
+
+        if self.level >= 2:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("cave" + str(random.randint(1, 5)))
 
         if self.room == special_rooms["shop"]:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("shop_room")
