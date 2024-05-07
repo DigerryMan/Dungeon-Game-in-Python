@@ -5,7 +5,7 @@ class ImageLoader:
         self.settings = settings
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
-        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard2", "arrow2", "maintitle"]
+        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard3", "arrow2", "maintitle"]
         self.mobs_ = ["player", "alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
         self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
         self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
@@ -101,8 +101,8 @@ class ImageLoader:
         self.images_dict["settingscard"] = pygame.transform.scale(self.images_dict["settingscard"], screen_size).convert_alpha()
         self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
         
-        self.images_dict["pausecard2"] = pygame.transform.scale(self.images_dict["pausecard2"],
-                                                                (self.images_dict["pausecard2"].get_height() * self.settings.SCALE, self.images_dict["pausecard2"].get_width() * self.settings.SCALE)).convert_alpha()
+        self.images_dict["pausecard3"] = pygame.transform.scale(self.images_dict["pausecard3"],
+                                                                (self.images_dict["pausecard3"].get_width() * self.settings.SCALE, self.images_dict["pausecard3"].get_height() * self.settings.SCALE)).convert_alpha()
         
         self.images_dict["arrow2"] = pygame.transform.scale(self.images_dict["arrow2"],
                                                             (self.images_dict["arrow2"].get_width() * 0.7 * self.settings.SCALE, self.images_dict["arrow2"].get_height() * 0.7 * self.settings.SCALE)).convert_alpha()

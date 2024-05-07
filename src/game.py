@@ -36,6 +36,9 @@ class Game:
         self.not_clearable_groups = ["player_sprite"]
         self.init_empty_sprite_groups()
 
+        self.prepare_game()
+
+    def prepare_game(self):
         self.map = None
         self.player = None
         self.stat_bars = None
@@ -56,12 +59,15 @@ class Game:
         for group_name in self.sprite_groups:
             setattr(self, group_name, pygame.sprite.LayeredUpdates())
 
-    def render_new_map(self):
+    def render_new_map(self, first_map = False):
+        if first_map:
+            self.prepare_game()
+            
         self.current_level += 1
         self.init_empty_sprite_groups()
         if self.player is None:
             self.player = Player(self, 0, 0)
-            
+
         else:
             self.all_sprites.add(self.player)
             self.player_sprite.add(self.player)

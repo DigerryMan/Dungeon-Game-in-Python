@@ -11,7 +11,7 @@ class Menu():
         self.menu_card = self.game.image_loader.get_image("menucard")
         self.settings_card = self.game.image_loader.get_image("settingscard")
         self.menu_background = self.game.image_loader.get_image("menuoverlay")
-        self.pause_card = self.game.image_loader.get_image("pausecard2")
+        self.pause_card = self.game.image_loader.get_image("pausecard3")
         self.arrow = self.game.image_loader.get_image("arrow2")
         self.main_title = self.game.image_loader.get_image("maintitle")
 
@@ -52,7 +52,7 @@ class Menu():
                     if event.key == pygame.K_RETURN:
                         if current_arrow == 0:
                             self.game.menu_playing = False
-                            self.game.render_new_map()
+                            self.game.render_new_map(first_map = True)
                             self.game.paused = False
 
                         elif current_arrow == 1:
@@ -108,16 +108,16 @@ class Menu():
 
                     if event.key == pygame.K_RETURN:
                         if current_arrow == 0:
-                            self.game.handle_resolution_change((1920, 1080))
-                            get_arrow_positions()
+                            self.window_size = (1920, 1080)
 
                         elif current_arrow == 1:
-                            self.game.handle_resolution_change((1600, 900))
-                            get_arrow_positions()
+                            self.window_size = (1600, 900)
 
                         elif current_arrow == 2:
-                            self.game.handle_resolution_change((1280, 720))
-                            get_arrow_positions()
+                            self.window_size = (1280, 720)
+                        
+                        self.game.handle_resolution_change(self.window_size)
+                        get_arrow_positions()
 
                     if event.key == pygame.K_ESCAPE:
                         settings_playing = False
@@ -134,8 +134,8 @@ class Menu():
             pygame.display.update()
 
     def display_pause(self):
-        arrow_positions = [(self.game.settings.WIN_WIDTH//2.82, self.game.settings.WIN_HEIGHT//1.55),
-                           (self.game.settings.WIN_WIDTH//2.62, self.game.settings.WIN_HEIGHT//1.38)]
+        arrow_positions = [(self.game.settings.WIN_WIDTH//3.1, self.game.settings.WIN_HEIGHT//2.05),
+                           (self.game.settings.WIN_WIDTH//2.85, self.game.settings.WIN_HEIGHT//1.75)]
         current_arrow = 0
 
         while self.game.paused:
@@ -158,7 +158,7 @@ class Menu():
                             self.game.paused = False
                             self.game.menu_playing = True
 
-            self.game.screen.blit(self.pause_card, (self.game.settings.WIN_WIDTH//4, self.game.settings.WIN_HEIGHT//20))
+            self.game.screen.blit(self.pause_card, (self.game.settings.WIN_WIDTH//4, self.game.settings.WIN_HEIGHT//4))
             self.game.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
 
             self.game.clock.tick(FPS)
