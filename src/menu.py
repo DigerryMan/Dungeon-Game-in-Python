@@ -11,8 +11,8 @@ class Menu():
         self.menu_card = self.game.image_loader.get_image("menucard")
         self.settings_card = self.game.image_loader.get_image("settingscard")
         self.menu_background = self.game.image_loader.get_image("menuoverlay")
-        self.pause_card = self.game.image_loader.get_image("pausecard3")
-        self.arrow = self.game.image_loader.get_image("arrow2")
+        self.pause_card = self.game.image_loader.get_image("pausecard")
+        self.arrow = self.game.image_loader.get_image("arrow")
         self.main_title = self.game.image_loader.get_image("maintitle")
 
     def intro_screen(self):

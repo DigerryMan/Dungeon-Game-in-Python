@@ -5,11 +5,11 @@ class ImageLoader:
         self.settings = settings
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
-        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard3", "arrow2", "maintitle"]
+        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard", "arrow", "maintitle"]
         self.mobs_ = ["player", "alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
         self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
         self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
-        self.blocks_ = ["rocks2"]
+        self.blocks_ = ["rocks"]
 
         self.images_dict = {}
         self.load_images_to_dict()
@@ -101,28 +101,28 @@ class ImageLoader:
         self.images_dict["settingscard"] = pygame.transform.scale(self.images_dict["settingscard"], screen_size).convert_alpha()
         self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
         
-        self.images_dict["pausecard3"] = pygame.transform.scale(self.images_dict["pausecard3"],
-                                                                (self.images_dict["pausecard3"].get_width() * self.settings.SCALE, self.images_dict["pausecard3"].get_height() * self.settings.SCALE)).convert_alpha()
+        self.images_dict["pausecard"] = pygame.transform.scale(self.images_dict["pausecard"],
+                                                                (self.images_dict["pausecard"].get_width() * self.settings.SCALE, self.images_dict["pausecard"].get_height() * self.settings.SCALE)).convert_alpha()
         
-        self.images_dict["arrow2"] = pygame.transform.scale(self.images_dict["arrow2"],
-                                                            (self.images_dict["arrow2"].get_width() * 0.7 * self.settings.SCALE, self.images_dict["arrow2"].get_height() * 0.7 * self.settings.SCALE)).convert_alpha()
+        self.images_dict["arrow"] = pygame.transform.scale(self.images_dict["arrow"],
+                                                            (self.images_dict["arrow"].get_width() * 0.7 * self.settings.SCALE, self.images_dict["arrow"].get_height() * 0.7 * self.settings.SCALE)).convert_alpha()
         
         self.images_dict["maintitle"] = pygame.transform.scale(self.images_dict["maintitle"],
                                                                (self.images_dict["maintitle"].get_width() * 2.8 * self.settings.SCALE, self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE)).convert_alpha()
 
     def load_blocks(self):
-        self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()
-        self.blocks["rock2"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(67, 5, 55, 57)), self.tile_size_tuple).convert_alpha()
-        self.blocks["rock3"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(131, 1, 55, 63)), self.tile_size_tuple).convert_alpha()
-        self.blocks["rock4"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 133, 51, 56)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock2"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(67, 5, 55, 57)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock3"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(131, 1, 55, 63)), self.tile_size_tuple).convert_alpha()
+        self.blocks["rock4"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(69, 133, 51, 56)), self.tile_size_tuple).convert_alpha()
 
-        self.blocks["treasure_rock1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(69, 69, 51, 55)), self.tile_size_tuple).convert_alpha()
-        self.blocks["treasure_rock2"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 135, 53, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["treasure_rock1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(69, 69, 51, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["treasure_rock2"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(197, 135, 53, 55)), self.tile_size_tuple).convert_alpha()
 
-        self.blocks["vase1"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(129, 67, 57, 55)), self.tile_size_tuple).convert_alpha()
-        self.blocks["vase2"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(129, 131, 57, 55)), self.tile_size_tuple).convert_alpha()
-        self.blocks["vase3"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(133, 195, 49, 55)), self.tile_size_tuple).convert_alpha()
-        self.blocks["vase4"] = pygame.transform.scale(self.images_dict["rocks2"].subsurface(pygame.Rect(197, 195, 49, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["vase1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(129, 67, 57, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["vase2"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(129, 131, 57, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["vase3"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(133, 195, 49, 55)), self.tile_size_tuple).convert_alpha()
+        self.blocks["vase4"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(197, 195, 49, 55)), self.tile_size_tuple).convert_alpha()
 
     def load_tears(self):
         self.tears["blue_tear"] = pygame.transform.scale(self.images_dict["tears"].subsurface(pygame.Rect(650, 12, 42, 42)), (self.settings.BULLET_SIZE, self.settings.BULLET_SIZE)).convert_alpha()
