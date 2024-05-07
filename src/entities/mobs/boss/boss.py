@@ -10,7 +10,7 @@ class Boss(Enemy):
         self._health = self._max_health
 
         self.health_bar = BossHealthBar(game, self)
-        self.image = game.image_loader.get_image("parasite").subsurface(pygame.Rect(0, 0, self.MOB_SIZE, self.MOB_SIZE))
+        self.image = game.image_loader.get_image("parasite").subsurface(pygame.Rect(0, 0, self.MOB_SIZE, self.MOB_SIZE)).copy()
         self.image.fill(GREEN)
 
     def animate(self):

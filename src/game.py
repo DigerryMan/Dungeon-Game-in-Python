@@ -69,6 +69,7 @@ class Game:
             self.player = Player(self, 0, 0)
 
         else:
+            self.player.prepare_for_next_map()
             self.all_sprites.add(self.player)
             self.player_sprite.add(self.player)
             self.entities.add(self.player)

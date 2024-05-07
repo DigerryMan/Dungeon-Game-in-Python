@@ -383,6 +383,8 @@ class Player(pygame.sprite.Sprite):
             self.death_index += 1
     
     def update_rooms_cleared(self):
-        print("updejt byl")
         self.rooms_cleared += 1
         self.rooms_cleared = min(self.rooms_cleared, ROOM_NUMBER - 2)
+    
+    def prepare_for_next_map(self):
+        self.rooms_cleared = 0
