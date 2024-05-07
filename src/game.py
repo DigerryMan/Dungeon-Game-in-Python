@@ -38,9 +38,10 @@ class Game:
 
         self.map = None
         self.player = None
+        self.stat_bars = None
 
         self.difficulty = 1
-        self.current_level = 1
+        self.current_level = 0
         self.e_pressed = False
         self.space_pressed = False
 
@@ -56,9 +57,19 @@ class Game:
             setattr(self, group_name, pygame.sprite.LayeredUpdates())
 
     def render_new_map(self):
+        self.current_level += 1
         self.init_empty_sprite_groups()
-        self.player = Player(self, 0, 0)
-        self.stat_bars = StatBars(self, self.player)
+        if self.player is None:
+            self.player = Player(self, 0, 0)
+            
+        else:
+            self.all_sprites.add(self.player)
+            self.player_sprite.add(self.player)
+            self.entities.add(self.player)
+
+        if self.stat_bars is None:
+            self.stat_bars = StatBars(self, self.player)
+
         self.map = Map(self, self.player, self.current_level)
         self.map.render_initial_room()
 

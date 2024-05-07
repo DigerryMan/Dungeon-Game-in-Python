@@ -229,9 +229,12 @@ class Room():
         self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
         self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
 
-        #mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
-        mobs = [Boss]
+        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
         index = random.randint(0, len(mobs) - 1)
+
+        if self.room_type == "boss":
+            self.enemies.append(Boss(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            return
 
         for (y, x) in self.mob_spawn_positions:
             new_mob = mobs[index]
@@ -290,7 +293,7 @@ class Room():
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
-        if self.level == 1:
+        if self.level == 1 or self.level == 2:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
 
         if self.room == special_rooms["shop"]:
