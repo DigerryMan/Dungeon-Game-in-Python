@@ -21,6 +21,9 @@ class ImageLoader:
         self.tears = {}
         self.load_tears()
 
+        self.bombs = {}
+        self.load_bombs()
+
         self.doors = {}
         self.load_doors()
 
@@ -84,6 +87,8 @@ class ImageLoader:
         self.images_dict["bullet"] = pygame.image.load("resources/other/tears.png").convert_alpha()
         self.images_dict["tears"] = pygame.image.load("resources/other/tears.png")
         self.images_dict["tears_pop"] = pygame.image.load("resources/other/tears_pop.png")
+        self.images_dict["bombs"] = pygame.image.load("resources/other/bombs.png")
+        self.images_dict["explosion"] = pygame.image.load("resources/other/explosion.png")
         self.images_dict["trap_door"] = pygame.image.load("resources/other/trap_door.png")
         self.images_dict["gold_coin"] = pygame.image.load("resources/other/penny.png")
         self.images_dict["silver_coin"] = pygame.image.load("resources/other/nickel.png")
@@ -132,6 +137,14 @@ class ImageLoader:
             self.tears["blue_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 0, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
             self.tears["red_tear_pop" + str(i)] = pygame.transform.scale(self.images_dict["tears_pop"].subsurface(pygame.Rect(i * 64, 64, 64, 64)), (self.settings.BULLET_SIZE*3, self.settings.BULLET_SIZE*3)).convert_alpha()
 
+    def load_bombs(self):
+        for i in range(4):
+            self.bombs[f"bomb{i}"] = pygame.transform.scale(self.images_dict["bombs"].subsurface(pygame.Rect(i * 32, 160, 32, 32)), self.tile_size_tuple).convert_alpha()
+
+        for i in range(12):
+            self.bombs[f"bomb_explosion{i}"] = pygame.transform.scale(self.images_dict["explosion"].subsurface(pygame.Rect((i % 4) * 96, (i // 4) * 96, 96, 96)),
+                                                                      (self.settings.TILE_SIZE * 2.5, self.settings.TILE_SIZE * 2.5)).convert_alpha()
+            
     def load_doors(self):
         for i in range(19):
             self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()

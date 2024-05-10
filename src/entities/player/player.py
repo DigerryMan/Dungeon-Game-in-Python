@@ -1,5 +1,6 @@
 import pygame
 from config import *
+from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
 from entities.player.stat_bars import StatBars
@@ -16,7 +17,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = BASE_SPEED * game.settings.SCALE
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
-        self.bombs = 0
+        #self.bombs = 0
+        self.bombs = 10
         self.rooms_cleared = 0
 
         #SKIN
@@ -130,6 +132,7 @@ class Player(pygame.sprite.Sprite):
         x_y_vel = [0,0]
         self.is_moving = False
         self.move(keys, x_y_vel)
+        self.plant_bomb(x_y_vel)
         self.shoot(keys, x_y_vel)
 
     def move(self, keys, x_y_vel):
@@ -162,6 +165,14 @@ class Player(pygame.sprite.Sprite):
             self.direction = Directions.DOWN
             x_y_vel[1] += 1
             self.is_moving = True
+
+    def plant_bomb(self, x_y_vel):
+        if self.game.e_pressed and self.bombs > 0:
+            if self.facing == Directions.LEFT or x_y_vel[0] < 0:
+                Bomb(self.game, self.rect.centerx, self.rect.centery, rotate = True)
+            else:
+                Bomb(self.game, self.rect.centerx, self.rect.centery)
+            self.bombs -= 1
 
     def shoot(self, keys, x_y_vel):
         self.shot_time_left -= 1
