@@ -298,4 +298,5 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def group_attacked():
         Enemy.is_group_attacked = True
     
-        
+    def get_bombed(self):
+        self.get_hit(1)

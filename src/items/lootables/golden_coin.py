@@ -4,4 +4,4 @@ class GoldenCoin(Coin):
     def __init__(self, game, x, y, drop_animation=True):
         super().__init__(game, x, y, "gold", drop_animation)
 
-        self.value = 3
+        self.value = 2

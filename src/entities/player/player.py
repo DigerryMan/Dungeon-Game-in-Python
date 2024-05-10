@@ -399,3 +399,6 @@ class Player(pygame.sprite.Sprite):
     
     def prepare_for_next_map(self):
         self.rooms_cleared = 0
+
+    def get_bombed(self):
+        self.get_hit(1)

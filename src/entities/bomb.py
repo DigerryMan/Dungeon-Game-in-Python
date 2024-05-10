@@ -9,6 +9,8 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
+        self.explosion_radius = self.game.settings.TILE_SIZE * 2
+
         self.x = x
         self.y = y
 
@@ -44,6 +46,14 @@ class Bomb(pygame.sprite.Sprite):
         self.image = self.game.image_loader.bombs[f"{self.image_type}{self.current_frame}"].copy()
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y - self.game.settings.TILE_SIZE // 1.5)
+        self.check_collisions()
+
+    def check_collisions(self):
+        for group in [self.game.player_sprite, self.game.enemies, self.game.blocks]:
+            for sprite in group:
+                distance = ((sprite.rect.centerx - self.rect.centerx)**2 + (sprite.rect.centery - self.rect.centery)**2)**0.5
+                if distance <= self.explosion_radius:
+                    sprite.get_bombed()
 
     def update(self):
         self.timer += 1

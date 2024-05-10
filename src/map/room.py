@@ -1,7 +1,16 @@
 import random
 from collections import deque
-from map.mob_spawn_lists import *
+from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.boss.boss import Boss
+from entities.mobs.fly import Fly
+from entities.mobs.ghost import Ghost
+from entities.mobs.legs import Legs
+from entities.mobs.maggot import Maggot
+from entities.mobs.parasite import Parasite
+from entities.mobs.slime import Slime
+from entities.mobs.wanderer import Wanderer
 from map.trap_door import TrapDoor
+from map.treasure_block import TreasureBlock
 from utils.directions import Directions
 from .room_types import rooms, special_rooms
 from .block import Block
@@ -85,7 +94,10 @@ class Room():
                                 self.chest = Chest(self.game, x, y, "large")
 
                         elif col == 'B':
-                            self.blocks.append(Block(self.game, x, y))
+                            if random.uniform(0, 1) < 0.9:
+                                self.blocks.append(Block(self.game, x, y))
+                            else:
+                                self.blocks.append(TreasureBlock(self.game, x, y))
 
                         elif col == 'D':
                             self.blocks.append(DestructableBlock(self.game, x, y))

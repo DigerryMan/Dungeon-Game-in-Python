@@ -144,7 +144,7 @@ class ImageLoader:
         for i in range(12):
             self.bombs[f"bomb_explosion{i}"] = pygame.transform.scale(self.images_dict["explosion"].subsurface(pygame.Rect((i % 4) * 96, (i // 4) * 96, 96, 96)),
                                                                       (self.settings.TILE_SIZE * 2.5, self.settings.TILE_SIZE * 2.5)).convert_alpha()
-            
+
     def load_doors(self):
         for i in range(19):
             self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
