@@ -60,9 +60,9 @@ class Bomb(pygame.sprite.Sprite):
         if self.timer % self.time_per_frame == 0:
             self.next_frame()
 
-        if self.timer >= 180 and not self.exploded:
+        if self.timer >= 100 and not self.exploded:
             self.explode()
             self.exploded = True
 
-        if self.exploded and self.timer == 180 + self.frames * self.time_per_frame:
+        if self.exploded and self.timer == 100 + self.frames * self.time_per_frame:
             self.kill()
