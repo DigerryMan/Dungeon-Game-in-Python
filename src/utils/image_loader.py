@@ -1,4 +1,5 @@
 import pygame
+from entities.player.player_types import PlayerTypes
 
 class ImageLoader:
     def __init__(self, settings):
@@ -6,7 +7,11 @@ class ImageLoader:
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
         self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard", "arrow", "maintitle"]
-        self.mobs_ = ["player", "alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
+        
+        self.player_types = [PlayerTypes.ISAAC.value, PlayerTypes.RED_HEAD.value, PlayerTypes.WOMAN.value]
+        self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
+        self.mobs_.extend(self.player_types)
+
         self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
         self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
         self.blocks_ = ["rocks"]
@@ -42,7 +47,7 @@ class ImageLoader:
         self.minimap = {}
         self.load_minimap()
 
-        self.player_animation = {}
+        self.player_animations_list = []
         self.load_player_animation()
 
     def load_images_to_dict(self):
@@ -53,7 +58,7 @@ class ImageLoader:
             img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
             frames_in_row, frames_in_col = img.get_width()/32, img.get_height()/32
             size = self.settings.MOB_SIZE
-            if mob == "player":
+            if mob in self.player_types:
                 size = self.settings.PLAYER_SIZE
             new_size = (frames_in_row * size), (frames_in_col * size)
             self.images_dict[mob] = pygame.transform.scale(img, new_size)
@@ -218,17 +223,21 @@ class ImageLoader:
         self.minimap["boss_icon"] = pygame.transform.scale(self.images_dict["minimap"].subsurface(pygame.Rect(111, 60, 19, 15)), cell_size).convert_alpha()
 
     def load_player_animation(self):
-        img = pygame.image.load(f"resources/mobs/player.png")
         frame_names = ["die2", "like0", "like1", "die4", 
                        "die0", "pick", "die3", "bad1",
                        "die1", "sit", "happy0", "happy1"]
-        index = 0
-        for y in range(2, 5):
-            for x in range(4):
-               sub_img = img.subsurface(pygame.Rect(x * 64, y * 64, 64, 64))
-               new_size = int(1.95*self.settings.PLAYER_SIZE), int(1.95*self.settings.PLAYER_SIZE)
-               self.player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
-               index += 1
+        
+        for player_type in self.player_types:
+            index = 0
+            img = pygame.image.load(f"resources/mobs/{player_type}.png")
+            player_animation = {}
+            self.player_animations_list.append(player_animation)
+            for y in range(2, 5):
+                for x in range(4):
+                    sub_img = img.subsurface(pygame.Rect(x * 64, y * 64, 64, 64))
+                    new_size = int(1.95*self.settings.PLAYER_SIZE), int(1.95*self.settings.PLAYER_SIZE)
+                    player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
+                    index += 1
 
     def get_image(self, name: str):
         return self.images_dict[name]

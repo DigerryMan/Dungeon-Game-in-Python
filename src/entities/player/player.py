@@ -3,13 +3,13 @@ from config import *
 from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
-from entities.player.stat_bars import StatBars
+from entities.player.player_types import PlayerTypes
 from items.item_types import ItemType
 from utils.directions import Directions
 from ..bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, player_type=PlayerTypes.ISAAC):
         #MAIN
         self.game = game
         self.max_health = BASE_HEALTH
@@ -20,9 +20,10 @@ class Player(pygame.sprite.Sprite):
         #self.bombs = 0
         self.bombs = 10
         self.rooms_cleared = 0
+        self.player_type = player_type
 
         #SKIN
-        self.img = game.image_loader.get_image("player")
+        self.img = game.image_loader.get_image(player_type.value)
         self.body_images = []
         self.head_images = []
         self.prepare_images()
@@ -384,7 +385,7 @@ class Player(pygame.sprite.Sprite):
                 return
             
             frame_name = "die" + str(self.death_index)
-            self.image = self.game.image_loader.player_animation[frame_name]
+            self.image = self.game.image_loader.player_animations_list[self.player_type.get_index()][frame_name]
             self.rect.width = self.image.get_width()
             self.rect.height = self.image.get_height()
             self.rect.centerx = center_x
