@@ -104,7 +104,6 @@ class Equipment():
         x = self.big_item_x + self.big_item_size//2
         y = self.big_item_y + self.big_item_size + self.big_item_size//4
         
-
         small_font = pygame.font.Font(self.font_path, 20)
         big_font_2 = pygame.font.Font(self.font_path_2, 33)
         font_2 = pygame.font.Font(self.font_path_2, 23)
@@ -154,16 +153,17 @@ class Equipment():
     def draw_player_stats(self, screen):
         x = self.stats_x
         y = self.stats_y
-
+        speed = self.player.speed / self.player.game.settings.SCALE
+        speed = round(speed)
         font = pygame.font.Font(self.font_path, 33)
         stat_formats = {
-            "health": f"{self.stats['health'] + BASE_HEALTH} / {self.max_stats['health'] + BASE_HEALTH}",
-            "dmg": f"{(self.stats['dmg'] + BASE_DMG):.1f} / {(self.max_stats['dmg'] + BASE_DMG):.1f}",
+            "health": f"{self.stats['health'] + self.player.max_health} / {self.max_stats['health'] + self.player.max_health}",
+            "dmg": f"{(self.stats['dmg'] + self.player.dmg):.1f} / {(self.max_stats['dmg'] + self.player.dmg):.1f}",
             "dmg_reduction": f"{int(self.stats['dmg_reduction'] * 100)} / {int(self.max_stats['dmg_reduction'] * 100)} %",
             "shooting_cooldown": f"{(1/(BASE_SHOOTING_COOLDOWN - self.stats['shooting_cooldown'])):.2f} / {(1/(BASE_SHOOTING_COOLDOWN - self.max_stats['shooting_cooldown'])):.2f}",
             "bullet_fly_time": f"{self.stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME} / {int(self.max_stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME)} s",
             "shot_speed": f"{self.stats['shot_speed'] + BASE_SHOT_SPEED} / {self.max_stats['shot_speed'] + BASE_SHOT_SPEED}",
-            "speed": f"{self.stats['speed'] + BASE_SPEED} / {self.max_stats['speed'] + BASE_SPEED}",
+            "speed": f"{self.stats['speed'] + speed} / {self.max_stats['speed'] + speed}",
             "luck": f"{int(self.stats['luck'] * 100)} / {int(self.max_stats['luck'] * 100)} %",
             "immortality": f"{self.stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT} / {self.max_stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT} s"
         }

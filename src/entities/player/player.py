@@ -12,15 +12,20 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, player_type=PlayerTypes.ISAAC):
         #MAIN
         self.game = game
+        self.player_type = player_type
         self.max_health = BASE_HEALTH
-        self.health = BASE_HEALTH
+        self.dmg = BASE_DMG
         self.speed = BASE_SPEED * game.settings.SCALE
+        self.change_stats_if_other_player()
+
+        self.health = self.max_health
+        print(self.max_health)
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
         #self.bombs = 0
         self.bombs = 10
         self.rooms_cleared = 0
-        self.player_type = player_type
+        
 
         #SKIN
         self.img = game.image_loader.get_image(player_type.value)
@@ -86,7 +91,20 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.mask = pygame.mask.from_surface(self.image)
         self.correct_player_mask()
+    
+    def change_stats_if_other_player(self):
+        if self.player_type == PlayerTypes.RED_HEAD:
+            self.max_health = 3
+            self.dmg = 0.8
+            self.speed = 10
+
+        elif self.player_type == PlayerTypes.WOMAN:
+            self.max_health = 2
+            self.dmg = 1.5
+            self.speed = 7
         
+        self.speed *= self.game.settings.SCALE
+
     def prepare_images(self):
         for y in range(1, 3):
             for x in range(10):
@@ -215,7 +233,7 @@ class Player(pygame.sprite.Sprite):
         x, y = self.calculate_bullet_position()
         self.head_tear_anime_time_left = self.head_tear_anime_cd
         Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
-                (BASE_DMG+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
+                (self.dmg+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                 additional_speed=additional_v)  
         
     def calculate_bullet_position(self):
