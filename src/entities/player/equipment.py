@@ -248,7 +248,7 @@ class Equipment():
                     self.stats[key] += value
                     if self.stats[key] > self.max_stats[key]:
                         self.stats[key] = self.max_stats[key]
-                    elif key == "health":
+                    if key == "health":
                         healValue = value
             
             self.player.update_player_stats()
