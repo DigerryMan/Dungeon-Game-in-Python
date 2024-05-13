@@ -22,7 +22,10 @@ class PlayerTypes(Enum):
         #values are (max_health, dmg, speed)
         player_stats ={
             PlayerTypes.ISAAC: (4, 1, 8),
-            PlayerTypes.LAZARUS: (3, 0.8, 10),
+
+            #PlayerTypes.LAZARUS: (3, 0.8, 10),
+            # FOR TESTING 
+            PlayerTypes.LAZARUS: (20, 100, 12),
             PlayerTypes.EVE: (2, 1.5, 7)
         }
         

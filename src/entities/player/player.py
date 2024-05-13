@@ -241,6 +241,7 @@ class Player(pygame.sprite.Sprite):
     def get_hit(self, dmg:int):
         if self.immortality_time_left <= 0:
             self.health -= dmg * (1 - self.eq.stats["dmg_reduction"]) * self.eq.extra_stats["dmg_taken_multiplier"]
+            self.health = round(self.health, 2)
             self.immortality_time_left = self.get_immortality_time()
             self.check_is_dead()
 

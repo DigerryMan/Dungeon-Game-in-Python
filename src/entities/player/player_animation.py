@@ -1,5 +1,4 @@
 import pygame
-
 from utils.directions import Directions
 
 class PlayerAnimation():

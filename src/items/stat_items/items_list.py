@@ -230,7 +230,7 @@ class ItemsList():
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            return self.legendaries["friendly_ghost"]
+            return self.legendaries["eye_of_horus"]
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
             return random.choice(list(self.legendaries.values()))

@@ -28,13 +28,17 @@ class StatBars():
 
         self.empty_heart = game.image_loader.get_stat_bar_image("empty_heart")
         self.full_heart = game.image_loader.get_stat_bar_image("full_heart")
+        self.one_quarter_heart = game.image_loader.get_stat_bar_image("one_quarter_heart")
         self.half_heart = game.image_loader.get_stat_bar_image("half_heart")
+        self.three_quarters_heart = game.image_loader.get_stat_bar_image("three_quarters_heart")
 
         self.full_hearts_cntr = 0
-        self.is_half_heart_cntr = 0
+        self.is_fractional_heart = 0
         self.empty_hearts_cntr = 0
         self.heart_x = 100
         self.hearts_drawn = 0
+
+        self.ceil_health = self.floor_health = 0
 
         # PROGRESS
         self.MAX_ROOMS_TO_CLEAR = ROOM_NUMBER - 2
@@ -81,15 +85,15 @@ class StatBars():
 
     def calculate_hearts_cntrs(self):
         health = self.player.health
-        floor_health = int(health)
-        ceil_health = math.ceil(health)
-        self.is_half_heart_cntr = int(health >= floor_health + 0.25 and health < ceil_health - 0.25)
+        self.floor_health = int(health)
+        self.ceil_health = math.ceil(health)
+        self.is_fractional_heart = int(health > self.floor_health + 0.1 and health < self.ceil_health - 0.1)
         if health <= 0:
-            self.is_half_heart_cntr = 0 
+            self.is_fractional_heart = False 
 
-        self.full_hearts_cntr = max(floor_health, 0)
+        self.full_hearts_cntr = max(self.floor_health, 0) + int(health - self.floor_health >= 0.9)
         self.empty_hearts_cntr = self.player.max_health - self.full_hearts_cntr
-        self.empty_hearts_cntr -= self.is_half_heart_cntr
+        self.empty_hearts_cntr -= self.is_fractional_heart
 
     def draw_health_bar(self, screen):
         self.heart_x = self.hearts_start_x
@@ -99,9 +103,19 @@ class StatBars():
             self.check_to_draw_second_row_hearts()
             self.draw_and_update_variables(screen, self.full_heart)
         
-        if self.is_half_heart_cntr:
-            self.check_to_draw_second_row_hearts()
-            self.draw_and_update_variables(screen, self.half_heart)
+        if self.is_fractional_heart:
+            heart_to_draw = None
+            health = self.player.health
+            if health < self.floor_health + 0.25:
+                heart_to_draw = self.one_quarter_heart
+            elif health < self.floor_health + 0.63:
+                heart_to_draw = self.half_heart
+            elif health < self.floor_health + 0.85:
+                heart_to_draw = self.three_quarters_heart
+
+            if heart_to_draw is not None: 
+                self.check_to_draw_second_row_hearts()
+                self.draw_and_update_variables(screen, heart_to_draw)
         
         for _ in range(self.empty_hearts_cntr):
             self.check_to_draw_second_row_hearts()
