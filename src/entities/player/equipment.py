@@ -2,7 +2,7 @@ import random
 import pygame
 import json
 import os
-from config import BASE_BULLET_FLY_TIME, BASE_DMG, BASE_HEALTH, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, BASE_SPEED
+from config import BASE_BULLET_FLY_TIME, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED
 
 class Equipment():
     def __init__(self, player):

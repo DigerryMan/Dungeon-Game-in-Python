@@ -13,10 +13,9 @@ class Player(pygame.sprite.Sprite):
         #MAIN
         self.game = game
         self.player_type = player_type
-        self.max_health = BASE_HEALTH
-        self.dmg = BASE_DMG
-        self.speed = BASE_SPEED * game.settings.SCALE
-        self.change_stats_if_other_player()
+        self.BASE_MAX_HEALTH, self.dmg, self.BASE_SPEED = self.player_type.get_player_stats()
+        self.max_health = self.BASE_MAX_HEALTH 
+        self.speed = self.BASE_SPEED * game.settings.SCALE
 
         self.health = self.max_health
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
@@ -90,19 +89,6 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.mask = pygame.mask.from_surface(self.image)
         self.correct_player_mask()
-    
-    def change_stats_if_other_player(self):
-        if self.player_type == PlayerTypes.LAZARUS:
-            self.max_health = 3
-            self.dmg = 0.8
-            self.speed = 10
-
-        elif self.player_type == PlayerTypes.EVE:
-            self.max_health = 2
-            self.dmg = 1.5
-            self.speed = 7
-        
-        self.speed *= self.game.settings.SCALE
 
     def prepare_images(self):
         for y in range(1, 3):
@@ -308,8 +294,8 @@ class Player(pygame.sprite.Sprite):
         self.health = min(self.max_health, self.health + amount)
 
     def update_player_stats(self):
-        self.max_health = BASE_HEALTH + self.eq.stats["health"]
-        self.speed = (BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
+        self.max_health = self.BASE_MAX_HEALTH + self.eq.stats["health"] 
+        self.speed = (self.BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
     
     def get_shooting_cooldown(self):
         return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
