@@ -3,6 +3,7 @@ from config import *
 from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
+from entities.player.player_animation import PlayerAnimation
 from entities.player.player_types import PlayerTypes
 from items.item_types import ItemType
 from utils.directions import Directions
@@ -24,14 +25,9 @@ class Player(pygame.sprite.Sprite):
         self.bombs = 10
         self.rooms_cleared = 0
         
-
         #SKIN
-        self.img = game.image_loader.get_image(player_type.value)
-        self.body_images = []
-        self.head_images = []
-        self.prepare_images()
-        self.frame = None
-        self.image = self.body_images[0]
+        self.player_animation = PlayerAnimation(game, self, player_type)
+        self.image = self.player_animation.image
 
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
@@ -40,6 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.x_change = 0
         self.y_change = 0
         self.is_moving = False
+        self._layer = self.rect.bottom
 
         #DIRECTION
         self.facing = Directions.DOWN
@@ -50,20 +47,6 @@ class Player(pygame.sprite.Sprite):
         self.eq = Equipment(self)
         self.eq_opened = False
 
-        #ANIMATION
-        self.x_legs_frame = 0
-        self.body_frame = None
-        self.reversed_body_frame = False
-        self.x_head_frame = 0
-        self.head_frame = None
-        self.reversed_head = False
-        self.head_tear_anime_cd = 4
-        self.head_tear_anime_time_left = -1
-        
-        self.next_frame_ticks_cd = 3
-        self.time = 0
-        self._layer = self.rect.bottom
-        
         #SHOOTING
         self.shot_time_left = 0
         self.shot_try = False
@@ -72,15 +55,9 @@ class Player(pygame.sprite.Sprite):
         self.shoot_second_bullet = False
         self.shoot_second_time = 0
 
-        #DEATH ANIMATION
+        #REST
         self.is_alive = True
         self.end_of_death_animation = False
-        self.death_frame_cd = 12
-        self.death_time_left = self.death_frame_cd
-        self.death_index = 0
-        self.last_death_index = 4
-
-        #REST
         self.immortality_time_left = 0
 
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
@@ -89,14 +66,6 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.mask = pygame.mask.from_surface(self.image)
         self.correct_player_mask()
-
-    def prepare_images(self):
-        for y in range(1, 3):
-            for x in range(10):
-                self.body_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, y * self.PLAYER_SIZE, self.PLAYER_SIZE, self.PLAYER_SIZE)))
-
-        for x in range(6):
-            self.head_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, 0, self.PLAYER_SIZE, self.PLAYER_SIZE)))
 
     def correct_player_mask(self):
         removed_hitbox_from_sides = pygame.Surface((self.mask.get_size()[0] * 0.25, self.mask.get_size()[1]))
@@ -127,7 +96,7 @@ class Player(pygame.sprite.Sprite):
             self.y_change = 0
         else:
             if not self.end_of_death_animation:
-                self.play_death_animation() 
+                self.player_animation.play_death_animation() 
             else:
                 self.game.game_over()
 
@@ -205,7 +174,7 @@ class Player(pygame.sprite.Sprite):
                 additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
         x, y = self.calculate_bullet_position()
-        self.head_tear_anime_time_left = self.head_tear_anime_cd
+        self.player_animation.reset_tear_shot_cd()
         Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
                 (self.dmg+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
                 additional_speed=additional_v)  
@@ -309,83 +278,8 @@ class Player(pygame.sprite.Sprite):
                               self.rect.centery//self.game.settings.TILE_SIZE, i%2==1)
      
     def animate(self):
-        self.reversed_body_frame = False
-        if self.is_moving:
-            self.time -= 1
+        self.image = self.player_animation.animate_and_get_image()
         
-        if self.time <= 0:
-            self.time = self.next_frame_ticks_cd 
-            self.x_legs_frame = (self.x_legs_frame + 1) % 10
-        
-        self.set_body_frame()
-        if not self.is_moving:
-            self.set_standing_frame()
-
-        self.check_tear_animation()
-        self.set_head_frame()
-        self.next_frame()
-        
-    def check_tear_animation(self):
-        self.head_tear_anime_time_left -= 1
-        if self.head_tear_anime_time_left == self.head_tear_anime_cd - 1 or self.head_tear_anime_time_left == 1:
-            self.x_head_frame = (self.x_head_frame + 1) % 2
-
-    def set_standing_frame(self):
-        self.body_frame = self.body_images[0]
-
-    def next_frame(self):
-        self.frame = pygame.Surface((self.PLAYER_SIZE, self.PLAYER_SIZE), pygame.SRCALPHA)
-        if self.reversed_body_frame:
-            self.body_frame = pygame.transform.flip(self.body_frame, True, False)
-
-        self.frame.blit(self.body_frame, (0, self.PLAYER_SIZE*0.25))
-        if self.reversed_head_frame:
-            self.head_frame = pygame.transform.flip(self.head_frame, True, False)
-        
-        self.frame.blit(self.head_frame, ((self.PLAYER_SIZE - self.head_frame.get_width())//2, -3))
-        self.image = self.frame
-    
-    def set_body_frame(self):
-        if self.direction == Directions.LEFT or self.direction == Directions.RIGHT:
-            self.x_legs_frame += 10
-            if self.direction == Directions.LEFT: 
-                self.reversed_body_frame = True
-     
-        self.body_frame = self.body_images[self.x_legs_frame]
-        self.x_legs_frame %= 10
-    
-    def set_head_frame(self):
-        x = self.x_head_frame
-        self.reversed_head_frame = False
-        if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
-            x += 2
-            if self.facing == Directions.LEFT:
-                self.reversed_head_frame = True
-        elif self.facing == Directions.UP:
-            x += 4
-        
-        self.head_frame = self.head_images[x]
-        self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
-    
-    def play_death_animation(self):
-        center_x = self.rect.centerx
-        cetner_y = self.rect.centery
-        self.death_time_left -= 1
-        if self.death_time_left <= 0:
-            if self.death_index > self.last_death_index:
-                self.end_of_death_animation = True
-                return
-            
-            frame_name = "die" + str(self.death_index)
-            self.image = self.game.image_loader.player_animations_list[self.player_type.get_index()][frame_name]
-            self.rect.width = self.image.get_width()
-            self.rect.height = self.image.get_height()
-            self.rect.centerx = center_x
-            self.rect.centery = cetner_y
-
-            self.death_time_left = self.death_frame_cd
-            self.death_index += 1
-    
     def update_rooms_cleared(self):
         self.rooms_cleared += 1
         self.rooms_cleared = min(self.rooms_cleared, ROOM_NUMBER - 2)
