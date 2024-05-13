@@ -6,16 +6,17 @@ class PlayerTypes(Enum):
     EVE = 'eve'
 
     def get_index(self):
+        #order of integers has to be the same as in get_all_characters() for death animation to work properly
         vocabulary = {PlayerTypes.ISAAC: 0, 
                       PlayerTypes.LAZARUS: 1, 
-                      PlayerTypes.EVE: 2}
+                      PlayerTypes.EVE: 2} 
         return vocabulary[self]
     
     def get_all_characters():
-        return [PlayerTypes.ISAAC, PlayerTypes.EVE, PlayerTypes.LAZARUS]
+        return [PlayerTypes.ISAAC, PlayerTypes.LAZARUS, PlayerTypes.EVE]
     
-    def get_all_characters_values():
-        return [PlayerTypes.ISAAC.value, PlayerTypes.EVE.value, PlayerTypes.LAZARUS.value]
+    def get_all_characters_values(): #
+        return [PlayerTypes.ISAAC.value, PlayerTypes.LAZARUS.value, PlayerTypes.EVE.value]
     
     def get_player_stats(self):
         #values are (max_health, dmg, speed)
