@@ -15,8 +15,8 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        window_size = (1920, 1080)
-        #window_size = (1280, 720)
+        #window_size = (1920, 1080)
+        window_size = (1280, 720)
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.screen = pygame.display.set_mode(window_size)
         
