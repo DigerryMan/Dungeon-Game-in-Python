@@ -102,25 +102,20 @@ class Enemy(pygame.sprite.Sprite, ABC):
             else:
                 self._is_idling = False
                 self._is_wandering = False
-        
         else:
             self._wander_time_left -= 1
             if self._wander_time_left <= 0:
                 self._is_idling = True
                 self._wander_time = self.roll_interval(self._wander_interval)
                 self._wander_time_left = self._wander_time
-            
             else:
                 if self.facing == Directions.LEFT:
                     self.x_change = -self._speed//2
-
                 elif self.facing == Directions.RIGHT:
                     self.x_change = self._speed//2
                     self.correct_low_speed_enemies("x")
-
                 elif self.facing == Directions.UP:
                     self.y_change = -self._speed//2
-
                 elif self.facing == Directions.DOWN:
                     self.y_change = self._speed//2
                     self.correct_low_speed_enemies("y")
@@ -136,11 +131,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def move_because_of_player(self, chase:bool=True):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         enemy_vector = pygame.math.Vector2(self.rect.center)
-
         distance = (player_vector - enemy_vector).magnitude()
         if distance > 3:
             direction = None
-
             if distance > 0:
                 direction = (player_vector - enemy_vector).normalize()
             else:
@@ -152,7 +145,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 speed = self._speed * self._chase_speed_debuff
 
             velocity = direction * speed
-            
             self.x_change = velocity.x
             self.y_change = velocity.y
             self._correct_rounding()
@@ -183,7 +175,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
             if mask_hits:
                 if orientation == 'x':
                     self.rect.x -= self.x_change
-
                 if orientation == 'y':
                     self.rect.y -= self.y_change
 
@@ -201,26 +192,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 return sprite
 
     def _correct_rounding(self):
-        if self.x_change < 0:
-            self.x_change = self.x_change - 1
-        else:
-            self.x_change = self.x_change + 1
-
-        if self.y_change < 0:
-            self.y_change = self.y_change - 1
-        else:
-            self.y_change = self.y_change + 1
+        self.x_change += (1 if self.x_change >= 0 else -1)
+        self.y_change += (1 if self.y_change >= 0 else -1)
 
     def roll_facing(self):
-        rand = random.randint(1, 4)
-        if rand == 1:
-            self.facing = self.facing.rotate_clockwise()
-
-        elif rand == 2:
-            self.facing = self.facing.rotate_counter_clockwise()
-           
-        elif rand == 3:
-            self.facing = self.facing.reverse()
+        rand = random.choice([self.facing.rotate_clockwise(), self.facing.rotate_counter_clockwise(), self.facing.reverse(), self.facing])
+        self.facing = rand
 
     def correct_facing(self):
         y_abs = abs(self.y_change)
