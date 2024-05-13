@@ -6,9 +6,10 @@ class ImageLoader:
         self.settings = settings
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
-        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard", "arrow", "maintitle"]
-        
-        self.player_types = [PlayerTypes.ISAAC.value, PlayerTypes.RED_HEAD.value, PlayerTypes.WOMAN.value]
+        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard", "arrow", "maintitle", "character_selection"]
+        self.characters = ["isaac_display", "eve_display", "lazarus_display"]
+
+        self.player_types = PlayerTypes.get_all_characters_values()
         self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
         self.mobs_.extend(self.player_types)
 
@@ -19,6 +20,7 @@ class ImageLoader:
         self.images_dict = {}
         self.load_images_to_dict()
         self.scale_menu_images()
+        self.scale_character_displays()
 
         self.blocks = {}
         self.load_blocks()
@@ -53,6 +55,13 @@ class ImageLoader:
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
+
+        for character in self.characters:
+            self.images_dict[character] = {}
+            self.images_dict[character]["image"] = pygame.image.load("resources/menu/characters/" + character + "/image.png")
+            self.images_dict[character]["name"] = pygame.image.load("resources/menu/characters/" + character + "/name.png")
+            self.images_dict[character]["stats"] = pygame.image.load("resources/menu/characters/" + character + "/stats.png")
+
 
         for mob in self.mobs_:
             img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
@@ -110,6 +119,7 @@ class ImageLoader:
         self.images_dict["menucard"] = pygame.transform.scale(self.images_dict["menucard"], screen_size).convert_alpha()
         self.images_dict["settingscard"] = pygame.transform.scale(self.images_dict["settingscard"], screen_size).convert_alpha()
         self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
+        self.images_dict["character_selection"] = pygame.transform.scale(self.images_dict["character_selection"], screen_size).convert_alpha()
         
         self.images_dict["pausecard"] = pygame.transform.scale(self.images_dict["pausecard"],
                                                                 (self.images_dict["pausecard"].get_width() * self.settings.SCALE, self.images_dict["pausecard"].get_height() * self.settings.SCALE)).convert_alpha()
@@ -119,6 +129,20 @@ class ImageLoader:
         
         self.images_dict["maintitle"] = pygame.transform.scale(self.images_dict["maintitle"],
                                                                (self.images_dict["maintitle"].get_width() * 2.8 * self.settings.SCALE, self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE)).convert_alpha()
+
+    def scale_character_displays(self):
+        for character in self.characters:
+            self.images_dict[character]["image"] = pygame.transform.scale(self.images_dict[character]["image"],
+                                                                          (self.images_dict[character]["image"].get_width() * self.settings.SCALE * 4,
+                                                                           self.images_dict[character]["image"].get_height() * self.settings.SCALE * 4)).convert_alpha()
+            
+            self.images_dict[character]["name"] = pygame.transform.scale(self.images_dict[character]["name"],
+                                                                          (self.images_dict[character]["name"].get_width() * self.settings.SCALE * 2,
+                                                                           self.images_dict[character]["name"].get_height() * self.settings.SCALE * 2)).convert_alpha()
+            
+            self.images_dict[character]["stats"] = pygame.transform.scale(self.images_dict[character]["stats"],
+                                                                          (self.images_dict[character]["stats"].get_width() * self.settings.SCALE * 2,
+                                                                           self.images_dict[character]["stats"].get_height() * self.settings.SCALE * 2)).convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()

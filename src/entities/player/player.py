@@ -19,7 +19,6 @@ class Player(pygame.sprite.Sprite):
         self.change_stats_if_other_player()
 
         self.health = self.max_health
-        print(self.max_health)
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
         #self.bombs = 0
@@ -93,12 +92,12 @@ class Player(pygame.sprite.Sprite):
         self.correct_player_mask()
     
     def change_stats_if_other_player(self):
-        if self.player_type == PlayerTypes.RED_HEAD:
+        if self.player_type == PlayerTypes.LAZARUS:
             self.max_health = 3
             self.dmg = 0.8
             self.speed = 10
 
-        elif self.player_type == PlayerTypes.WOMAN:
+        elif self.player_type == PlayerTypes.EVE:
             self.max_health = 2
             self.dmg = 1.5
             self.speed = 7

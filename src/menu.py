@@ -1,5 +1,6 @@
 import pygame
 from config import FPS
+from entities.player.player_types import PlayerTypes
 
 class Menu():
     def __init__(self, game):
@@ -10,6 +11,7 @@ class Menu():
         self.intro_background = self.game.image_loader.get_image("introbackground")
         self.menu_card = self.game.image_loader.get_image("menucard")
         self.settings_card = self.game.image_loader.get_image("settingscard")
+        self.character_selection = self.game.image_loader.get_image("character_selection")
         self.menu_background = self.game.image_loader.get_image("menuoverlay")
         self.pause_card = self.game.image_loader.get_image("pausecard")
         self.arrow = self.game.image_loader.get_image("arrow")
@@ -52,29 +54,78 @@ class Menu():
                     if event.key == pygame.K_RETURN:
                         if current_arrow == 0:
                             self.game.menu_playing = False
-                            self.game.render_new_map(first_map = True)
+                            self.display_character_selection()
                             self.game.paused = False
 
                         elif current_arrow == 1:
                             self.game.menu_playing = False
-                            self.game.settings_playing = True
                             self.display_settings()
                             arrow_positions = [(self.game.settings.WIN_WIDTH//2.35, self.game.settings.WIN_HEIGHT//3.13), 
                                             (self.game.settings.WIN_WIDTH//2.44, self.game.settings.WIN_HEIGHT//2.15), 
                                             (self.game.settings.WIN_WIDTH//2.27, self.game.settings.WIN_HEIGHT//1.67)]
                             
-                            if not self.game.menu_playing:
-                                return
-
                         elif current_arrow == 2:
                             self.game.menu_playing = False
                             self.game.running = False
+
+                        if not self.game.menu_playing:
+                            return
 
             self.game.screen.blit(self.menu_card, (0, 0))
             self.game.screen.blit(self.menu_background, (0, 0))
             self.game.screen.blit(self.main_title, (self.game.settings.WIN_WIDTH//8, 0))
 
             self.game.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
+
+            self.game.clock.tick(FPS)
+            pygame.display.update()
+
+    def display_character_selection(self):
+        character_selection_playing = True
+        characters = PlayerTypes.get_all_characters()
+        current_character = 0
+
+        image, name, stats = None, None, None
+
+        def set_character_display():
+            nonlocal image, name, stats
+            image = self.game.image_loader.images_dict[characters[current_character].value + "_display"]["image"]
+            name = self.game.image_loader.images_dict[characters[current_character].value + "_display"]["name"]
+            stats = self.game.image_loader.images_dict[characters[current_character].value + "_display"]["stats"]
+
+        set_character_display()
+
+        while character_selection_playing:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    character_selection_playing = False
+                    self.game.menu_playing = False
+                    self.game.running = False
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        current_character = (current_character + 1) % len(characters)
+                        set_character_display()
+
+                    if event.key == pygame.K_LEFT:
+                        current_character = (current_character - 1) % len(characters)
+                        set_character_display()
+
+                    if event.key == pygame.K_RETURN:
+                        character_selection_playing = False
+                        self.game.character_type = characters[current_character]
+                        self.game.render_new_map(first_map = True)
+
+                    if event.key == pygame.K_ESCAPE:
+                        character_selection_playing = False
+                        self.game.menu_playing = True
+
+            self.game.screen.blit(self.character_selection, (0, 0))
+            self.game.screen.blit(image, (self.game.settings.WIN_WIDTH//2.25, self.game.settings.WIN_HEIGHT//2.5))
+            self.game.screen.blit(name, (self.game.settings.WIN_WIDTH//2.25, self.game.settings.WIN_HEIGHT//1.8))
+            self.game.screen.blit(stats, (self.game.settings.WIN_WIDTH//2.5, self.game.settings.WIN_HEIGHT//1.5))
+            self.game.screen.blit(self.menu_background, (0, 0))
+            self.game.screen.blit(self.main_title, (self.game.settings.WIN_WIDTH//8, 0))
 
             self.game.clock.tick(FPS)
             pygame.display.update()

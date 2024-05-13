@@ -1,3 +1,4 @@
+from entities.player.player_types import PlayerTypes
 from entities.player.stat_bars import StatBars
 import pygame
 import os
@@ -29,6 +30,8 @@ class Game:
         self.menu_playing = False
         self.running = True
         self.paused = False
+
+        self.character_type = PlayerTypes.ISAAC
 
         self.handle_resolution_change(window_size)
         self.sprite_groups = ["player_sprite", "entities", "all_sprites", "blocks", "shop_stands", "doors", 
@@ -66,7 +69,7 @@ class Game:
         self.current_level += 1
         self.init_empty_sprite_groups()
         if self.player is None:
-            self.player = Player(self, 0, 0)
+            self.player = Player(self, 0, 0, self.character_type)
 
         else:
             self.player.prepare_for_next_map()
