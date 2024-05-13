@@ -140,35 +140,24 @@ class Player(pygame.sprite.Sprite):
         self.shoot(keys, x_y_vel)
 
     def move(self, keys, x_y_vel):
-        if keys[pygame.K_a]:
-            self.x_change -= int(self.speed)
-            self.facing = Directions.LEFT
-            self.direction = Directions.LEFT
-            self.last_horizontall_facing = Directions.LEFT
-            x_y_vel[0] -= 1
-            self.is_moving = True
-        
-        if keys[pygame.K_d]:
-            self.x_change += int(self.speed)
-            self.facing = Directions.RIGHT
-            self.direction = Directions.RIGHT
-            self.last_horizontall_facing = Directions.RIGHT
-            x_y_vel[0] += 1
-            self.is_moving = True
+        direction_mapping = {
+            pygame.K_a: (Directions.LEFT, -1, 0),
+            pygame.K_d: (Directions.RIGHT, 1, 0),
+            pygame.K_w: (Directions.UP, 0, -1),
+            pygame.K_s: (Directions.DOWN, 0, 1)
+        }
 
-        if keys[pygame.K_w]: 
-            self.y_change -= int(self.speed)
-            self.facing = Directions.UP
-            self.direction = Directions.UP
-            x_y_vel[1] -= 1
-            self.is_moving = True
-
-        if keys[pygame.K_s]:
-            self.y_change += int(self.speed)
-            self.facing = Directions.DOWN
-            self.direction = Directions.DOWN
-            x_y_vel[1] += 1
-            self.is_moving = True
+        for key in direction_mapping:
+            if keys[key]:
+                self.direction, x_change, y_change = direction_mapping[key]
+                self.x_change += int(self.speed) * x_change
+                self.y_change += int(self.speed) * y_change
+                self.facing = self.direction
+                if self.direction in [Directions.LEFT, Directions.RIGHT]:
+                    self.last_horizontall_facing = self.direction
+                x_y_vel[0] += x_change
+                x_y_vel[1] += y_change
+                self.is_moving = True
 
     def plant_bomb(self, x_y_vel):
         if self.game.e_pressed and self.bombs > 0:
