@@ -1,5 +1,5 @@
 import pygame
-from config import *
+from config import WALL_LAYER
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):

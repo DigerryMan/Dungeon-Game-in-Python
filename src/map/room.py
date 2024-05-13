@@ -1,19 +1,26 @@
+import random
 from collections import deque
-from config import *
-from map.mob_spawn_lists import *
+from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.boss.boss import Boss
+from entities.mobs.fly import Fly
+from entities.mobs.ghost import Ghost
+from entities.mobs.legs import Legs
+from entities.mobs.maggot import Maggot
+from entities.mobs.parasite import Parasite
+from entities.mobs.slime import Slime
+from entities.mobs.wanderer import Wanderer
 from map.trap_door import TrapDoor
+from map.treasure_block import TreasureBlock
+from utils.directions import Directions
 from .room_types import rooms, special_rooms
-from .block import *
-from .destructable_block import *
-from .shop_stuff.shop_stand import *
-from .door import *
-from .wall import *
-from .chest import *
+from .block import Block
+from .shop_stuff.shop_stand import ShopStand
+from .door import Door
+from .wall import Wall
+from .chest import Chest
 from items.lootable_item import LootableItem
-from entities.player.player import *
-from entities.enemy import *
-from entities.mobs.legs import *
-from entities.mobs.parasite import *
+from entities.enemy import Enemy
+from .destructable_block import DestructableBlock
 
 class Room():    
     def __init__(self, room_type, game, doors_to_spawn:Directions, level):
@@ -87,7 +94,10 @@ class Room():
                                 self.chest = Chest(self.game, x, y, "large")
 
                         elif col == 'B':
-                            self.blocks.append(Block(self.game, x, y))
+                            if random.uniform(0, 1) < 0.9:
+                                self.blocks.append(Block(self.game, x, y))
+                            else:
+                                self.blocks.append(TreasureBlock(self.game, x, y))
 
                         elif col == 'D':
                             self.blocks.append(DestructableBlock(self.game, x, y))
@@ -96,7 +106,7 @@ class Room():
                             self.shop_stands.append(ShopStand(self.game, x + .5, y + .5))
 
                         elif col == 'T':
-                            self.trap_door = TrapDoor(self.game, x, y)
+                            self.trap_door = TrapDoor(self.game, x + 1, y)
 
                         elif col == 'E':
                             self.mob_spawn_positions.append((y, x))
@@ -128,15 +138,27 @@ class Room():
                 self.well_generated = True
 
                 for (y, x) in doors_positions:
-                    if(y == 0):
-                        self.doors.append(Door(self.game, x, y, Directions.UP))
-                    elif(y == self.game.settings.MAP_HEIGHT - 1):
-                        self.doors.append(Door(self.game, x, y, Directions.DOWN))
-                    elif(x == 0):
-                        self.doors.append(Door(self.game, x, y, Directions.LEFT))
-                    elif(x == self.game.settings.MAP_WIDTH - 1):
-                        self.doors.append(Door(self.game, x, y, Directions.RIGHT))
+                    direction = None
 
+                    if(y == 0):
+                        direction = Directions.UP
+                    elif(y == self.game.settings.MAP_HEIGHT - 1):
+                        direction = Directions.DOWN
+                    elif(x == 0):
+                        direction = Directions.LEFT
+                    elif(x == self.game.settings.MAP_WIDTH - 1):
+                        direction = Directions.RIGHT
+
+                    if self.room_type == "boss":
+                        self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                    else:
+                        current_position = self.game.map.current_position
+                        neighbor_room = self.game.map.room_map[current_position[0] + direction.value[0]][current_position[1] + direction.value[1]]
+                        if neighbor_room.room_type == "boss":
+                            self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                        else:
+                            self.doors.append(Door(self.game, x, y, direction))
+                    
                 self.spawn_outer_walls(doors_positions)
 
                 for door in self.doors:
@@ -222,10 +244,15 @@ class Room():
         mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
         index = random.randint(0, len(mobs) - 1)
 
+        if self.room_type == "boss":
+            self.enemies.append(Boss(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            return
+
         for (y, x) in self.mob_spawn_positions:
             new_mob = mobs[index]
             self.enemies.append(new_mob(self.game, x, y))
             index = random.randint(0, len(mobs) - 1)
+            break # ADDED FOR ONLY 1 MOB TO SPAWN
 
 
     def get_doors_positions(self):
@@ -252,6 +279,7 @@ class Room():
         return doors_positions
 
     def set_room_cleared(self):
+        self.update_player_rooms_cleared()
         self.is_cleared = True
         self.enemies.clear()
 
@@ -266,17 +294,22 @@ class Room():
         if self.trap_door:
             self.trap_door.open()
             
-    
+    def update_player_rooms_cleared(self):
+        if not self.is_cleared and self.room_type != "start" and self.room_type != "shop":
+            self.game.player.update_rooms_cleared()
+
     def get_block_layout(self):
         return self.room
     
-
     def select_graphics(self):
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
         if self.level == 1:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
+
+        if self.level >= 2:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("cave" + str(random.randint(1, 5)))
 
         if self.room == special_rooms["shop"]:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("shop_room")

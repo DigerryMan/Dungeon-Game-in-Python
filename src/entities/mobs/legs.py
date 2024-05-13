@@ -1,4 +1,6 @@
-from ..enemy import *
+import pygame
+from utils.directions import Directions
+from ..enemy import Enemy
 
 class Legs(Enemy):
     def __init__(self, game, x, y):
@@ -10,11 +12,8 @@ class Legs(Enemy):
         self.next_frame_ticks_cd = 3
         self.time = 0
 
-        self.MOB_SIZE = game.settings.MOB_SIZE
         self.img = game.image_loader.get_image("legs")
-        self.images = []
-        self.frame = None
-
+        
         self.which_frame = 0
         self.reversed_frame = False
     

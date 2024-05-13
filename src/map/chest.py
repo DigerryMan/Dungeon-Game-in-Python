@@ -1,6 +1,6 @@
 import pygame
 import random
-from config import *
+from config import BLOCK_LAYER, DROP_LOOT_EVERYTIME
 from items.lootables.silver_coin import SilverCoin
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
@@ -64,34 +64,33 @@ class Chest(pygame.sprite.Sprite):
                 items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
         else:
             if self.type == "small":
-                for _ in range(random.randint(2, 4)):
+                for _ in range(random.randint(2, 3)):
                     items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(random.randint(0, 1)):
+                if random.random() < 0.4:
                     items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(random.randint(0, 1)):
+                if random.random() < 0.2:
                     items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
             elif self.type == "medium":
-                for _ in range(random.randint(3, 5)):
+                for _ in range(random.randint(2, 4)):
                     items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(random.randint(3, 4)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(1):
+                if random.random() < 0.5:
                     items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
             elif self.type == "large":
-                for _ in range(random.randint(5, 10)):
+                for _ in range(random.randint(3, 5)):
                     items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(random.randint(5, 7)):
+                for _ in range(random.randint(2, 3)):
                     items_to_craft.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
 
-                for _ in range(1, 2):
-                    items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+                items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
                 if random.uniform(0, 1) < 0.6:
                     items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))

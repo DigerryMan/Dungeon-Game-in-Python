@@ -1,12 +1,11 @@
 import random
 import pygame
-from config import *
 from items.item_types import ItemType
 from ..lootable_item import LootableItem
 
 class Coin(LootableItem):
-    def __init__(self, game, x, y, type:str, drop_animtion = True):
-        super().__init__(game, x, y, drop_animtion)
+    def __init__(self, game, x, y, type:str, drop_animation=True):
+        super().__init__(game, x, y, drop_animation)
 
         self.value = 0
         self.is_picked_up = False
@@ -43,10 +42,7 @@ class Coin(LootableItem):
         self.pickup_timer = self.time_per_frame_pickup * 9
 
 
-    def picked_up(self):
-        if self.is_picked_up:
-            return 0
-        
+    def picked_up(self):       
         self.is_picked_up = True
         self.clean_up()
         return ItemType.COIN, self.value

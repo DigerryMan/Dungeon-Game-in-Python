@@ -4,11 +4,10 @@ from items.lootable_item import LootableItem
 from items.stat_items.categories import Categories
 
 class Item(LootableItem):
-    def __init__(self, game, x, y, category, drop_animtion = True):
-        super().__init__(game, x, y, drop_animtion)
+    def __init__(self, game, x, y, category, drop_animation = True):
+        super().__init__(game, x, y, drop_animation)
         
         self.item = None
-
         self.roll_item(category)
 
         self.width = game.settings.TILE_SIZE

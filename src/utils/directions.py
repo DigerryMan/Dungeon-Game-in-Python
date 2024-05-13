@@ -1,14 +1,13 @@
-from enum import Enum, auto, unique
+from enum import Enum
 
-@unique
 class Directions(Enum):
-    UP = auto()
-    DOWN = auto()
-    LEFT = auto()
-    RIGHT = auto()
-    CENTER = auto()
-    PLAYER = auto()
-    ENEMY = auto()
+    UP = (-1, 0)
+    DOWN = (1, 0)
+    LEFT = (0, -1)
+    RIGHT = (0, 1)
+    CENTER = (0, 0)
+    PLAYER = (0, 0)
+    ENEMY = (0, 0)
 
     def reverse(self):
         if self == Directions.UP:

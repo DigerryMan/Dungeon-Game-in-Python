@@ -1,6 +1,6 @@
 import pygame
 import random
-from config import *
+from config import BLOCK_LAYER
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, game, x, y, is_collidable = True):
@@ -24,3 +24,7 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+    def get_bombed(self):
+        self.kill()
+        self.game.map.get_current_room().remove_block(self)

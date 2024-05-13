@@ -30,15 +30,15 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
 
         #POSITION
-        self.width = game.settings.MOB_SIZE
-        self.height = game.settings.MOB_SIZE
+        self.MOB_SIZE = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
         
         #SKINS
-        self.image = pygame.Surface([self.width, self.height])
-        self.animation_loop = 1
+        self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
         self.mask = pygame.mask.from_surface(self.image) 
+        self.frame = None
+        self.images = []
 
         #HITBOX
         self.rect = self.image.get_rect()
@@ -102,25 +102,20 @@ class Enemy(pygame.sprite.Sprite, ABC):
             else:
                 self._is_idling = False
                 self._is_wandering = False
-        
         else:
             self._wander_time_left -= 1
             if self._wander_time_left <= 0:
                 self._is_idling = True
                 self._wander_time = self.roll_interval(self._wander_interval)
                 self._wander_time_left = self._wander_time
-            
             else:
                 if self.facing == Directions.LEFT:
                     self.x_change = -self._speed//2
-
                 elif self.facing == Directions.RIGHT:
                     self.x_change = self._speed//2
                     self.correct_low_speed_enemies("x")
-
                 elif self.facing == Directions.UP:
                     self.y_change = -self._speed//2
-
                 elif self.facing == Directions.DOWN:
                     self.y_change = self._speed//2
                     self.correct_low_speed_enemies("y")
@@ -136,11 +131,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def move_because_of_player(self, chase:bool=True):
         player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
         enemy_vector = pygame.math.Vector2(self.rect.center)
-
         distance = (player_vector - enemy_vector).magnitude()
         if distance > 3:
             direction = None
-
             if distance > 0:
                 direction = (player_vector - enemy_vector).normalize()
             else:
@@ -152,7 +145,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 speed = self._speed * self._chase_speed_debuff
 
             velocity = direction * speed
-            
             self.x_change = velocity.x
             self.y_change = velocity.y
             self._correct_rounding()
@@ -183,7 +175,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
             if mask_hits:
                 if orientation == 'x':
                     self.rect.x -= self.x_change
-
                 if orientation == 'y':
                     self.rect.y -= self.y_change
 
@@ -201,26 +192,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 return sprite
 
     def _correct_rounding(self):
-        if self.x_change < 0:
-            self.x_change = self.x_change - 1
-        else:
-            self.x_change = self.x_change + 1
-
-        if self.y_change < 0:
-            self.y_change = self.y_change - 1
-        else:
-            self.y_change = self.y_change + 1
+        self.x_change += (1 if self.x_change >= 0 else -1)
+        self.y_change += (1 if self.y_change >= 0 else -1)
 
     def roll_facing(self):
-        rand = random.randint(1, 4)
-        if rand == 1:
-            self.facing = self.facing.rotate_clockwise()
-
-        elif rand == 2:
-            self.facing = self.facing.rotate_counter_clockwise()
-           
-        elif rand == 3:
-            self.facing = self.facing.reverse()
+        rand = random.choice([self.facing.rotate_clockwise(), self.facing.rotate_counter_clockwise(), self.facing.reverse(), self.facing])
+        self.facing = rand
 
     def correct_facing(self):
         y_abs = abs(self.y_change)
@@ -252,10 +229,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
     def roll_next_shot_cd(self):
         self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
-
-    @abstractmethod
-    def animate(self):
-        pass
             
     def correct_layer(self):
         self._layer = self.rect.bottom
@@ -274,20 +247,24 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
+            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
         else: 
             if random.random() < 0.3: #chance to have any drop at all
                 if random.random() < 0.7: # chance to have a lootable (coin, heart, etc.)
                     if random.random() < 0.5:
-                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, False))
                     elif random.uniform(0, 0.5) < 0.3:
-                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, False))
                     else:
-                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, drop_animtion = False))
+                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, False))
                 else:
-                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, drop_animtion = False))
+                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
 
     def draw_additional_images(self, screen):
+        pass
+
+    @abstractmethod
+    def animate(self):
         pass
 
     @staticmethod
@@ -298,4 +275,5 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def group_attacked():
         Enemy.is_group_attacked = True
     
-        
+    def get_bombed(self):
+        self.get_hit(1)

@@ -1,6 +1,5 @@
 import random
 import pygame
-from config import *
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from map.block import Block
@@ -36,10 +35,10 @@ class ShopStand(Block):
     def get_random_item(self):
         if random.random() < 0.75:
             self.price = 25
-            return Item(self.game, -1000, -1000, Categories.COMMON, drop_animtion = False)
+            return Item(self.game, -1000, -1000, Categories.COMMON, drop_animation = False)
         
         self.price = 60
-        return Item(self.game, -1000, -1000, Categories.EPIC, drop_animtion = False)
+        return Item(self.game, -1000, -1000, Categories.EPIC, drop_animation = False)
     
     def draw(self):
         self.game.screen.blit(self.image, self.rect)

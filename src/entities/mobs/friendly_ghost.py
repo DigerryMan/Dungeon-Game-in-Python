@@ -1,5 +1,3 @@
-import random
-from config import LIGHT_GREEN
 from entities.bullet import Bullet
 from entities.mobs.ghost import Ghost
 from utils.directions import Directions
@@ -8,26 +6,20 @@ import pygame
 class FriendlyGhost(Ghost):
     def __init__(self, game, x, y, reversed_moves=False):
         super().__init__(game, x, y)
-        self._health = 3333
-        self.damage = 1
-        self.speed = 1 * game.settings.SCALE
+        self._damage = 1
+        self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 10
-        self.reversed_moves = reversed_moves
+        self._reversed_moves = reversed_moves
 
         #ANIMATION
-        self.next_frame_ticks_cd = 10
-        self.time = 0
-
-        self.MOB_SIZE = game.settings.MOB_SIZE
-        self.img = None
         self.img = game.image_loader.get_image("friend_ghost")
-        self.images = []
-        self.frame = None
-        self.which_frame = 0
-        self.is_moving = False
-
         self.__prepare_images()
         self.image = self.images[0]
+
+        self.next_frame_ticks_cd = 10
+        self.time = 0
+        self.which_frame = 0
+        self.is_moving = False
 
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
@@ -37,6 +29,7 @@ class FriendlyGhost(Ghost):
         self.remove(game.enemies)
 
     def __prepare_images(self):
+        self.images.clear()
         mob_size = self.MOB_SIZE//2
         for y in range(3):
             for x in range(2):
@@ -60,7 +53,7 @@ class FriendlyGhost(Ghost):
 
         left = player_rect.left + self.game.settings.PLAYER_SIZE//2
         right = player_rect.right
-        if self.reversed_moves:
+        if self._reversed_moves:
             left, right = right, left
 
         if player_horizontal_facing == Directions.LEFT:

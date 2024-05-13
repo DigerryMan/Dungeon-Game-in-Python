@@ -1,8 +1,0 @@
-(col, row)
-
-anioł(5, 19) - wydłuża efekt nietykalności o 0.5 s
-miecz[2](7, 5) - zwiększa obrażenia o 0.5
-krzyż święty[2](0, 15) - ziększa szanse na rare item zamiast common o 10%
-zielony grzyb(0, 10) - zwieksza ms o 1
-skrzynka(2, 26) - skrzynki dropią x2 loot
-kastet(6, 7) - 0.1 buffa do attack speeda
