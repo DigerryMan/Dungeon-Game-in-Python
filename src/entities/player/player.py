@@ -1,14 +1,13 @@
 import pygame
-from config import *
+from config import BASE_IMMORTALITY_AFTER_HIT, BASE_LUCK, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, FPS, GOD_MODE, ROOM_NUMBER
 from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
 from entities.player.player_animation import PlayerAnimation
-from entities.player.player_collisions import PlayerCollision
+from entities.player.player_collisions import PlayerCollisionEngine
+from entities.player.player_shooting_engine import ShootingEnginge
 from entities.player.player_types import PlayerTypes
-from items.item_types import ItemType
 from utils.directions import Directions
-from ..bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, player_type=PlayerTypes.ISAAC):
@@ -29,16 +28,18 @@ class Player(pygame.sprite.Sprite):
         #SKIN
         self.player_animation = PlayerAnimation(game, self, player_type)
         self.image = self.player_animation.image
+        self._layer = self.image.get_rect().bottom
 
         #HITBOX / POSITION
         self.rect = self.image.get_rect()
         self.rect.x = x * self.PLAYER_SIZE
         self.rect.y = y * self.PLAYER_SIZE
-        self.collisions = PlayerCollision(game, self)
+        self.collisions = PlayerCollisionEngine(game, self)
+        
+        #MOVEMENT
         self.x_change = 0
         self.y_change = 0
         self.is_moving = False
-        self._layer = self.rect.bottom
 
         #DIRECTION
         self.facing = Directions.DOWN
@@ -46,16 +47,11 @@ class Player(pygame.sprite.Sprite):
         self.last_horizontall_facing = Directions.RIGHT
 
         #EQ
-        self.eq = Equipment(self)
+        self.eq = Equipment(self, game)
         self.eq_opened = False
 
         #SHOOTING
-        self.shot_time_left = 0
-        self.shot_try = False
-
-        #SECOND SHOOT
-        self.shoot_second_bullet = False
-        self.shoot_second_time = 0
+        self.shooting_engine = ShootingEnginge(self, game)
 
         #REST
         self.is_alive = True
@@ -69,10 +65,11 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.is_alive:
             self.user_input()
-            self.correct_unvalid_move()
-            self.check_items_pick_up()
+            self.collisions.correct_unvalid_move()
+            self.collisions.check_items_pick_up()
+            
             self._layer = self.rect.bottom
-            self.animate()
+            self.image = self.player_animation.animate_and_get_image()
 
             self.immortality_time_left -= 1
             self.x_change = 0
@@ -82,12 +79,6 @@ class Player(pygame.sprite.Sprite):
                 self.player_animation.play_death_animation() 
             else:
                 self.game.game_over()
-    
-    def correct_unvalid_move(self):
-        self.rect.x += self.x_change
-        self.collide_blocks('x')
-        self.rect.y += self.y_change
-        self.collide_blocks('y')
         
     def user_input(self):
         keys = pygame.key.get_pressed()
@@ -128,59 +119,7 @@ class Player(pygame.sprite.Sprite):
             self.bombs -= 1
 
     def shoot(self, keys, x_y_vel):
-        self.shot_time_left -= 1
-        self.shoot_second_bullet -= 1
-        self.shot_try = False
-
-        key_to_direction = {
-            pygame.K_LEFT: Directions.LEFT,
-            pygame.K_RIGHT: Directions.RIGHT,
-            pygame.K_UP: Directions.UP,
-            pygame.K_DOWN: Directions.DOWN
-        }
-
-        for key, direction in key_to_direction.items():
-            if keys[key]:
-                self.facing = direction
-                self.shot_try = True
-            
-        if self.shot_try or self.shoot_second_bullet >= 0:
-            if self.shot_time_left <= 0:
-                self.shot_time_left = self.get_shooting_cooldown() 
-                if self.eq.extra_stats["extra_shot_time"]:
-                    self.shoot_second_bullet = self.eq.extra_stats["extra_shot_time"]
-                self.shoot_one_bullet(x_y_vel)
-
-            elif self.shoot_second_bullet == 0:
-                self.shoot_one_bullet(x_y_vel)
-                self.shot_time_left = self.get_shooting_cooldown()
-            else:
-                self.shot_try = False
-
-    def shoot_one_bullet(self, x_y_vel):
-        additional_v = 0
-        if PLAYER_SHOOT_DIAGONAL:
-            _, other_axis_index = self.facing.rotate_clockwise().get_axis_tuple()     
-            if x_y_vel[other_axis_index]:
-                additional_v = int(self.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
-
-        x, y = self.calculate_bullet_position()
-        self.player_animation.reset_tear_shot_cd()
-        Bullet(self.game, x, y, self.facing, self.get_shot_speed(), True,
-                (self.dmg+self.eq.stats["dmg"])*self.eq.extra_stats["dmg_multiplier"], BASE_BULLET_FLY_TIME+self.eq.stats["bullet_fly_time"],
-                additional_speed=additional_v)  
-        
-    def calculate_bullet_position(self):
-        x, y = self.rect.centerx, self.rect.centery
-        if self.facing == Directions.LEFT:
-            x -= self.PLAYER_SIZE//2
-        elif self.facing == Directions.RIGHT:
-            x += self.PLAYER_SIZE//2
-        elif self.facing == Directions.UP:
-            y -= self.PLAYER_SIZE//2
-        elif self.facing == Directions.DOWN:
-            y += self.PLAYER_SIZE//2
-        return x, y
+        self.shooting_engine.shoot(keys, x_y_vel)
 
     def correct_diagonal_movement(self):
         if(self.x_change and self.y_change):
@@ -190,37 +129,6 @@ class Player(pygame.sprite.Sprite):
                 self.x_change += 1
             if self.y_change < 0:
                 self.y_change += 1
-                
-    def collide_blocks(self, direction:str):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits: 
-                if direction == 'x':
-                    self.rect.x -= self.x_change
-                elif direction == 'y':
-                    self.rect.y -= self.y_change
-
-    def get_mask_colliding_sprite(self, rect_hits):
-        for sprite in rect_hits:
-            if pygame.sprite.collide_mask(self, sprite):
-                return sprite
-
-    def check_items_pick_up(self):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.items, False)
-        if rect_hits:
-            items = [self.get_mask_colliding_sprite([rect_hit]) for rect_hit in rect_hits]
-            for item in items:
-                if item and not item.is_picked_up:
-                    type, item_info = item.picked_up()
-                    if type == ItemType.COIN:
-                        self.coins += item_info
-                    elif type == ItemType.PICKUP_HEART:
-                        self.heal(item_info)
-                    elif type == ItemType.ITEM:
-                        self.eq.add_item(item_info)
-                    elif type == ItemType.PILL:
-                        self.eq.use_pill(item_info)
 
     def get_center_position(self):
         return self.rect.centerx, self.rect.centery
@@ -244,12 +152,6 @@ class Player(pygame.sprite.Sprite):
         if amount < 0:  
             raise ValueError("Healing amount must be positive")
         self.health = min(self.max_health, self.health + amount)
-
-    def update_player_stats(self):
-        self.max_health = self.BASE_MAX_HEALTH + self.eq.stats["health"] 
-        if self.health > self.max_health:
-            self.health = self.max_health
-        self.speed = (self.BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
     
     def get_shooting_cooldown(self):
         return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
@@ -272,10 +174,7 @@ class Player(pygame.sprite.Sprite):
             for i in range(pets_to_spawn):
                 FriendlyGhost(self.game, self.rect.centerx//self.game.settings.TILE_SIZE, 
                               self.rect.centery//self.game.settings.TILE_SIZE, i%2==1)
-     
-    def animate(self):
-        self.image = self.player_animation.animate_and_get_image()
-        
+   
     def update_rooms_cleared(self):
         self.rooms_cleared += 1
         self.rooms_cleared = min(self.rooms_cleared, ROOM_NUMBER - 2)

@@ -26,7 +26,7 @@ class PlayerTypes(Enum):
             #PlayerTypes.LAZARUS: (3, 0.8, 10),
             # FOR TESTING 
             PlayerTypes.LAZARUS: (20, 100, 12),
-            PlayerTypes.EVE: (2, 1.5, 7)
+            PlayerTypes.EVE: (3, 1.5, 7)
         }
         
         return player_stats.get(self, (None, None, None)) 

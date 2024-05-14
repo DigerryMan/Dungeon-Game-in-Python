@@ -5,15 +5,16 @@ import os
 from config import BASE_BULLET_FLY_TIME, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED
 
 class Equipment():
-    def __init__(self, player):
+    def __init__(self, player, game):
         self.import_stats_dicts()          
         self.player = player
+        self.game = game
 
         #BACKGROUND
         self.image = pygame.image.load("resources/other/eq-background.png")
         self.width, self.height = self.image.get_size()
-        self.x = (player.game.settings.WIN_WIDTH - self.width) // 2
-        self.y = (player.game.settings.WIN_HEIGHT - self.height) // 2
+        self.x = (game.settings.WIN_WIDTH - self.width) // 2
+        self.y = (game.settings.WIN_HEIGHT - self.height) // 2
 
         #ITEMS
         self.items = []
@@ -153,7 +154,7 @@ class Equipment():
     def draw_player_stats(self, screen):
         x = self.stats_x
         y = self.stats_y
-        speed = self.player.speed / self.player.game.settings.SCALE
+        speed = self.player.speed / self.game.settings.SCALE
         speed = round(speed)
         font = pygame.font.Font(self.font_path, 33)
         stat_formats = {
@@ -225,7 +226,7 @@ class Equipment():
                 if self.stats[key] < self.min_stats[key]:
                     self.stats[key] = self.min_stats[key]
 
-        self.player.update_player_stats()
+        self.update_player_stats()
 
     def unpack_item(self, item):
         stats = item["stats"]
@@ -251,6 +252,12 @@ class Equipment():
                     if key == "health":
                         healValue = value
             
-            self.player.update_player_stats()
+            self.update_player_stats()
             if healValue:
                 self.player.heal(healValue)
+    
+    def update_player_stats(self):
+        self.player.max_health = self.player.BASE_MAX_HEALTH + self.stats["health"] 
+        if self.player.health > self.player.max_health:
+            self.player.health = self.player.max_health
+        self.player.speed = (self.player.BASE_SPEED + self.stats["speed"]) * self.game.settings.SCALE
