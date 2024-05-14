@@ -4,6 +4,7 @@ from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
 from entities.player.equipment import Equipment
 from entities.player.player_animation import PlayerAnimation
+from entities.player.player_collisions import PlayerCollision
 from entities.player.player_types import PlayerTypes
 from items.item_types import ItemType
 from utils.directions import Directions
@@ -33,6 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x * self.PLAYER_SIZE
         self.rect.y = y * self.PLAYER_SIZE
+        self.collisions = PlayerCollision(game, self)
         self.x_change = 0
         self.y_change = 0
         self.is_moving = False
@@ -62,31 +64,12 @@ class Player(pygame.sprite.Sprite):
 
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
-
-        self.animate()
-        self.mask = pygame.mask.from_surface(self.image)
-        self.correct_player_mask()
-
-    def correct_player_mask(self):
-        removed_hitbox_from_sides = pygame.Surface((self.mask.get_size()[0] * 0.25, self.mask.get_size()[1]))
-        removed_hitbox_from_top = pygame.Surface((self.mask.get_size()[0], self.mask.get_size()[1] * 0.25))
-        cut_mask_sides = pygame.mask.from_surface(removed_hitbox_from_sides)
-        cut_mask_top = pygame.mask.from_surface(removed_hitbox_from_top)
-
-        self.mask.erase(cut_mask_sides, (0, 0))
-        self.mask.erase(cut_mask_sides, (self.mask.get_size()[0] - cut_mask_sides.get_size()[0], 0))
-        self.mask.erase(cut_mask_top, (0, 0))
-
+        self.mask = self.player_animation.get_init_mask()
+        
     def update(self):
         if self.is_alive:
             self.user_input()
-            self.correct_diagonal_movement()
-
-            self.rect.x += self.x_change
-            self.collide_blocks('x')
-            self.rect.y += self.y_change
-            self.collide_blocks('y')
-
+            self.correct_unvalid_move()
             self.check_items_pick_up()
             self._layer = self.rect.bottom
             self.animate()
@@ -99,7 +82,13 @@ class Player(pygame.sprite.Sprite):
                 self.player_animation.play_death_animation() 
             else:
                 self.game.game_over()
-
+    
+    def correct_unvalid_move(self):
+        self.rect.x += self.x_change
+        self.collide_blocks('x')
+        self.rect.y += self.y_change
+        self.collide_blocks('y')
+        
     def user_input(self):
         keys = pygame.key.get_pressed()
         x_y_vel = [0,0]
@@ -127,6 +116,8 @@ class Player(pygame.sprite.Sprite):
                 x_y_vel[0] += x_change
                 x_y_vel[1] += y_change
                 self.is_moving = True
+        
+        self.correct_diagonal_movement()
 
     def plant_bomb(self, x_y_vel):
         if self.game.e_pressed and self.bombs > 0:
@@ -250,10 +241,14 @@ class Player(pygame.sprite.Sprite):
             self.is_alive = False
     
     def heal(self, amount:int):
+        if amount < 0:  
+            raise ValueError("Healing amount must be positive")
         self.health = min(self.max_health, self.health + amount)
 
     def update_player_stats(self):
         self.max_health = self.BASE_MAX_HEALTH + self.eq.stats["health"] 
+        if self.health > self.max_health:
+            self.health = self.max_health
         self.speed = (self.BASE_SPEED + self.eq.stats["speed"]) * self.game.settings.SCALE
     
     def get_shooting_cooldown(self):

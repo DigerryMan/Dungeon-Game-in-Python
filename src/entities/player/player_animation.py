@@ -125,3 +125,19 @@ class PlayerAnimation():
 
             self.death_time_left = self.death_frame_cd
             self.death_index += 1
+
+    def get_init_mask(self):
+        self.animate()
+        mask = pygame.mask.from_surface(self.image)
+        self.correct_player_mask(mask)
+        return mask
+
+    def correct_player_mask(self, mask):
+        removed_hitbox_from_sides = pygame.Surface((mask.get_size()[0] * 0.25, mask.get_size()[1]))
+        removed_hitbox_from_top = pygame.Surface((mask.get_size()[0], mask.get_size()[1] * 0.25))
+        cut_mask_sides = pygame.mask.from_surface(removed_hitbox_from_sides)
+        cut_mask_top = pygame.mask.from_surface(removed_hitbox_from_top)
+
+        mask.erase(cut_mask_sides, (0, 0))
+        mask.erase(cut_mask_sides, (mask.get_size()[0] - cut_mask_sides.get_size()[0], 0))
+        mask.erase(cut_mask_top, (0, 0))

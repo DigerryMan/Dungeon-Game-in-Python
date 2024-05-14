@@ -16,7 +16,7 @@ class ItemsList():
             "name": "Health pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "health": [-1, -0.5, 0.5, 1]
+                "health": [-1, 1]
             },
             "image": game.image_loader.lootables["health_pill"]
         }
@@ -230,7 +230,7 @@ class ItemsList():
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            return self.legendaries["eye_of_horus"]
+            return self.very_commons["health_pill"]
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
             return random.choice(list(self.legendaries.values()))
