@@ -1,5 +1,4 @@
 import pygame
-
 from config import BASE_BULLET_FLY_TIME, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED
 
 class EquipmentDisplay():

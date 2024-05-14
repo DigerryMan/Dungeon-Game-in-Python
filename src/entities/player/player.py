@@ -10,6 +10,12 @@ from entities.player.player_types import PlayerTypes
 from utils.directions import Directions
 
 class Player(pygame.sprite.Sprite):
+    direction_mapping = {
+            pygame.K_a: (Directions.LEFT, -1, 0),
+            pygame.K_d: (Directions.RIGHT, 1, 0),
+            pygame.K_w: (Directions.UP, 0, -1),
+            pygame.K_s: (Directions.DOWN, 0, 1)
+        }
     def __init__(self, game, x, y, player_type=PlayerTypes.ISAAC):
         #MAIN
         self.game = game
@@ -61,7 +67,8 @@ class Player(pygame.sprite.Sprite):
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.mask = self.player_animation.get_init_mask()
-        
+    
+
     def update(self):
         if self.is_alive:
             self.user_input()
@@ -89,16 +96,9 @@ class Player(pygame.sprite.Sprite):
         self.shoot(keys, x_y_vel)
 
     def move(self, keys, x_y_vel):
-        direction_mapping = {
-            pygame.K_a: (Directions.LEFT, -1, 0),
-            pygame.K_d: (Directions.RIGHT, 1, 0),
-            pygame.K_w: (Directions.UP, 0, -1),
-            pygame.K_s: (Directions.DOWN, 0, 1)
-        }
-
-        for key in direction_mapping:
+        for key in self.direction_mapping:
             if keys[key]:
-                self.direction, x_change, y_change = direction_mapping[key]
+                self.direction, x_change, y_change = self.direction_mapping[key]
                 self.x_change += int(self.speed) * x_change
                 self.y_change += int(self.speed) * y_change
                 self.facing = self.direction
