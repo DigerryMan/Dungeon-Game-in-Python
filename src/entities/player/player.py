@@ -2,7 +2,7 @@ import pygame
 from config import BASE_IMMORTALITY_AFTER_HIT, BASE_LUCK, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, FPS, GOD_MODE, ROOM_NUMBER
 from entities.bomb import Bomb
 from entities.mobs.friendly_ghost import FriendlyGhost
-from entities.player.equipment import Equipment
+from entities.player.equipment.equipment import Equipment
 from entities.player.player_animation import PlayerAnimation
 from entities.player.player_collisions import PlayerCollisionEngine
 from entities.player.player_shooting_engine import ShootingEnginge
