@@ -1,6 +1,7 @@
 from entities.player.player_types import PlayerTypes
 from entities.player.stat_bars import StatBars
 import pygame
+from pygame import mixer
 import os
 from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
@@ -40,6 +41,10 @@ class Game:
         self.init_empty_sprite_groups()
 
         self.prepare_game()
+
+        mixer.init()
+        mixer.music.load("resources/music/titleScreenIntro.ogg")
+        mixer.music.play(-1)
 
     def prepare_game(self):
         self.map = None
