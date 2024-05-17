@@ -26,7 +26,6 @@ class Game:
         self.items_list = ItemsList(self)
         self.menu = Menu(self)
         self.sound_manager = SoundManager()
-        self.sound_manager.play("basementLoop")
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
