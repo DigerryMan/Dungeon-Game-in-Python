@@ -1,13 +1,13 @@
 from entities.player.player_types import PlayerTypes
 from entities.player.stat_bars import StatBars
 import pygame
-from pygame import mixer
 import os
 from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
 from map.map import Map
 from entities.player.player import Player
 from menu import Menu
+from sound_manager import SoundManager
 from utils.directions import Directions
 from utils.image_loader import ImageLoader
 from utils.settings import Settings
@@ -25,6 +25,8 @@ class Game:
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
         self.menu = Menu(self)
+        self.sound_manager = SoundManager()
+        self.sound_manager.play("basementLoop")
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
@@ -42,9 +44,6 @@ class Game:
 
         self.prepare_game()
 
-        mixer.init()
-        mixer.music.load("resources/music/titleScreenIntro.ogg")
-        mixer.music.play(-1)
 
     def prepare_game(self):
         self.map = None
