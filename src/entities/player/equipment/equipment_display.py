@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import BASE_BULLET_FLY_TIME, BASE_IMMORTALITY_AFTER_HIT, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED
 
@@ -159,16 +160,21 @@ class EquipmentDisplay():
     def change_highlighted_item(self, event_key):
         if event_key is not None:
             if event_key == pygame.K_DOWN or event_key == pygame.K_s:
-                self.highlighted_item_col += 1      
+                self.highlighted_item_col += 1
+                self.game.sound_manager.play(f"select{'Right' if random.randint(0, 1) else 'Left'}")
             if event_key == pygame.K_UP or event_key == pygame.K_w:
-                self.highlighted_item_col -= 1             
+                self.highlighted_item_col -= 1
+                self.game.sound_manager.play(f"select{'Right' if random.randint(0, 1) else 'Left'}")
             if event_key == pygame.K_LEFT or event_key == pygame.K_a:
-                self.highlighted_item_row -= 1     
+                self.highlighted_item_row -= 1
+                self.game.sound_manager.play(f"select{'Right' if random.randint(0, 1) else 'Left'}")
             if event_key == pygame.K_RIGHT or event_key == pygame.K_d:
                 self.highlighted_item_row += 1
+                self.game.sound_manager.play(f"select{'Right' if random.randint(0, 1) else 'Left'}")
             
             self.highlighted_item_row %= self.item_in_row
             self.highlighted_item_col %= self.item_in_col
+
         self.set_cursor_and_big_item()
     
     def set_cursor_and_big_item(self):

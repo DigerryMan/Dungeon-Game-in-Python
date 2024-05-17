@@ -6,7 +6,7 @@ from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
 from map.map import Map
 from entities.player.player import Player
-from menu import Menu
+from menu.menu import Menu
 from sound_manager import SoundManager
 from utils.directions import Directions
 from utils.image_loader import ImageLoader
@@ -87,13 +87,13 @@ class Game:
         self.map.render_initial_room()
 
     def run(self):
-        self.menu.intro_screen()
+        self.menu.display_intro_screen()
 
         while self.running:
             self.events()
 
             if self.menu_playing:
-                self.menu.main_menu()
+                self.menu.display_main_menu()
 
             if not self.paused and self.running:
                 self.update()
@@ -189,7 +189,8 @@ class Game:
 
     def display_eq(self):
         self.player.eq.user_eq_input(None) #show big_item first time
-        
+        self.sound_manager.play("pageTurn")
+
         while(self.player.eq_opened):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -198,6 +199,7 @@ class Game:
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE:
+                        self.sound_manager.play("pageTurn")
                         self.player.eq_opened = False
 
                     self.player.eq.user_eq_input(event.key)
