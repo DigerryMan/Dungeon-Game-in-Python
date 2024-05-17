@@ -126,6 +126,7 @@ class Menu():
                         character_selection_playing = False
                         self.game.character_type = characters[current_character]
                         self.game.render_new_map(first_map = True)
+                        self.game.sound_manager.play_with_fadein("basementLoop", 4000, looped=True)
 
                     if event.key == pygame.K_ESCAPE:
                         self.game.sound_manager.play("pageTurn")
@@ -230,6 +231,7 @@ class Menu():
                             self.game.paused = False
                             self.game.menu_playing = True
                             self.game.sound_manager.play("pageTurn")
+                            self.game.sound_manager.stop_with_fadeout("basementLoop", 2000)
 
             self.game.screen.blit(self.pause_card, (self.game.settings.WIN_WIDTH//4, self.game.settings.WIN_HEIGHT//4))
             self.game.screen.blit(self.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))

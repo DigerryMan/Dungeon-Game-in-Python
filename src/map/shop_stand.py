@@ -17,12 +17,14 @@ class ShopStand(Block):
         self.text = self.font.render(str(self.price), True, self.font_color)
 
     def buy_item(self):
-        print(self.game.player.coins, self.price)
         if self.game.player.coins >= self.price:
             self.game.player.coins -= self.price
             self.game.player.eq.add_item(self.content.item)
             self.game.map.get_current_room().remove_shop_stand(self)
             self.kill()
+
+        else:
+            self.game.sound_manager.play("error")
 
     def update(self):
         player_pos = pygame.Vector2(self.game.player.rect.centerx, self.game.player.rect.centery)

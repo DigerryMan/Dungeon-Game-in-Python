@@ -9,12 +9,12 @@ from entities.mobs.maggot import Maggot
 from entities.mobs.parasite import Parasite
 from entities.mobs.slime import Slime
 from entities.mobs.wanderer import Wanderer
+from map.shop_stand import ShopStand
 from map.trap_door import TrapDoor
 from map.treasure_block import TreasureBlock
 from utils.directions import Directions
 from .room_types import rooms, special_rooms
 from .block import Block
-from .shop_stuff.shop_stand import ShopStand
 from .door import Door
 from .wall import Wall
 from .chest import Chest
@@ -177,6 +177,11 @@ class Room():
         self.spawn_player(entry_direction)
         self.player.spawn_pets()
         self.drawn_once = True
+
+        if self.room_type == "boss" and not self.is_cleared:
+            self.game.sound_manager.play("bossEnter")
+            self.game.sound_manager.stop_with_fadeout("basementLoop", 1000)
+            self.game.sound_manager.play_with_fadein("bossFight", 1000, looped=True)
         
     def spawn_outer_walls(self, doors_positions):
         #top wall
@@ -293,6 +298,10 @@ class Room():
 
         if self.trap_door:
             self.trap_door.open()
+
+        if self.room_type == "boss":
+            self.game.sound_manager.stop_with_fadeout("bossFight", 2000)
+            self.game.sound_manager.play_with_fadein("basementLoop", 2000, looped=True)
             
     def update_player_rooms_cleared(self):
         if not self.is_cleared and self.room_type != "start" and self.room_type != "shop":

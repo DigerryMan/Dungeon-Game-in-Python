@@ -34,6 +34,7 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.image = self.game.image_loader.trap_door["opened"]
                 self.opened = True
                 self.animated = True
+                self.game.sound_manager.play("doorOpen")
 
         if distance <= self.game.settings.TILE_SIZE / 2 and self.animated:
             print("Next level")

@@ -88,7 +88,8 @@ class Map():
 
     def set_room_cleared(self):
         x, y = self.current_position
-        self.room_map[x][y].set_room_cleared()
+        if not self.room_map[x][y].is_cleared:
+            self.room_map[x][y].set_room_cleared()
 
     def draw_minimap(self, screen):
         self.minimap.draw(screen)

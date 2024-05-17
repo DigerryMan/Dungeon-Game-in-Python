@@ -45,6 +45,8 @@ class Chest(pygame.sprite.Sprite):
 
             self.drop_loot(items)
 
+            self.game.sound_manager.play("chestOpen")
+
             return items
 
     def update(self):

@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import BASE_BULLET_FLY_TIME, DIAGONAL_MULTIPLIER, PLAYER_SHOOT_DIAGONAL
 from entities.bullet import Bullet
@@ -57,7 +58,8 @@ class ShootingEnginge():
         self.player.player_animation.reset_tear_shot_cd()
         Bullet(self.game, x, y, self.player.facing, self.player.get_shot_speed(), True,
                 (self.player.dmg+self.player.eq.stats["dmg"])*self.player.eq.extra_stats["dmg_multiplier"], 
-                BASE_BULLET_FLY_TIME+self.player.eq.stats["bullet_fly_time"], additional_speed=additional_v)  
+                BASE_BULLET_FLY_TIME+self.player.eq.stats["bullet_fly_time"], additional_speed=additional_v)
+        self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
         
     def calculate_bullet_position(self):
         x, y = self.player.rect.centerx, self.player.rect.centery

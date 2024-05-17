@@ -244,6 +244,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._is_dead = True
         self.kill()
         self.drop_lootable()
+        self.game.sound_manager.play("enemyDeath")
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!

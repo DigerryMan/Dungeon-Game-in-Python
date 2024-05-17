@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import BASE_IMMORTALITY_AFTER_HIT, BASE_LUCK, BASE_SHOOTING_COOLDOWN, BASE_SHOT_SPEED, FPS, GOD_MODE, ROOM_NUMBER
 from entities.bomb import Bomb
@@ -147,11 +148,16 @@ class Player(pygame.sprite.Sprite):
     def check_is_dead(self):
         if self.health <= 0 and not GOD_MODE:
             self.is_alive = False
+            self.game.sound_manager.play("isaacDeath")
+
+        else:
+            self.game.sound_manager.play(f"hurt{random.randint(1, 3)}")
     
     def heal(self, amount:int):
         if amount < 0:  
             raise ValueError("Healing amount must be positive")
         self.health = min(self.max_health, self.health + amount)
+        self.game.sound_manager.play("heartIntake")
     
     def get_shooting_cooldown(self):
         return int((BASE_SHOOTING_COOLDOWN - self.eq.stats["shooting_cooldown"]) * FPS)
