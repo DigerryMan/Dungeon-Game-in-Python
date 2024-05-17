@@ -13,7 +13,7 @@ class ImageLoader:
         self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
         self.mobs_.extend(self.player_types)
 
-        self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
+        self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave", "catacombs", "necropolis", "depths", "bluewomb", "womb"]
         self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
         self.blocks_ = ["rocks"]
 
@@ -87,6 +87,26 @@ class ImageLoader:
             elif room == "cave":
                 for i in range(1, 6):
                     self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/cave/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "catacombs":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/catacombs/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "necropolis":
+                for i in range(1, 2):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/necropolis/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "depths":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/depths/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "bluewomb":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/bluewomb/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "womb":
+                for i in range(1, 5):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/womb/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
 
             else:
                 self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()

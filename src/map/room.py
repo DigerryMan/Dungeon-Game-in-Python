@@ -314,11 +314,26 @@ class Room():
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
-        if self.level == 1:
+        if self.level <= 1:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
 
-        if self.level >= 2:
+        elif self.level <= 2:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("cave" + str(random.randint(1, 5)))
+
+        elif self.level <= 3:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("catacombs" + str(random.randint(1, 3)))
+
+        elif self.level <= 4:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("necropolis1")
+
+        elif self.level <= 5:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("depths" + str(random.randint(1, 3)))
+
+        elif self.level <= 6:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("bluewomb" + str(random.randint(1, 3)))
+
+        elif self.level <= 7:
+            self.room_graphics["background_image"] = self.game.image_loader.get_image("womb" + str(random.randint(1, 4)))
 
         if self.room == special_rooms["shop"]:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("shop_room")
