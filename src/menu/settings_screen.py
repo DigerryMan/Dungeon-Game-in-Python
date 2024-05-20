@@ -7,8 +7,8 @@ class SettingsScreen():
         self.game = menu.game
         self.settings_playing = True
         self.current_resolution_index = 0
-        self.current_music_volume = 0.3
-        self.current_gameplay_volume = 0.5
+        self.current_music_volume = 3
+        self.current_gameplay_volume = 5
 
     def display(self):
         self.settings_playing = True
@@ -135,6 +135,22 @@ class SettingsScreen():
 
         dislpay_sound_settings_playing = True
 
+        music_ticks = [self.game.image_loader.images_dict["tick_transparent"].copy() for _ in range(11)]
+        gameplay_ticks = [self.game.image_loader.images_dict["tick_transparent"].copy() for _ in range(11)]
+
+        for i in range(int(self.current_music_volume) + 1):
+            music_ticks[i] = self.game.image_loader.images_dict["tick"].copy()
+
+        for i in range(int(self.current_gameplay_volume) + 1):
+            gameplay_ticks[i] = self.game.image_loader.images_dict["tick"].copy()
+
+        def draw_ticks():
+            for i in range(1, 11):
+                self.game.screen.blit(music_ticks[i],
+                                      (self.game.settings.WIN_WIDTH//2 + i * music_ticks[i].get_width() * 0.7, self.game.settings.WIN_HEIGHT//2.8 - i * music_ticks[i].get_height() * 0.045))
+                self.game.screen.blit(gameplay_ticks[i],
+                                      (self.game.settings.WIN_WIDTH//1.95 + i * gameplay_ticks[i].get_width() * 0.7, self.game.settings.WIN_HEIGHT//2.2 - i * gameplay_ticks[i].get_height() * 0.045))
+
         while dislpay_sound_settings_playing:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -156,27 +172,31 @@ class SettingsScreen():
                         if current_arrow == 0:
                             if self.current_music_volume > 0:
                                 self.game.sound_manager.play("selectLeft")
-                                self.current_music_volume = self.current_music_volume - 0.1
-                                self.game.sound_manager.set_music_volume(self.current_music_volume)
+                                music_ticks[self.current_music_volume] = self.game.image_loader.images_dict["tick_transparent"].copy()
+                                self.current_music_volume = self.current_music_volume - 1
+                                self.game.sound_manager.set_music_volume(self.current_music_volume / 10)
 
                         elif current_arrow == 1:
                             if self.current_gameplay_volume > 0:
                                 self.game.sound_manager.play("selectLeft")
-                                self.current_gameplay_volume = self.current_gameplay_volume - 0.1
-                                self.game.sound_manager.set_sound_volume(self.current_gameplay_volume)
+                                gameplay_ticks[self.current_gameplay_volume] = self.game.image_loader.images_dict["tick_transparent"].copy()
+                                self.current_gameplay_volume = self.current_gameplay_volume - 1
+                                self.game.sound_manager.set_sound_volume(self.current_gameplay_volume / 10)
 
                     if event.key == pygame.K_RIGHT:
                         if current_arrow == 0:
-                            if self.current_music_volume < 1:
+                            if self.current_music_volume < 10:
                                 self.game.sound_manager.play("selectRight")
-                                self.current_music_volume = self.current_music_volume + 0.1
-                                self.game.sound_manager.set_music_volume(self.current_music_volume)
+                                self.current_music_volume = self.current_music_volume + 1
+                                music_ticks[self.current_music_volume] = self.game.image_loader.images_dict["tick"].copy()
+                                self.game.sound_manager.set_music_volume(self.current_music_volume / 10)
 
                         elif current_arrow == 1:
-                            if self.current_gameplay_volume < 1:
+                            if self.current_gameplay_volume < 10:
                                 self.game.sound_manager.play("selectRight")
-                                self.current_gameplay_volume = self.current_gameplay_volume + 0.1
-                                self.game.sound_manager.set_sound_volume(self.current_gameplay_volume)
+                                self.current_gameplay_volume = self.current_gameplay_volume + 1
+                                gameplay_ticks[self.current_gameplay_volume] = self.game.image_loader.images_dict["tick"].copy()
+                                self.game.sound_manager.set_sound_volume(self.current_gameplay_volume / 10)
 
                     if event.key == pygame.K_ESCAPE:
                         self.game.sound_manager.play("pageTurn")
@@ -188,6 +208,8 @@ class SettingsScreen():
             self.game.screen.blit(self.menu.main_title, (self.game.settings.WIN_WIDTH//8, 0))
 
             self.game.screen.blit(self.menu.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
+
+            draw_ticks()
 
             self.game.clock.tick(FPS)
             pygame.display.update()
