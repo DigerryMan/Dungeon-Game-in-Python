@@ -52,6 +52,15 @@ class ImageLoader:
         self.player_animations_list = []
         self.load_player_animation()
 
+        self.others = {}
+        self.load_others()
+
+    def load_others(self):
+        others = ["laser"]
+        for other in others:
+            self.others[other] = pygame.image.load(f"resources/other/{other}.png").convert_alpha()
+
+
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")

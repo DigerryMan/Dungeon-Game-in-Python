@@ -25,7 +25,16 @@ class Laser(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.calculate_rect_cords(x, y), (self.width, self.height))
         if not self.is_wrong:
             self.image = pygame.Surface((self.rect.width, self.rect.height))
-            self.image.fill(RED)
+            img = self.game.image_loader.others["laser"]
+            if self.direction == Directions.UP:
+                img = pygame.transform.rotate(img, 180)
+            elif self.direction == Directions.RIGHT:
+                img = pygame.transform.rotate(img, 90)
+            elif self.direction == Directions.LEFT:
+                img = pygame.transform.rotate(img, 270)
+                
+            self.image = pygame.transform.scale(img, self.rect.size)
+            #self.image.fill(RED)
             self.mask = pygame.mask.from_surface(self.image)
 
             #DEATH ANIMATION
