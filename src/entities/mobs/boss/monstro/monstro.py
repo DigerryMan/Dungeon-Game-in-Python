@@ -6,7 +6,7 @@ import pygame
 from entities.mobs.slime import Slime
 from utils.directions import Directions
 
-class Boss(Slime):
+class Monstro(Slime):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
         self._max_health = 25
