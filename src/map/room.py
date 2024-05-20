@@ -1,7 +1,7 @@
 import random
 from collections import deque
 from entities.mobs.alpha_maggot import AlphaMaggot
-from entities.mobs.boss.boss import Boss
+from entities.mobs.boss.monstro.boss import Boss
 from entities.mobs.fly import Fly
 from entities.mobs.ghost import Ghost
 from entities.mobs.legs import Legs

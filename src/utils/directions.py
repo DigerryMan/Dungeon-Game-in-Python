@@ -52,3 +52,16 @@ class Directions(Enum):
             return ('x', 0)
         
         return None
+    
+    def get_direction_from_two_points(x1, y1, x2, y2):
+        a = abs(y1 - y2)
+        b = abs(x2 - x1)
+        c = (a**2 + b**2)**0.5
+        sin = a/c
+        if sin > 0.5:
+            if y1 > y2:
+                return Directions.UP
+            return Directions.DOWN
+        elif x1 <= x2:
+            return Directions.RIGHT
+        return Directions.LEFT
