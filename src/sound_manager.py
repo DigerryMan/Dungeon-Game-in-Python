@@ -13,29 +13,47 @@ def load_sounds(directory):
 class SoundManager:
     def __init__(self):
         mixer.init()
-        self.sounds = load_sounds("resources/music")
-        self.sounds.update(load_sounds("resources/sounds"))
+        self.music = load_sounds("resources/music")
+        self.sounds = load_sounds("resources/sounds")
+        self.set_music_volume(0.3)
+        self.set_sound_volume(0.5)
+
+    def set_music_volume(self, volume):
+        for sound in self.music.values():
+            sound.set_volume(volume)
+
+    def set_sound_volume(self, volume):
+        for sound in self.sounds.values():
+            sound.set_volume(volume)
 
     def play(self, sound_name, looped=False):
         if sound_name in self.sounds:
             self.sounds[sound_name].play(-1 if looped else 0)
+        elif sound_name in self.music:
+            self.music[sound_name].play(-1 if looped else 0)
         else:
             print(f"Sound '{sound_name}' not found!")
 
     def play_with_fadein(self, sound_name, fadein_time, looped=False):
         if sound_name in self.sounds:
             self.sounds[sound_name].play(-1 if looped else 0, fade_ms=fadein_time)
+        elif sound_name in self.music:
+            self.music[sound_name].play(-1 if looped else 0, fade_ms=fadein_time)
         else:
             print(f"Sound '{sound_name}' not found!")
 
     def stop(self, sound_name):
         if sound_name in self.sounds:
             self.sounds[sound_name].stop()
+        elif sound_name in self.music:
+            self.music[sound_name].stop()
         else:
             print(f"Sound '{sound_name}' not found!")
 
     def stop_with_fadeout(self, sound_name, fadeout_time):
         if sound_name in self.sounds:
             self.sounds[sound_name].fadeout(fadeout_time)
+        elif sound_name in self.music:
+            self.music[sound_name].fadeout(fadeout_time)
         else:
             print(f"Sound '{sound_name}' not found!")

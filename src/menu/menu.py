@@ -19,6 +19,8 @@ class Menu():
         self.intro_background = self.game.image_loader.get_image("introbackground")
         self.menu_card = self.game.image_loader.get_image("menucard")
         self.settings_card = self.game.image_loader.get_image("settingscard")
+        self.resolution_settings_card = self.game.image_loader.get_image("resolutionsettingscard")
+        self.sound_settings_card = self.game.image_loader.get_image("soundsettingscard")
         self.character_selection = self.game.image_loader.get_image("character_selection")
         self.menu_background = self.game.image_loader.get_image("menuoverlay")
         self.pause_card = self.game.image_loader.get_image("pausecard")
