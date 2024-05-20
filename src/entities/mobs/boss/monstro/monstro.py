@@ -3,6 +3,7 @@ from config import FPS, GREEN, WALL_MARKS
 from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 import pygame
+from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
 from entities.mobs.slime import Slime
 from utils.directions import Directions
 
@@ -19,10 +20,6 @@ class Monstro(Slime):
 
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
-        self.mask = pygame.mask.from_surface(self.image) 
-        self.image = game.image_loader.get_image("parasite").subsurface(pygame.Rect(0, 0, self.MOB_SIZE//2, self.MOB_SIZE//2)).copy()
-        self.image = pygame.transform.scale(self.image, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image.fill(GREEN)
 
         #HITBOX
         self.rect = self.image.get_rect()
@@ -30,14 +27,18 @@ class Monstro(Slime):
         self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
 
+        #ANIMATION
+        self.animation = MonstroAnimation(self, game)
+
         # BOSS STAGES
         self.stage = 1
 
+        self.is_doing_bullet_attack = False
         self.bullet_direction = None
         self.bullet_shooting_cd = 0.8 * FPS
         self.bullet_shooting_time_left = self.bullet_shooting_cd 
 
-        self.jump_cd_s = 0.4
+        self.jump_cd_s = 1
         self.jump_cd = self.jump_cd_s * FPS
 
         self.max_number_of_jumps = 5
@@ -111,7 +112,6 @@ class Monstro(Slime):
             return self.old_jump_y + t * self.v_y
         return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t ** 2
 
-
     def update(self):
         self.perform_boss_stage()
 
@@ -120,12 +120,13 @@ class Monstro(Slime):
         self.animate()
 
     def animate(self):
-        pass
+        self.animation.animate()
     
     def perform_boss_stage(self):
         if self.stage == 1:
-            if self.number_of_jumps > self.max_number_of_jumps:
+            if self.number_of_jumps >= self.max_number_of_jumps:
                 self.stage = 0  
+                self.animation.idles_passed = 0
                 self.number_of_jumps = 0
                 self.roll_next_jumps_amount()
             else:
@@ -133,19 +134,23 @@ class Monstro(Slime):
         
         elif self.stage == 0:
             self.do_bullet_attack_stage0()
+            self.is_doing_bullet_attack = True
 
     def roll_next_jumps_amount(self):
-        self.max_number_of_jumps = random.randint(2, 4)
+        self.max_number_of_jumps = random.randint(1, 3)
 
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
 
     def do_bullet_attack_stage0(self):
         self.bullet_shooting_time_left -= 1
-        if self.bullet_shooting_time_left <= 0:
+        if self.bullet_shooting_time_left == int(self.bullet_shooting_cd * 0.6):
             self.shoot_one_of_crazy_bullets()
+            
+        elif self.bullet_shooting_time_left <= 0:
             self.bullet_shooting_time_left = self.bullet_shooting_cd
             self.stage = 1
+            self.is_doing_bullet_attack = False
 
     def update_bullet_direction(self):
         x_p, y_p = self.game.player.get_center_position()
