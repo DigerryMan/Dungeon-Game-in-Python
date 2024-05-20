@@ -1,9 +1,10 @@
 from config import FPS, GREEN
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 import pygame
+from entities.mobs.boss.satan.satan_animation import SatanAnimiation
 from entities.mobs.slime import Enemy
 
-class Boss2(Enemy):
+class Satan(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
         self._max_health = 50
@@ -12,20 +13,20 @@ class Boss2(Enemy):
 
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
-        self.MOB_SIZE = game.settings.MOB_SIZE * 2
+        self.MOB_WIDTH = game.settings.MOB_SIZE * 3.2
+        self.MOB_HEIGHT = game.settings.MOB_SIZE * 2.5
 
         #SKINS
-        self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
-        self.mask = pygame.mask.from_surface(self.image) 
-        self.image = game.image_loader.get_image("parasite").subsurface(pygame.Rect(0, 0, self.MOB_SIZE//2, self.MOB_SIZE//2)).copy()
-        self.image = pygame.transform.scale(self.image, (self.MOB_SIZE, self.MOB_SIZE))
-        self.image.fill(GREEN)
+        self.image = pygame.Surface([self.MOB_WIDTH, self.MOB_HEIGHT])
 
         #HITBOX
         self.rect = self.image.get_rect()
         self.rect.x = x * game.settings.TILE_SIZE
         self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
+
+        #ANIMATION
+        self.animation = SatanAnimiation(self, game)
 
         # BOSS STAGES
         self.stage = 1
@@ -51,7 +52,7 @@ class Boss2(Enemy):
         self.animate()
 
     def animate(self):
-        pass
+        self.animation.animate()
     
     def perform_boss_stage(self):
         if self.stage == 1:
