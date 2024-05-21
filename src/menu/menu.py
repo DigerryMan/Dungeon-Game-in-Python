@@ -3,7 +3,7 @@ from config import FPS
 from menu.character_selection_screen import CharacterSelectionScreen
 from menu.intro_screen import IntroScreen
 from menu.pause_screen import PauseScreen
-from menu.settings_screen import SettingsScreen
+from menu.settings_screen.main_settings_screen import MainSettingsScreen
 
 class Menu():
     def __init__(self, game):
@@ -12,7 +12,7 @@ class Menu():
 
         self.intro_screen = IntroScreen(self)
         self.character_selection_screen = CharacterSelectionScreen(self)
-        self.settings_screen = SettingsScreen(self)
+        self.settings_screen = MainSettingsScreen(self)
         self.pause_screen = PauseScreen(self)
 
     def update_images(self):
