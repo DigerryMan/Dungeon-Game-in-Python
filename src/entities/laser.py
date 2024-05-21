@@ -101,9 +101,9 @@ class Laser(pygame.sprite.Sprite):
                     player_hits[0].get_hit(self.dmg)
 
     def decay(self):
-            self.time_left -= 1
-            if self.time_left <= 0:
-                self.kill()
+        self.time_left -= 1
+        if self.time_left <= 0:
+            self.kill()
     
     def get_mask_colliding_sprite(self, rect_hits):
         for sprite in rect_hits:

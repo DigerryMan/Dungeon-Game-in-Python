@@ -57,12 +57,12 @@ class ShootingEnginge():
 
         x, y = self.calculate_bullet_position()
         self.player.player_animation.reset_tear_shot_cd()
-        """
+        
         Bullet(self.game, x, y, self.player.facing, self.player.get_shot_speed(), True,
                 (self.player.dmg+self.player.eq.stats["dmg"])*self.player.eq.extra_stats["dmg_multiplier"], 
                 BASE_BULLET_FLY_TIME+self.player.eq.stats["bullet_fly_time"], additional_speed=additional_v)
-        """
-        Laser(self.game, x, y, self.player.facing, True, 1, 1)
+        
+        #Laser(self.game, x, y, self.player.facing, True, 1, 1)
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
         
     def calculate_bullet_position(self):
