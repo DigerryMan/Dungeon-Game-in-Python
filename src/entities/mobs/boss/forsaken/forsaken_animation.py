@@ -22,6 +22,9 @@ class ForsakenAnimation():
         self.shake_time_left = 0
         self.shake_time_y_left = 0
 
+        #flying
+        self.index = 0
+
     def prepare_images(self):
         end = 4
         for y in range(3):
@@ -34,16 +37,28 @@ class ForsakenAnimation():
     def animate(self):
         if self.boss.lasers_active:
             self.laser_animation()
-        else:
-            self.time -= 1
-            if self.time <= 0:
-                self.time = self.time_cd
-                self.boss.image = self.images[self.frame_index]
-                self.frame_index += 1
-                self.frame_index %= len(self.images)
+        elif self.boss.enemies_active:
+            self.enemies_spawning_animation()
+        elif self.boss.flying_active:
+            self.flying_animation()
     
+    def enemies_spawning_animation(self):
+        frames = [0, 1]
+        self.time -= 1
+        self.shaking_animation()
+        self.shaking_animation_y()
+
+        if self.time <= 0:
+            self.time = self.time_cd
+            self.index += 1
+            self.index %= 2
+            self.boss.image = self.images[frames[self.index]]
+            
+
     def laser_animation(self):
-        self.boss.image = self.change_opacity(self.images[5], 100)
+        if self.boss.lasers_time == (8 * FPS - 1):
+            self.boss.image = self.change_opacity(self.images[5], 100)
+            self.game.not_voulnerable.add(self.boss)
         self.shaking_animation()
         self.shaking_animation_y()
 
@@ -70,3 +85,30 @@ class ForsakenAnimation():
             self.boss.rect.centery += 2 * self.y_change
             self.y_change *= -1
             self.shake_time_y_left = 7
+    
+    def flying_animation(self):
+        if self.boss.flying_time > int(8.7 * FPS):
+            self.shaking_animation()
+            self.shaking_animation_y()
+            self.disappearing_animation()
+        else:
+            self.looped_flying_animation()
+
+    def looped_flying_animation(self):
+        frames = [2, 3, 7, 4, 10, 9, 8]
+        if self.boss.flying_time % 10 == 0:
+            self.index += 1
+            self.index %= len(frames)
+            self.boss.image = self.images[frames[self.index]]
+
+    def disappearing_animation(self):
+        if self.boss.flying_time == int(9.7 * FPS):
+            self.game.not_voulnerable.add(self.boss)
+            self.boss.image = self.change_opacity(self.images[5], 150)
+        elif self.boss.flying_time == int(9.3 * FPS):
+            self.boss.image = self.change_opacity(self.images[5], 50)
+        elif self.boss.flying_time == int(8.8 * FPS):
+            self.game.not_voulnerable.remove(self.boss)
+            self.boss.image = self.images[5]
+
+       
