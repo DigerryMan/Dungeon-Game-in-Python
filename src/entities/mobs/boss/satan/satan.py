@@ -1,5 +1,6 @@
 from cmath import cos, sin
 import math
+import random
 from config import FPS
 from entities.bullet import Bullet
 from entities.laser import Laser
@@ -36,21 +37,38 @@ class Satan(Enemy):
         # BOSS STAGES
         self.stage = 0
 
+        # START
+        self.boss_figth_start_active = True
+        self.start_time = 3 * FPS
+        self.game.not_voulnerable.add(self)
+
         # HANDS BULLETS
-        self.bullets_from_hands_active = True
+        self.bullets_from_hands_active = False
         self.bullets_from_hands_period = int(1 * FPS)
         self.bullets_from_hands_time = self.bullets_from_hands_period
 
         # LASER BREATH
         self.laser = None
-        self.laser_breath_active = True
+        self.laser_breath_active = False
         self.laser_breath_period = int(1 * FPS)
         self.laser_breath_time = self.laser_breath_period
 
         # MOUTH ATTACK
-        self.mouth_attack_active = True
+        self.mouth_attack_active = False
         self.mouth_attack_period = int(1 * FPS)
         self.mouth_attack_time = self.mouth_attack_period
+        self.mouth_attack_amount = 0
+
+        #FLYING
+        self.flying_active = False
+        self.flying_period = int(1.5 * FPS)
+        self.flying_time = self.mouth_attack_period
+        self.first_short_fly = True
+        self.fly_multiplier = 1
+        self.fly_speed = 4
+
+        
+
 
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
@@ -65,13 +83,21 @@ class Satan(Enemy):
         self.animate()
 
     def perform_boss_stage(self):
-        if self.bullets_from_hands_active:
+        if self.boss_figth_start_active:
+            self.start_time -= 1
+            if self.start_time <= 0:
+                self.boss_figth_start_active = False
+                self.bullets_from_hands_active = True
+                self.game.not_voulnerable.remove(self)
+
+        elif self.bullets_from_hands_active:
             self.bullets_from_hands_time -= 1
             if self.bullets_from_hands_time == self.bullets_from_hands_period // 2:
                 self.bullets_from_hands_attack()
             elif self.bullets_from_hands_time <= 0:
                 self.bullets_from_hands_time = self.bullets_from_hands_period
                 self.bullets_from_hands_active = False
+                self.next_move_type("bullets_from_hands")
                 
         elif self.laser_breath_active:
             self.laser_breath_time -= 1
@@ -83,19 +109,64 @@ class Satan(Enemy):
             elif self.laser_breath_time <= 0:
                 self.laser_breath_time = self.laser_breath_period
                 self.laser_breath_active = False
+                self.next_move_type("laser_breath")
         
         elif self.mouth_attack_active:
             self.mouth_attack_time -= 1
-            if self.mouth_attack_time == int(self.mouth_attack_period * 0.75):
+            if self.mouth_attack_time == int(self.mouth_attack_period * 0.55):
                 self.mouth_attack()
             elif self.mouth_attack_time <= 0:
                 self.mouth_attack_time = self.mouth_attack_period
-                #self.mouth_attack_active = False
+                if self.mouth_attack_amount == 3:
+                    self.mouth_attack_active = False
+                    self.mouth_attack_amount = random.randint(-2, 0)
+                    #self.next_move_type("mouth_attack")
+                    self.flying_active = True
+
+        elif self.flying_active:
+            self.fly()
+            
+
+    def fly(self):
+        self.flying_time -= 1
+        speed = self.fly_speed * self.fly_multiplier
+        if self.first_short_fly:
+            speed /= 2
+        self.rect.x += speed
+        if self.flying_time <= 0:
+            self.fly_multiplier *= -1
+            self.flying_time = self.flying_period
+            self.first_short_fly = False
+            self.flying_active = False
+            self.next_move_type("flying")
+
+
+    def next_move_type(self, to_exclude:str):
+        moves = {
+            "bullets_from_hands": 0,
+            "laser_breath": 1,
+            "mouth_attack": 2,
+            "flying": 3
+                 }
+        
+        to_choose_from = moves.keys()
+        to_choose_from = list(to_choose_from)
+        to_choose_from.remove(to_exclude)
+        move = moves[random.choice(to_choose_from)] 
+        if move == 0:
+            self.bullets_from_hands_active = True
+        elif move == 1:
+            self.laser_breath_active = True
+        elif move == 2:
+            self.mouth_attack_active = True
+        elif move == 3:
+            self.flying_active = True
 
     def mouth_attack(self):
-        x, y = self.rect.centerx, self.rect.centery
-        for i in range(3, 10, 3):
+        x, y = self.rect.centerx, self.rect.centery + int(self.MOB_HEIGHT * 0.3)
+        for i in range(3, 14, 3):
             Bullet(self.game, x, y, Directions.PLAYER, 10 + i, False, 1, 0.5)
+        self.mouth_attack_amount += 1
 
     def laser_breath_attack(self):
         x, y = self.rect.centerx, self.rect.centery + int(self.MOB_HEIGHT * 0.12)
