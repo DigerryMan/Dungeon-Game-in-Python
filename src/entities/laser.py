@@ -4,12 +4,12 @@ from utils.directions import Directions
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction:Directions, is_friendly=True, 
-                 dmg=1, time_decay_in_seconds:float=0):
+                 dmg=1, time_decay_in_seconds:float=0, opacity_time=0):
         #MAIN
         self.dmg = dmg
         self.direction = direction
         self.is_friendly = is_friendly
-        
+        self.opacity_time = int(opacity_time * FPS)
         self.width = 50
         self.height = 50
 
@@ -20,33 +20,20 @@ class Laser(pygame.sprite.Sprite):
         #SKIN
         self._layer = 1990
         self.images = []
+        self.images_opacity = []
 
         #HITBOX / POSITION
         self.is_wrong = False
         self.rect = pygame.Rect(self.calculate_rect_cords(x, y), (self.width, self.height))
         if not self.is_wrong:
-            img = self.game.image_loader.others["laser"]
-
-            for x in range(2):
-                self.images.append(img.subsurface(pygame.Rect(x * 407, 0, 407, 906)))
-
-            if self.direction == Directions.UP:
-                for index, image in enumerate(self.images):
-                    self.images[index] = pygame.transform.rotate(image, 180)
-            elif self.direction == Directions.RIGHT:
-                #self.rect.width , self.rect.height = self.rect.height, self.rect.width
-                for index, image in enumerate(self.images):
-                    self.images[index] = pygame.transform.rotate(image, 90)
-            elif self.direction == Directions.LEFT:
-                #self.rect.width , self.rect.height = self.rect.height, self.rect.width
-                for index, image in enumerate(self.images):
-                    self.images[index] = pygame.transform.rotate(image, 270)
-
-            for index, image in enumerate(self.images):
-                self.images[index]= pygame.transform.scale(image, self.rect.size)
+            self.prepare_images("laser", self.images)
+            self.prepare_images("laser_opacity", self.images_opacity)
 
             self.image = self.images[0]
             self.mask = pygame.mask.from_surface(self.image)
+            
+            if self.opacity_time > 0:
+                self.image = self.images_opacity[0]
 
             #DEATH ANIMATION
             self.is_alive = True
@@ -60,8 +47,31 @@ class Laser(pygame.sprite.Sprite):
         if self.is_wrong:
             self.kill()
 
+    def prepare_images(self, name:str, list:list):
+        img = self.game.image_loader.others[name]
+        for x in range(2):
+            list.append(img.subsurface(pygame.Rect(x * 407, 0, 407, 906)))
+
+        if self.direction == Directions.UP:
+            for index, image in enumerate(list):
+                list[index] = pygame.transform.rotate(image, 180)
+        elif self.direction == Directions.RIGHT:
+            #self.rect.width , self.rect.height = self.rect.height, self.rect.width
+            for index, image in enumerate(list):
+                list[index] = pygame.transform.rotate(image, 90)
+        elif self.direction == Directions.LEFT:
+            #self.rect.width , self.rect.height = self.rect.height, self.rect.width
+            for index, image in enumerate(list):
+                list[index] = pygame.transform.rotate(image, 270)
+
+        for index, image in enumerate(list):
+            list[index]= pygame.transform.scale(image, self.rect.size)
+
     def update(self):
-        self.collide()
+        if self.opacity_time > 0:
+            self.opacity_time -= 1
+        else:  
+            self.collide()
         self.decay()
         self.animate()
     
@@ -72,12 +82,14 @@ class Laser(pygame.sprite.Sprite):
             self.frame %= 2
             self.animation_time = self.animation_cd
             self.image = self.images[self.frame]
+            if self.opacity_time > 0 :
+                self.image = self.images_opacity[self.frame]
 
     def calculate_rect_cords(self, x, y):
         first_x_possible = self.game.settings.TILE_SIZE
         last_x_possible = self.game.settings.TILE_SIZE * (self.game.settings.MAP_WIDTH - 1)
         first_y_possible = self.game.settings.TILE_SIZE
-        last_y_possible = self.game.settings.TILE_SIZE * (self.game.settings.MAP_HEIGHT - 1)
+        last_y_possible = self.game.settings.TILE_SIZE * (self.game.settings.MAP_HEIGHT - 1) + self.game.settings.TILE_SIZE // 2
 
         new_x, new_y = 0, 0
         if self.direction == Directions.LEFT:
@@ -112,7 +124,6 @@ class Laser(pygame.sprite.Sprite):
                 for mob in mobs_to_get_hit:
                     if mob not in self.game.not_voulnerable:
                         mob_hits[0].get_hit(self.dmg)
-            
         else:
             player_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
             if player_hits:

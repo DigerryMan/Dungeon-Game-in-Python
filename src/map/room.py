@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.boss.forsaken.forsaken import Forsaken
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.satan.satan import Satan
 from entities.mobs.fly import Fly
@@ -252,7 +253,8 @@ class Room():
 
         if self.room_type == "boss":
             #self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-            self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            #self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             return
 
         for (y, x) in self.mob_spawn_positions:
@@ -261,6 +263,8 @@ class Room():
             index = random.randint(0, len(mobs) - 1)
             break # ADDED FOR ONLY 1 MOB TO SPAWN
 
+    def spawn_mob(self, mob_class, x, y):
+        self.enemies.append(mob_class(self.game, x, y))
 
     def get_doors_positions(self):
         doors_positions = []
