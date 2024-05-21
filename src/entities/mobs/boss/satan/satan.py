@@ -94,7 +94,7 @@ class Satan(Enemy):
             elif self.bullets_from_hands_time <= 0:
                 self.bullets_from_hands_time = self.bullets_from_hands_period
                 self.bullets_from_hands_active = False
-                self.next_move_type("bullets_from_hands")
+                self.next_move_type()
                 
         elif self.laser_breath_active:
             self.laser_breath_time -= 1
@@ -136,7 +136,7 @@ class Satan(Enemy):
             self.next_move_type("flying")
 
 
-    def next_move_type(self, to_exclude:str):
+    def next_move_type(self, to_exclude:str=""):
         moves = {
             "bullets_from_hands": 0,
             "laser_breath": 1,
@@ -146,7 +146,10 @@ class Satan(Enemy):
         
         to_choose_from = moves.keys()
         to_choose_from = list(to_choose_from)
-        to_choose_from.remove(to_exclude)
+        try:
+            to_choose_from.remove(to_exclude)
+        except ValueError:
+            pass
         move = moves[random.choice(to_choose_from)] 
         if move == 0:
             self.bullets_from_hands_active = True
@@ -159,8 +162,8 @@ class Satan(Enemy):
 
     def mouth_attack(self):
         x, y = self.rect.centerx, self.rect.centery + int(self.MOB_HEIGHT * 0.3)
-        for i in range(3, 14, 3):
-            Bullet(self.game, x, y, Directions.PLAYER, 10 + i, False, 1, 0.5)
+        for i in range(0, 9, 2):
+            Bullet(self.game, x, y, Directions.PLAYER, 9 + i, False, 1, 1)
         self.mouth_attack_amount += 1
 
     def laser_breath_attack(self):

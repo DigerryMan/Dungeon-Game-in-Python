@@ -41,6 +41,7 @@ class SatanAnimiation():
             self.animate_mouth_attack()
         elif self.boss.flying_active:
             self.flying_animation()
+            self.shaking_animation()
             self.shaking_animation_y()
             
     def waking_up_animation(self):
@@ -114,7 +115,7 @@ class SatanAnimiation():
         if self.shake_time_y_left <= 0:
             self.boss.rect.centery += 2 * self.y_change
             self.y_change *= -1
-            self.shake_time_y_left = 9
+            self.shake_time_y_left = 7
 
     def flying_animation(self):
         frames = [1, 25]

@@ -24,7 +24,6 @@ class Laser(pygame.sprite.Sprite):
         #HITBOX / POSITION
         self.is_wrong = False
         self.rect = pygame.Rect(self.calculate_rect_cords(x, y), (self.width, self.height))
-        print(self.width, self.height)
         if not self.is_wrong:
             img = self.game.image_loader.others["laser"]
 
