@@ -28,7 +28,7 @@ class Satan(Enemy):
         #HITBOX
         self.rect = self.image.get_rect()
         self.rect.centerx = x * game.settings.TILE_SIZE
-        self.rect.centery = y * game.settings.TILE_SIZE - int(self.MOB_HEIGHT * 0.4)
+        self.rect.centery = y * game.settings.TILE_SIZE - int(self.MOB_HEIGHT * 0.8)
         self._layer = self.rect.bottom
 
         #ANIMATION
@@ -66,9 +66,6 @@ class Satan(Enemy):
         self.first_short_fly = True
         self.fly_multiplier = 1
         self.fly_speed = 4
-
-        
-
 
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
@@ -126,7 +123,6 @@ class Satan(Enemy):
         elif self.flying_active:
             self.fly()
             
-
     def fly(self):
         self.flying_time -= 1
         speed = self.fly_speed * self.fly_multiplier
@@ -187,7 +183,6 @@ class Satan(Enemy):
             v_x, v_y = self.calculate_rigth_speed(bullet_velocity, alpha)
             Bullet(self.game, x, y, Directions.UP, v_y, False, 1, 0, v_x)
         
-
     def calculate_rigth_speed(self, v_x_y:int, alpha:int):
         v_y = v_x_y * cos(math.radians(alpha)).real
         v_x = v_x_y * sin(math.radians(-alpha)).real
