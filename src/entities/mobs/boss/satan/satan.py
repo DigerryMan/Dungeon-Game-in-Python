@@ -114,11 +114,10 @@ class Satan(Enemy):
                 self.mouth_attack()
             elif self.mouth_attack_time <= 0:
                 self.mouth_attack_time = self.mouth_attack_period
-                if self.mouth_attack_amount == 3:
+                if self.mouth_attack_amount == 2:
                     self.mouth_attack_active = False
-                    self.mouth_attack_amount = random.randint(-2, 0)
-                    #self.next_move_type("mouth_attack")
-                    self.flying_active = True
+                    self.mouth_attack_amount = random.randint(-1, 0)
+                    self.next_move_type("mouth_attack")
 
         elif self.flying_active:
             self.fly()

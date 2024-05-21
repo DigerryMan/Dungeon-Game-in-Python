@@ -19,29 +19,41 @@ class Laser(pygame.sprite.Sprite):
 
         #SKIN
         self._layer = 1990
+        self.images = []
 
         #HITBOX / POSITION
         self.is_wrong = False
         self.rect = pygame.Rect(self.calculate_rect_cords(x, y), (self.width, self.height))
+        print(self.width, self.height)
         if not self.is_wrong:
-            self.image = pygame.Surface((self.rect.width, self.rect.height))
             img = self.game.image_loader.others["laser"]
+
+            for x in range(2):
+                self.images.append(img.subsurface(pygame.Rect(x * 407, 0, 407, 906)))
+
             if self.direction == Directions.UP:
-                img = pygame.transform.rotate(img, 180)
+                for index, image in enumerate(self.images):
+                    self.images[index] = pygame.transform.rotate(image, 180)
             elif self.direction == Directions.RIGHT:
-                img = pygame.transform.rotate(img, 90)
+                #self.rect.width , self.rect.height = self.rect.height, self.rect.width
+                for index, image in enumerate(self.images):
+                    self.images[index] = pygame.transform.rotate(image, 90)
             elif self.direction == Directions.LEFT:
-                img = pygame.transform.rotate(img, 270)
-                
-            self.image = pygame.transform.scale(img, self.rect.size)
-            #self.image.fill(RED)
+                #self.rect.width , self.rect.height = self.rect.height, self.rect.width
+                for index, image in enumerate(self.images):
+                    self.images[index] = pygame.transform.rotate(image, 270)
+
+            for index, image in enumerate(self.images):
+                self.images[index]= pygame.transform.scale(image, self.rect.size)
+
+            self.image = self.images[0]
             self.mask = pygame.mask.from_surface(self.image)
 
             #DEATH ANIMATION
             self.is_alive = True
             self.frame = 0
-            self.animation_time = 30
-            self.time_per_frame = self.animation_time // 15
+            self.animation_time = 5
+            self.animation_cd = 5
 
         #REST
         self.groups = self.game.all_sprites, self.game.attacks, self.game.entities
@@ -52,6 +64,15 @@ class Laser(pygame.sprite.Sprite):
     def update(self):
         self.collide()
         self.decay()
+        self.animate()
+    
+    def animate(self):
+        self.animation_time -= 1
+        if self.animation_time <= 0:
+            self.frame += 1
+            self.frame %= 2
+            self.animation_time = self.animation_cd
+            self.image = self.images[self.frame]
 
     def calculate_rect_cords(self, x, y):
         first_x_possible = self.game.settings.TILE_SIZE
