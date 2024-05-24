@@ -56,7 +56,7 @@ class ShootingEnginge():
                 additional_v = int(self.player.get_shot_speed() * x_y_vel[other_axis_index] * DIAGONAL_MULTIPLIER) 
 
         x, y = self.calculate_bullet_position()
-        self.player.player_animation.reset_tear_shot_cd()
+        self.player.animation.reset_tear_shot_cd()
         
         Bullet(self.game, x, y, self.player.facing, self.player.get_shot_speed(), True,
                 (self.player.dmg+self.player.eq.stats["dmg"])*self.player.eq.extra_stats["dmg_multiplier"], 

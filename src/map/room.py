@@ -168,13 +168,7 @@ class Room():
                         door.animate_closing()
 
                 self.room = room_map
-                self.spawn_mobs()
-                """print("Room layout:")
-                for row in self.room:
-                    print(' '.join(row))
-
-                print("\n")"""
-                
+                self.spawn_mobs()                
 
         self.spawn_player(entry_direction)
         self.player.spawn_pets()
@@ -400,11 +394,7 @@ class Room():
                     elif room_map[new_row][new_col] != 'D':
                         q.append([new_row, new_col])
                         visited[new_row][new_col] = True
-
-        """for row in visited:
-            mapped_row = map(lambda x: '.' if x else '#', row)
-            print(' '.join(mapped_row))"""
-
+                        
         for y, x in self.crucial_positions:
             if not visited[y][x]:
                 return False

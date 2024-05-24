@@ -78,7 +78,7 @@ class ImageLoader:
         img = pygame.image.load("resources/boss_intro/bossspot.png").convert_alpha()
         self.boss_intro["bossspot"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
 
-        img = pygame.image.load(f"resources/boss_intro/spot1.png").convert_alpha()
+        img = pygame.image.load("resources/boss_intro/playerspot.png").convert_alpha()
         self.boss_intro["playerspot"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
 
     def load_images_to_dict(self):
