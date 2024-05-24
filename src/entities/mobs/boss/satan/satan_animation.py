@@ -13,6 +13,10 @@ class SatanAnimiation():
         self.boss.image = self.images[21]
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
+        self.intro_image = None
+        self.intro_name = None
+        self.prepare_intro_images()
+
         self.time = self.time_cd = 10
         self.index = 0
         
@@ -25,6 +29,12 @@ class SatanAnimiation():
 
         self.shake_time_y_left = 5
         self.y_change = 1
+
+    def prepare_intro_images(self):
+        img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
+        self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        img = self.img.subsurface(pygame.Rect(237, 805, 122, 38))
+        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
 
     def animate(self):
         if self.boss.boss_figth_start_active:

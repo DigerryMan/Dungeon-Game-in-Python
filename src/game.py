@@ -99,6 +99,11 @@ class Game:
                 self.update()
                 self.draw()
 
+                #test
+                #boss = Satan(self, 0, 0)
+                #self.menu.display_boss_intro(boss)
+                #test
+
             if self.paused:
                 self.menu.display_pause()
             

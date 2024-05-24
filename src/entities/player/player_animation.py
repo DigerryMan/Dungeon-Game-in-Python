@@ -15,6 +15,10 @@ class PlayerAnimation():
         self.frame = None
         self.image = self.body_images[0]
 
+        self.intro_image = None
+        self.intro_name = None
+        self.prepare_intro_images()
+
         #ANIMATION
         self.x_legs_frame = 0
         self.body_frame = None
@@ -40,6 +44,12 @@ class PlayerAnimation():
 
         for x in range(6):
             self.head_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, 0, self.PLAYER_SIZE, self.PLAYER_SIZE)))
+
+    def prepare_intro_images(self):
+        img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["image"]
+        self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+        img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["name"]
+        self.intro_name = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
     
     def animate_and_get_image(self):
         self.animate()

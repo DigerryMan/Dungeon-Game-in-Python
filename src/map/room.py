@@ -181,8 +181,9 @@ class Room():
         self.drawn_once = True
 
         if self.room_type == "boss" and not self.is_cleared:
-            self.game.sound_manager.play("bossEnter")
             self.game.sound_manager.stop_with_fadeout("basementLoop", 1000)
+            self.game.menu.display_boss_intro(self.enemies[0])
+            self.game.sound_manager.play("bossEnter")
             self.game.sound_manager.play_with_fadein("bossFight", 1000, looped=True)
         
     def spawn_outer_walls(self, doors_positions):

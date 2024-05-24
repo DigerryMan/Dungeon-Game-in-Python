@@ -22,6 +22,9 @@ class ImageLoader:
         self.scale_menu_images()
         self.scale_character_displays()
 
+        self.boss_intro = {}
+        self.load_boss_intro()
+
         self.blocks = {}
         self.load_blocks()
 
@@ -68,6 +71,16 @@ class ImageLoader:
         for other in others:
             self.others[other] = pygame.image.load(f"resources/other/{other}.png").convert_alpha()
 
+    def load_boss_intro(self):
+        img = pygame.image.load("resources/boss_intro/vs.png").convert_alpha()
+        self.boss_intro["vs"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
+
+        img = pygame.image.load("resources/boss_intro/bossspot.png").convert_alpha()
+        self.boss_intro["bossspot"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
+
+        for i in range(1, 2):
+            img = pygame.image.load(f"resources/boss_intro/spot{i}.png").convert_alpha()
+            self.boss_intro[f"spot{i}"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
 
     def load_images_to_dict(self):
         for menu_element in self.menu_:
@@ -79,6 +92,9 @@ class ImageLoader:
             self.images_dict[character]["name"] = pygame.image.load("resources/menu/characters/" + character + "/name.png")
             self.images_dict[character]["stats"] = pygame.image.load("resources/menu/characters/" + character + "/stats.png")
 
+            self.images_dict[character]["boss_intro"] = {}
+            self.images_dict[character]["boss_intro"]["name"] = pygame.image.load("resources/menu/characters/" + character + "/boss_intro/name.png")
+            self.images_dict[character]["boss_intro"]["image"] = pygame.image.load("resources/menu/characters/" + character + "/boss_intro/image.png")
 
         for mob in self.mobs_:
             img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
@@ -188,6 +204,9 @@ class ImageLoader:
             self.images_dict[character]["stats"] = pygame.transform.scale(self.images_dict[character]["stats"],
                                                                           (self.images_dict[character]["stats"].get_width() * self.settings.SCALE * 2,
                                                                            self.images_dict[character]["stats"].get_height() * self.settings.SCALE * 2)).convert_alpha()
+            
+            self.images_dict[character]["boss_intro"]["name"] = self.images_dict[character]["boss_intro"]["name"].convert_alpha()
+            self.images_dict[character]["boss_intro"]["image"] = self.images_dict[character]["boss_intro"]["image"].convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()

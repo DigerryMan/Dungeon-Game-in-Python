@@ -33,8 +33,8 @@ class Player(pygame.sprite.Sprite):
         self.rooms_cleared = 0
         
         #SKIN
-        self.player_animation = PlayerAnimation(game, self, player_type)
-        self.image = self.player_animation.image
+        self.animation = PlayerAnimation(game, self, player_type)
+        self.image = self.animation.image
         self._layer = self.image.get_rect().bottom
 
         #HITBOX / POSITION
@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
 
         self.groups = self.game.all_sprites, self.game.player_sprite, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.mask = self.player_animation.get_init_mask()
+        self.mask = self.animation.get_init_mask()
     
 
     def update(self):
@@ -77,14 +77,14 @@ class Player(pygame.sprite.Sprite):
             self.collisions.check_items_pick_up()
             
             self._layer = self.rect.bottom
-            self.image = self.player_animation.animate_and_get_image()
+            self.image = self.animation.animate_and_get_image()
 
             self.immortality_time_left -= 1
             self.x_change = 0
             self.y_change = 0
         else:
             if not self.end_of_death_animation:
-                self.player_animation.play_death_animation() 
+                self.animation.play_death_animation() 
             else:
                 self.game.game_over()
         

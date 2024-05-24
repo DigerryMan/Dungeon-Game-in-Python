@@ -11,6 +11,10 @@ class ForsakenAnimation():
         self.boss.image = self.images[0]
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
+        self.intro_image = None
+        self.intro_name = None
+        self.prepare_intro_images()
+
         self.time = 20
         self.time_cd = 20
         self.frame_index = 0
@@ -24,6 +28,12 @@ class ForsakenAnimation():
 
         #flying
         self.index = 0
+
+    def prepare_intro_images(self):
+        img = self.img.subsurface(pygame.Rect(372, 175, 186, 166))
+        self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        img = self.img.subsurface(pygame.Rect(24, 282, 138, 52))
+        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
 
     def prepare_images(self):
         end = 4

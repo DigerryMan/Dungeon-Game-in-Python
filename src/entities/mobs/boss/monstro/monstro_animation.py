@@ -11,6 +11,10 @@ class MonstroAnimation():
         self.boss.image = self.images[2]
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
+        self.intro_image = None
+        self.intro_name = None
+        self.prepare_intro_images()
+
         #IDLE
         self.idle_time_left = (0.2 * FPS)
         self.idle_frame = 1
@@ -27,6 +31,12 @@ class MonstroAnimation():
             for x in range(5):
                 image = self.img.subsurface(pygame.Rect(x * 80, y * 112 + 36, 80, 112 - 36))
                 self.images.append(pygame.transform.scale(image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)))
+
+    def prepare_intro_images(self):
+        img = self.img.subsurface(pygame.Rect(11, 240, 152, 118))
+        self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+        img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
+        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
 
     def animate(self):
         if self.boss.stage == 1:

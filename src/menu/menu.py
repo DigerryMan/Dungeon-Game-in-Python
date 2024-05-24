@@ -1,5 +1,6 @@
 import pygame
 from config import FPS
+from menu.boss_intro_screen import BossIntroScreen
 from menu.character_selection_screen import CharacterSelectionScreen
 from menu.intro_screen import IntroScreen
 from menu.pause_screen import PauseScreen
@@ -14,6 +15,7 @@ class Menu():
         self.character_selection_screen = CharacterSelectionScreen(self)
         self.settings_screen = MainSettingsScreen(self)
         self.pause_screen = PauseScreen(self)
+        self.boss_intro_screen = BossIntroScreen(self)
 
     def update_images(self):
         self.intro_background = self.game.image_loader.get_image("introbackground")
@@ -92,3 +94,6 @@ class Menu():
 
     def display_pause(self):
         self.pause_screen.display()
+
+    def display_boss_intro(self, boss):
+        self.boss_intro_screen.display(boss)
