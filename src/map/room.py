@@ -44,7 +44,7 @@ class Room():
 
         self.crucial_positions = []
         self.mob_spawn_positions = []
-        self.mobs_amount = game.difficulty * 2 + level // 2 + 2
+        self.mobs_amount = 2 + level // 2
         self.well_generated = False
 
         self.doors = []
@@ -152,14 +152,14 @@ class Room():
                         direction = Directions.RIGHT
 
                     if self.room_type == "boss":
-                        self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                        self.doors.append(Door(self.game, x, y, direction, self.level, "boss_door"))
                     else:
                         current_position = self.game.map.current_position
                         neighbor_room = self.game.map.room_map[current_position[0] + direction.value[0]][current_position[1] + direction.value[1]]
                         if neighbor_room.room_type == "boss":
-                            self.doors.append(Door(self.game, x, y, direction, "boss_door"))
+                            self.doors.append(Door(self.game, x, y, direction, self.level, "boss_door"))
                         else:
-                            self.doors.append(Door(self.game, x, y, direction))
+                            self.doors.append(Door(self.game, x, y, direction, self.level))
                     
                 self.spawn_outer_walls(doors_positions)
 
@@ -247,9 +247,9 @@ class Room():
         index = random.randint(0, len(mobs) - 1)
 
         if self.room_type == "boss":
-            #self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             #self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-            self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+            #self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             return
 
         for (y, x) in self.mob_spawn_positions:
@@ -315,32 +315,26 @@ class Room():
         if self.room_type == "start" and self.level == 1:
             self.room_graphics["controls"] = self.game.image_loader.get_image("controls")
 
-        if self.level <= 1:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
-
-        elif self.level <= 2:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("cave" + str(random.randint(1, 5)))
-
-        elif self.level <= 3:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("catacombs" + str(random.randint(1, 3)))
-
-        elif self.level <= 4:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("necropolis1")
-
-        elif self.level <= 5:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("depths" + str(random.randint(1, 3)))
-
-        elif self.level <= 6:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("bluewomb" + str(random.randint(1, 3)))
-
-        elif self.level <= 7:
-            self.room_graphics["background_image"] = self.game.image_loader.get_image("womb" + str(random.randint(1, 4)))
+        match self.level:
+            case 1:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("basement" + str(random.randint(1, 4)))
+            case 2:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("cave" + str(random.randint(1, 5)))
+            case 3:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("catacombs" + str(random.randint(1, 3)))
+            case 4:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("necropolis1")
+            case 5:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("depths" + str(random.randint(1, 3)))
+            case 6:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("bluewomb" + str(random.randint(1, 3)))
+            case 7:
+                self.room_graphics["background_image"] = self.game.image_loader.get_image("womb" + str(random.randint(1, 4)))
 
         if self.room == special_rooms["shop"]:
             self.room_graphics["background_image"] = self.game.image_loader.get_image("shop_room")
             
         self.room_graphics["shading"] = self.game.image_loader.get_image("shading")
-
 
     def draw(self, screen):
         screen.blit(self.room_graphics["background_image"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))

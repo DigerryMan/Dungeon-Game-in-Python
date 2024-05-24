@@ -49,7 +49,6 @@ class Game:
         self.player = None
         self.stat_bars = None
 
-        self.difficulty = 1
         self.current_level = 0
         self.e_pressed = False
         self.space_pressed = False

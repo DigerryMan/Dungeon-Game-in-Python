@@ -14,7 +14,7 @@ class ImageLoader:
         self.mobs_.extend(self.player_types)
 
         self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave", "catacombs", "necropolis", "depths", "bluewomb", "womb"]
-        self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
+        self.doors_ = ["boss_door", "basement_door", "womb_door"]
         self.blocks_ = ["rocks"]
 
         self.images_dict = {}
@@ -239,10 +239,13 @@ class ImageLoader:
 
     def load_doors(self):
         for i in range(19):
-            self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+            self.doors[f"basement_door_{i}"] = pygame.transform.scale(self.images_dict["basement_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
         for i in range(11):
             self.doors[f"boss_door_{i}"] = pygame.transform.scale(self.images_dict["boss_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+
+        for i in range(13):
+            self.doors[f"womb_door_{i}"] = pygame.transform.scale(self.images_dict["womb_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
     def load_trap_door(self):
         self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), self.tile_size_tuple).convert_alpha()

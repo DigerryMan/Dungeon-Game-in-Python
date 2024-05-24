@@ -4,9 +4,10 @@ from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):
     types = {"boss_door": {"name": "boss_door", "frames": 11},
-             "basement_door1": {"name": "basement_door1", "frames": 19}}
+             "basement_door": {"name": "basement_door", "frames": 19},
+             "womb_door": {"name": "womb_door", "frames": 13}}
     
-    def __init__(self, game, x, y, direction:Directions, door_type:str="basement_door1"):
+    def __init__(self, game, x, y, direction:Directions, level, door_type:str=None):
         self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER
@@ -17,6 +18,8 @@ class Door(pygame.sprite.Sprite):
 
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
+
+        door_type = self.select_doortype_based_on_level_and_doortype(level, door_type)
 
         self.animation_frames = Door.types[door_type]['frames']
         self.images = [game.image_loader.doors[f"{Door.types[door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
@@ -114,3 +117,15 @@ class Door(pygame.sprite.Sprite):
     def open(self):
         self.is_open = True
         self.animate_opening()
+
+    def select_doortype_based_on_level_and_doortype(self, level, door_type):
+        if door_type is not None:
+            return door_type
+        
+        match level:
+            case 1:
+                return "basement_door"
+            case 7:
+                return "womb_door"
+            case _:
+                return "basement_door"
