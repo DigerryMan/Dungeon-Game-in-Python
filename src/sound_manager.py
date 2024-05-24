@@ -57,3 +57,9 @@ class SoundManager:
             self.music[sound_name].fadeout(fadeout_time)
         else:
             print(f"Sound '{sound_name}' not found!")
+
+    def stop_all(self):
+        mixer.stop()
+
+    def stop_all_with_fadeout(self, fadeout_time):
+        mixer.fadeout(fadeout_time)

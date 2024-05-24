@@ -37,12 +37,12 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.game.sound_manager.play("doorOpen")
 
         if distance <= self.game.settings.TILE_SIZE / 2 and self.animated:
-            print("Next level")
-            self.game.render_new_map()
-
+            if self.game.map.level == 7:
+                self.game.game_over()
+            else:
+                self.game.render_new_map()
 
     def open(self):
-        print("Opening trap door")
         if self.opened:
             return
         

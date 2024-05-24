@@ -6,7 +6,8 @@ class ImageLoader:
         self.settings = settings
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
-        self.menu_ = ["introbackground", "menucard", "settingscard", "resolutionsettingscard", "soundsettingscard", "menuoverlay", "pausecard", "arrow", "tick", "tick_transparent", "maintitle", "character_selection"]
+        self.menu_ = ["introbackground", "menucard", "settingscard", "resolutionsettingscard", "soundsettingscard", "spotlight",
+                      "menuoverlay", "pausecard", "arrow", "tick", "tick_transparent", "maintitle", "character_selection"]
         self.characters = ["isaac_display", "eve_display", "lazarus_display"]
 
         self.player_types = PlayerTypes.get_all_characters_values()
@@ -174,7 +175,10 @@ class ImageLoader:
         self.images_dict["soundsettingscard"] = pygame.transform.scale(self.images_dict["soundsettingscard"], screen_size).convert_alpha()
         self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
         self.images_dict["character_selection"] = pygame.transform.scale(self.images_dict["character_selection"], screen_size).convert_alpha()
-        
+
+        img = self.images_dict["spotlight"]
+        self.images_dict["spotlight"] = pygame.transform.scale(img, (img.get_width() * 2.5 * self.settings.SCALE, img.get_height() * 2.5 * self.settings.SCALE))
+
         self.images_dict["pausecard"] = pygame.transform.scale(self.images_dict["pausecard"],
                                                                 (self.images_dict["pausecard"].get_width() * self.settings.SCALE, self.images_dict["pausecard"].get_height() * self.settings.SCALE)).convert_alpha()
         

@@ -7,7 +7,7 @@ class Door(pygame.sprite.Sprite):
              "shop_door": {"name": "shop_door", "frames": 12},
              "wood_door": {"name": "wood_door", "frames": 19},
              "dark_door": {"name": "dark_door", "frames": 13},
-             "red_door":  {"name": "red_door", "frames": 13}}
+             "red_door":  {"name": "red_door",  "frames": 13}}
     
     def __init__(self, game, x, y, direction:Directions, level, door_type:str=None):
         self.is_open = False

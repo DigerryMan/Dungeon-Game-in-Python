@@ -50,6 +50,9 @@ class PlayerAnimation():
         self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
         img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["name"]
         self.intro_name = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+
+        img = self.game.image_loader.player_animations_list[self.player_type.get_index()]["like0"]
+        self.win_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
     
     def animate_and_get_image(self):
         self.animate()

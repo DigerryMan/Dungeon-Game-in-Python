@@ -148,7 +148,7 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        pass
+        self.menu.display_game_over()
 
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
