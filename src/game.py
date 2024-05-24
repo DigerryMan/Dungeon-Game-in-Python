@@ -1,3 +1,4 @@
+from entities.mobs.boss.satan.satan import Satan
 from entities.player.player_types import PlayerTypes
 from entities.player.stat_bars import StatBars
 import pygame
@@ -100,8 +101,8 @@ class Game:
                 self.draw()
 
                 #test
-                #boss = Satan(self, 0, 0)
-                #self.menu.display_boss_intro(boss)
+                boss = Satan(self, 0, 0)
+                self.menu.display_boss_intro(boss)
                 #test
 
             if self.paused:
