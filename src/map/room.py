@@ -159,7 +159,10 @@ class Room():
                         if neighbor_room.room_type == "boss":
                             self.doors.append(Door(self.game, x, y, direction, self.level, "boss_door"))
                         else:
-                            self.doors.append(Door(self.game, x, y, direction, self.level))
+                            if self.room_type == "shop":
+                                self.doors.append(Door(self.game, x, y, direction, self.level, "shop_door"))
+                            else:
+                                self.doors.append(Door(self.game, x, y, direction, self.level))
                     
                 self.spawn_outer_walls(doors_positions)
 

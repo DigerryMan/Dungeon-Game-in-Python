@@ -4,8 +4,10 @@ from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):
     types = {"boss_door": {"name": "boss_door", "frames": 11},
-             "basement_door": {"name": "basement_door", "frames": 19},
-             "womb_door": {"name": "womb_door", "frames": 13}}
+             "shop_door": {"name": "shop_door", "frames": 12},
+             "wood_door": {"name": "wood_door", "frames": 19},
+             "dark_door": {"name": "dark_door", "frames": 13},
+             "red_door":  {"name": "red_door", "frames": 13}}
     
     def __init__(self, game, x, y, direction:Directions, level, door_type:str=None):
         self.is_open = False
@@ -123,9 +125,11 @@ class Door(pygame.sprite.Sprite):
             return door_type
         
         match level:
-            case 1:
-                return "basement_door"
+            case 1 | 2 | 3 | 4:
+                return "wood_door"
+            case 5 | 6:
+                return "dark_door"
             case 7:
-                return "womb_door"
+                return "red_door"
             case _:
-                return "basement_door"
+                return "wood_door"
