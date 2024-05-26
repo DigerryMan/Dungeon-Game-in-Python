@@ -5,6 +5,7 @@ from entities.mobs.boss.forsaken.forsaken import Forsaken
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro2 import Monstro2
 from entities.mobs.boss.satan.satan import Satan
+from entities.mobs.boss.satan.satan2 import Satan2
 from entities.mobs.fly import Fly
 from entities.mobs.ghost import Ghost
 from entities.mobs.legs import Legs
@@ -254,10 +255,16 @@ class Room():
             match self.level:
                 case 1:
                     self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 2:
+                    self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 3:
+                    self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 4:
+                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 5:
                     self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case _:
-                    self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             #self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             return
 

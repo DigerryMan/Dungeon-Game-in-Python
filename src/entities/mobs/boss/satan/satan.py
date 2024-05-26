@@ -11,7 +11,7 @@ from entities.mobs.slime import Enemy
 from utils.directions import Directions
 
 class Satan(Enemy):
-    def __init__(self, game, x: int, y: int):
+    def __init__(self, game, x:int, y:int):
         super().__init__(game, x, y)
         self._max_health = 50
         self._health = self._max_health
@@ -57,6 +57,7 @@ class Satan(Enemy):
         self.mouth_attack_active = False
         self.mouth_attack_period = int(1 * FPS)
         self.mouth_attack_time = self.mouth_attack_period
+        self.max_mouth_attacks = 2
         self.mouth_attack_amount = 0
 
         #FLYING
@@ -114,7 +115,7 @@ class Satan(Enemy):
                 self.mouth_attack()
             elif self.mouth_attack_time <= 0:
                 self.mouth_attack_time = self.mouth_attack_period
-                if self.mouth_attack_amount == 2:
+                if self.mouth_attack_amount == self.max_mouth_attacks:
                     self.mouth_attack_active = False
                     self.mouth_attack_amount = random.randint(-1, 0)
                     self.next_move_type("mouth_attack")
@@ -137,27 +138,15 @@ class Satan(Enemy):
 
 
     def next_move_type(self, to_exclude:str=""):
-        moves = {
-            "bullets_from_hands": 0,
-            "laser_breath": 1,
-            "mouth_attack": 2,
-            "flying": 3
-                 }
-        
-        to_choose_from = moves.keys()
-        to_choose_from = list(to_choose_from)
-        try:
-            to_choose_from.remove(to_exclude)
-        except ValueError:
-            pass
-        move = moves[random.choice(to_choose_from)] 
-        if move == 0:
+        moves = ["bullets_from_hands", "laser_breath", "mouth_attack", "flying"]
+        move = moves[random.choice(moves)] 
+        if move == "bullets_from_hands":
             self.bullets_from_hands_active = True
-        elif move == 1:
+        elif move == "laser_breath":
             self.laser_breath_active = True
-        elif move == 2:
+        elif move == "mouth_attack":
             self.mouth_attack_active = True
-        elif move == 3:
+        elif move == "flying":
             self.flying_active = True
 
     def mouth_attack(self):

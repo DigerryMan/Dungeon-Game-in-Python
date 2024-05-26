@@ -1,7 +1,10 @@
+import random
 from config import FPS
+from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
+from utils.directions import Directions
 
 class Monstro2(Monstro):
     def __init__(self, game, x: int, y: int):
@@ -30,3 +33,16 @@ class Monstro2(Monstro):
         self.max_number_of_jumps = 2
         self.number_of_jumps = 0
         self.stage_1_time = None
+        
+    def shoot_one_of_crazy_bullets(self):
+        for i in range(11):
+            x, y = self.rect.centerx + random.randint(-12, 12), self.rect.centery + random.randint(-12, 12)
+            decay = random.random() * 0.25 + 0.4
+            speed = random.randint(18, 23) 
+
+            additional_speed = random.randint(-4, 4) 
+            Bullet(self.game, x, y, Directions.PLAYER, speed, 
+                False, self._damage, decay, additional_speed)
+                
+        self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
+        

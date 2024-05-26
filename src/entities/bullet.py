@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import FPS
 from utils.directions import Directions
@@ -100,8 +101,8 @@ class Bullet(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         velocity = direction * self.speed
-        self.x_change = int(velocity.x)
-        self.y_change = int(velocity.y)
+        self.x_change = int(velocity.x + self.additional_speed * random.choice([-1, 1]))
+        self.y_change = int(velocity.y + self.additional_speed * random.choice([-1, 1]))
 
     def calculate_speed_to_enemy(self):
         self.enemies = self.game.enemies.sprites()

@@ -2,11 +2,11 @@ import pygame
 from config import FPS
 
 class SatanAnimiation():
-    def __init__(self, boss, game):
+    def __init__(self, boss, game, _skin:str="satan"):
         self.boss = boss
         self.game = game
 
-        self.img = game.image_loader.bosses["satan"]
+        self.img = game.image_loader.bosses[_skin]
         self.images = []
         self.prepare_images()
 
@@ -15,7 +15,7 @@ class SatanAnimiation():
 
         self.intro_image = None
         self.intro_name = None
-        self.prepare_intro_images()
+        self.prepare_intro_images(_skin)
 
         self.time = self.time_cd = 10
         self.index = 0
@@ -30,11 +30,17 @@ class SatanAnimiation():
         self.shake_time_y_left = 5
         self.y_change = 1
 
-    def prepare_intro_images(self):
-        img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
-        self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
-        img = self.img.subsurface(pygame.Rect(237, 805, 122, 38))
-        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+    def prepare_intro_images(self, _skin:str="satan"):
+        if _skin == "satan":
+            img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
+            self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            img = self.img.subsurface(pygame.Rect(237, 805, 122, 38))
+            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        else:
+            img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
+            self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            img = self.img.subsurface(pygame.Rect(237, 805, 170, 38))
+            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
 
     def animate(self):
         if self.boss.boss_figth_start_active:
