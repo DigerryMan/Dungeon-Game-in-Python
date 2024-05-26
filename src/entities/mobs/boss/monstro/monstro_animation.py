@@ -39,9 +39,9 @@ class MonstroAnimation():
             img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
             self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
         else:  # TO DO
-            img = self.img.subsurface(pygame.Rect(11, 240, 152, 118))
+            img = self.img.subsurface(pygame.Rect(2, 228, 172, 144))
             self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
-            img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
+            img = self.img.subsurface(pygame.Rect(173, 240, 185, 41))
             self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
         
 
