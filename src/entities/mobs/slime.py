@@ -170,21 +170,12 @@ class Slime(Enemy):
     def attack(self):
         if self.prepare_atack:
             self.prepare_atack = False
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.UP, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.DOWN, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
+            direction_to_shoot = Directions.LEFT
+            for _ in range(4):
+                Bullet(self.game, self.rect.centerx, self.rect.centery, direction_to_shoot, 
+                    speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                    time_decay_in_seconds=self._bullet_decay_sec)
+                direction_to_shoot = direction_to_shoot.rotate_clockwise()
     
     def correct_layer(self):
         if self.is_jumping:

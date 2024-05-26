@@ -44,9 +44,7 @@ class Monstro(Slime):
         self.max_number_of_jumps = 5
         self.number_of_jumps = 0
         self.stage_1_time = None
-        
- 
-    
+   
     def correct_possible_jumps(self):
         self.possible_jumps.remove((0,0))
 

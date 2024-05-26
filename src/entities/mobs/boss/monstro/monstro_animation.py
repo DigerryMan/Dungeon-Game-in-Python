@@ -2,10 +2,10 @@ import pygame
 from config import FPS
 
 class MonstroAnimation():
-    def __init__(self, boss, game):
+    def __init__(self, boss, game, _skin:str="monstro"):
         self.boss = boss
         self.game = game
-        self.img = game.image_loader.bosses["monstro"]
+        self.img = game.image_loader.bosses[_skin]
         self.images = []
         self.prepare_images()
         self.boss.image = self.images[2]
