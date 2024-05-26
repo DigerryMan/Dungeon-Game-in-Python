@@ -13,7 +13,7 @@ class MonstroAnimation():
 
         self.intro_image = None
         self.intro_name = None
-        self.prepare_intro_images()
+        self.prepare_intro_images(_skin)
 
         #IDLE
         self.idle_time_left = (0.2 * FPS)
@@ -32,11 +32,18 @@ class MonstroAnimation():
                 image = self.img.subsurface(pygame.Rect(x * 80, y * 112 + 36, 80, 112 - 36))
                 self.images.append(pygame.transform.scale(image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)))
 
-    def prepare_intro_images(self):
-        img = self.img.subsurface(pygame.Rect(11, 240, 152, 118))
-        self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
-        img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
-        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+    def prepare_intro_images(self, _skin:str):
+        if _skin == "monstro":  
+            img = self.img.subsurface(pygame.Rect(11, 240, 152, 118))
+            self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+            img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
+            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        else:  # TO DO
+            img = self.img.subsurface(pygame.Rect(11, 240, 152, 118))
+            self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+            img = self.img.subsurface(pygame.Rect(173, 240, 151, 41))
+            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        
 
     def animate(self):
         if self.boss.stage == 1:
