@@ -3,6 +3,7 @@ from collections import deque
 from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.boss.duke.duke import Duke
 from entities.mobs.boss.forsaken.forsaken import Forsaken
+from entities.mobs.boss.husk.husk import Husk
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro2 import Monstro2
 from entities.mobs.boss.satan.satan import Satan
@@ -255,7 +256,7 @@ class Room():
         if self.room_type == "boss":
             match self.level:
                 case 1:
-                    self.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.enemies.append(Husk(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 2:
                     self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 2:
@@ -263,8 +264,7 @@ class Room():
                 case 3:
                     self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 4:
-                    #self.enemies.append(Duke2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                    self.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.enemies.append(Husk(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 5:
                     self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 6:
