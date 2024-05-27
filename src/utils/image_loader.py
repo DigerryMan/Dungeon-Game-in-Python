@@ -11,8 +11,9 @@ class ImageLoader:
         self.characters = ["isaac_display", "eve_display", "lazarus_display"]
 
         self.player_types = PlayerTypes.get_all_characters_values()
-        self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
+        self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "friend_ghost", "slime_shadow"]
         self.mobs_.extend(self.player_types)
+        self.mobs = {"ghost" : pygame.image.load(f"resources/mobs/ghost.png").convert_alpha()}
 
         self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave", "catacombs", "necropolis", "depths", "bluewomb", "womb"]
         self.doors_ = ["boss_door", "wood_door", "red_door", "shop_door", "dark_door"]
