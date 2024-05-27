@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from entities.mobs.alpha_maggot import AlphaMaggot
+from entities.mobs.boss.duke.duke import Duke
 from entities.mobs.boss.forsaken.forsaken import Forsaken
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro2 import Monstro2
@@ -254,16 +255,21 @@ class Room():
         if self.room_type == "boss":
             match self.level:
                 case 1:
-                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 2:
+                    self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 2:
                     self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 3:
                     self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 4:
-                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    #self.enemies.append(Duke2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 5:
+                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 6:
                     self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case _:
+                case 7:
                     self.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             #self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
             return
@@ -274,8 +280,11 @@ class Room():
             index = random.randint(0, len(mobs) - 1)
             break # ADDED FOR ONLY 1 MOB TO SPAWN
 
-    def spawn_mob(self, mob_class, x, y):
-        self.enemies.append(mob_class(self.game, x, y))
+    def spawn_mob(self, mob_class, x, y, boss=None):
+        if boss:
+            self.enemies.append(mob_class(self.game, x, y, boss))
+        else:
+            self.enemies.append(mob_class(self.game, x, y))
 
     def get_doors_positions(self):
         doors_positions = []

@@ -139,6 +139,10 @@ class Satan(Enemy):
 
     def next_move_type(self, to_exclude:str=""):
         moves = ["bullets_from_hands", "laser_breath", "mouth_attack", "flying"]
+        try:
+            moves.remove(to_exclude)
+        except ValueError:
+            pass
         move = moves[random.choice(moves)] 
         if move == "bullets_from_hands":
             self.bullets_from_hands_active = True
