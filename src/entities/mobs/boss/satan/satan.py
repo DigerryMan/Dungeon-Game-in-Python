@@ -20,7 +20,7 @@ class Satan(Enemy):
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
         self.MOB_WIDTH = game.settings.MOB_SIZE * 5
-        self.MOB_HEIGHT = game.settings.MOB_SIZE * 3
+        self.MOB_HEIGHT = int(game.settings.MOB_SIZE * 3.5)
 
         #SKINS
         self.image = pygame.Surface([self.MOB_WIDTH, self.MOB_HEIGHT])
@@ -143,7 +143,7 @@ class Satan(Enemy):
             moves.remove(to_exclude)
         except ValueError:
             pass
-        move = moves[random.choice(moves)] 
+        move = random.choice(moves)
         if move == "bullets_from_hands":
             self.bullets_from_hands_active = True
         elif move == "laser_breath":
