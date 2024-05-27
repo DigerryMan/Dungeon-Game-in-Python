@@ -95,14 +95,14 @@ class Duke(Enemy):
                 self.is_moving = True
                 self.moving_time = self.moving_time_cd
     
-    def move_to_destination(self):
+    def move_to_destination(self, speed_multiplier=2):
         curr_x, curr_y = self.rect.left // self.game.settings.TILE_SIZE, self.rect.top // self.game.settings.TILE_SIZE
         dest_x, dest_y = self.destination
         if curr_x == dest_x and curr_y == dest_y:
             self.is_moving = False
             self.next_place_to_move()
         else:
-            x_speed, y_speed = (dest_x - curr_x) * 2, (dest_y - curr_y) * 2
+            x_speed, y_speed = (dest_x - curr_x) * speed_multiplier, (dest_y - curr_y) * speed_multiplier
             self.rect.x += x_speed
             self.rect.y += y_speed
         
