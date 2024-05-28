@@ -214,7 +214,7 @@ class Room():
             y += 1
     
     def spawn_player(self, entry_direction):
-        self.mob_spawner.spawn_player(entry_direction, self.game)
+        self.mob_spawner.spawn_player(entry_direction)
 
     def spawn_mobs(self):
         self.mob_spawner.spawn_mobs()

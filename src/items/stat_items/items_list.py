@@ -165,8 +165,8 @@ class ItemsList():
             "name": "Paw",
             "category": Categories.COMMON,
             "stats": {
-                "speed": -1,
-                "health": 1
+                "health": 1,
+                "bullet_fly_time": 0.1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }

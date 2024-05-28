@@ -62,16 +62,16 @@ class MobSpawner():
         else:
             self.room.enemies.append(mob_class(self.game, x, y))
     
-    def spawn_player(self, entry_direction, game):
+    def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            game.player.rect.center = (game.settings.WIN_WIDTH // 2, (game.settings.MAP_HEIGHT - 2) * game.settings.TILE_SIZE + game.settings.PLAYER_SIZE * 0.9)
+            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE + self.game.settings.PLAYER_SIZE * 0.9)
         elif entry_direction == Directions.DOWN:
-            game.player.rect.center = (game.settings.WIN_WIDTH // 2, game.settings.TILE_SIZE * 1.1)
+            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.TILE_SIZE * 1.1)
         elif entry_direction == Directions.LEFT:
-            game.player.set_rect_position((game.settings.MAP_WIDTH - 2) * game.settings.TILE_SIZE + (game.settings.TILE_SIZE - game.settings.PLAYER_SIZE), 
-                                          game.player.rect.y)
+            self.game.player.set_rect_position((self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE), 
+                                          self.game.player.rect.y)
         elif entry_direction == Directions.RIGHT:
-            game.player.set_rect_position(game.settings.TILE_SIZE - (game.settings.TILE_SIZE - game.settings.PLAYER_SIZE),
-                                          game.player.rect.y)
+            self.game.player.set_rect_position(self.game.settings.TILE_SIZE - (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
+                                          self.game.player.rect.y)
         elif entry_direction == Directions.CENTER:
-            game.player.rect.center = (game.settings.WIN_WIDTH // 2, game.settings.WIN_HEIGHT // 2)
+            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
