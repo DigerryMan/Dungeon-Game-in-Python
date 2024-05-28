@@ -34,8 +34,8 @@ class PauseScreen():
                         elif current_arrow == 1:
                             self.game.paused = False
                             self.game.menu_playing = True
+                            self.game.sound_manager.stop_all_with_fadeout(2000)
                             self.game.sound_manager.play("pageTurn")
-                            self.game.sound_manager.stop_with_fadeout("basementLoop", 2000)
 
             self.game.screen.blit(self.menu.pause_card, (self.game.settings.WIN_WIDTH//4, self.game.settings.WIN_HEIGHT//4))
             self.game.screen.blit(self.menu.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))

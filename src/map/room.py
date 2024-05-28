@@ -92,9 +92,9 @@ class Room():
                     for x, col in enumerate(row):
                         if col == 'C' and not self.chest and random.uniform(0, 1) < 0.60: # 60% chance to actually spawn a chest
                             rand = random.uniform(0, 1)
-                            if rand < 0.45:
+                            if rand < 0.5:
                                 self.chest = Chest(self.game, x, y, "small")
-                            elif rand < 0.80:
+                            elif rand < 0.85:
                                 self.chest = Chest(self.game, x, y, "medium")
                             else:
                                 self.chest = Chest(self.game, x, y, "large")
@@ -269,7 +269,7 @@ class Room():
                     self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 7:
                     self.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-            #self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+
             return
 
         for (y, x) in self.mob_spawn_positions:

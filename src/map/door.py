@@ -21,10 +21,10 @@ class Door(pygame.sprite.Sprite):
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
 
-        door_type = self.select_doortype_based_on_level_and_doortype(level, door_type)
+        self.door_type = self.select_doortype_based_on_level_and_doortype(level, door_type)
 
-        self.animation_frames = Door.types[door_type]['frames']
-        self.images = [game.image_loader.doors[f"{Door.types[door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
+        self.animation_frames = Door.types[self.door_type]['frames']
+        self.images = [game.image_loader.doors[f"{Door.types[self.door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
 
