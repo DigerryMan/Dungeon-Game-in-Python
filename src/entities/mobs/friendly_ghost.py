@@ -12,7 +12,7 @@ class FriendlyGhost(Ghost):
         self._reversed_moves = reversed_moves
 
         #ANIMATION
-        self.img = game.image_loader.get_image("friend_ghost")
+        self.img = game.image_loader.mobs["ghost"]
         self.__prepare_images()
         self.image = self.images[0]
 
@@ -33,8 +33,8 @@ class FriendlyGhost(Ghost):
         mob_size = self.MOB_SIZE//2
         for y in range(3):
             for x in range(2):
-                img = self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE))
-                self.images.append(pygame.transform.scale(img, (mob_size, mob_size)))
+                img_help = self.img.subsurface(pygame.Rect((x + 5) * 48, y * 48, 48, 48))
+                self.images.append(pygame.transform.scale(img_help, (mob_size, mob_size)))
   
     def attack(self):
         self._shot_time_left -= 1
@@ -102,7 +102,7 @@ class FriendlyGhost(Ghost):
         if self.is_moving:
             if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
                 self.which_frame += 4
-                if self.facing == Directions.RIGHT:
+                if self.facing == Directions.LEFT:
                     self.image = pygame.transform.flip(self.images[self.which_frame], True, False)
                     self.which_frame %= 2
                     return
