@@ -8,6 +8,11 @@ from entities.mobs.boss.boss_health_bar import BossHealthBar
 import pygame
 from entities.mobs.boss.satan.satan_animation import SatanAnimiation
 from entities.mobs.slime import Enemy
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 from utils.directions import Directions
 
 class Satan(Enemy):
@@ -194,5 +199,17 @@ class Satan(Enemy):
         if self.laser is not None:
             self.laser.kill()
         self.kill()
-        #self.drop_lootable()
+        self.drop_lootable()
         self.game.sound_manager.play("enemyDeath")
+
+    def drop_lootable(self):
+        for _ in range(10):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(5):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(3):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="satan"))

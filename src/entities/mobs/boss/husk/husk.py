@@ -4,6 +4,11 @@ from entities.mobs.boss.boss_health_bar import BossHealthBar
 from entities.mobs.boss.duke.duke import Duke
 from entities.mobs.boss.husk.husk_animation import HuskAnimation
 from entities.mobs.ghost import Ghost
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 
 class Husk(Duke):
     def __init__(self, game, x, y):
@@ -32,3 +37,15 @@ class Husk(Duke):
     def next_place_to_move(self):
         largest_x_possible, largest_y_possible = self.game.settings.MAP_WIDTH - 3, self.game.settings.MAP_HEIGHT - 3
         self.destination = random.randint(1, largest_x_possible), random.randint(1, largest_y_possible)
+
+    def drop_lootable(self):
+        for _ in range(7):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(5):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(3):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="husk"))

@@ -6,6 +6,11 @@ import pygame
 from entities.mobs.boss.forsaken.forsaken_animation import ForsakenAnimation
 from entities.mobs.legs import Legs
 from entities.mobs.slime import Enemy
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 from utils.directions import Directions
 
 class Forsaken(Enemy):
@@ -152,3 +157,15 @@ class Forsaken(Enemy):
                     self.changes_made = 0
         elif self.rect.centery < self.game.settings.WIN_HEIGHT // 2:
             self.respect_collisions = True
+
+    def drop_lootable(self):
+        for _ in range(15):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(10):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(3):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="forsaken"))

@@ -4,6 +4,9 @@ from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
 from utils.directions import Directions
 
 class Monstro2(Monstro):
@@ -46,3 +49,12 @@ class Monstro2(Monstro):
                 
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
         
+    def drop_lootable(self):
+        for _ in range(20):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(30):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(5):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))

@@ -5,6 +5,11 @@ from entities.mobs.boss.boss_health_bar import BossHealthBar
 import pygame
 from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
 from entities.mobs.slime import Slime
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 from utils.directions import Directions
 
 class Monstro(Slime):
@@ -171,3 +176,15 @@ class Monstro(Slime):
     def do_to_player_jumps_stage1(self):
         self.move()
         self.attack()
+
+    def drop_lootable(self):
+        for _ in range(5):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(3):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(2):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="monstro"))

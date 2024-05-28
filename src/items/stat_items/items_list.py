@@ -72,7 +72,7 @@ class ItemsList():
             "name": "Speed pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "speed": [-0.5, -0.25, 0.25, 0.5]
+                "speed": [-1, 1]
             },
             "image": game.image_loader.lootables["speed_pill"]
         }
@@ -146,7 +146,7 @@ class ItemsList():
             "name": "Red pepper",
             "category": Categories.COMMON,
             "stats": {
-                "speed": 0.5
+                "speed": 2
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(22 * 32, 9 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -155,7 +155,7 @@ class ItemsList():
             "name": "Pills",
             "category": Categories.COMMON,
             "stats": {
-                "speed": 0.25,
+                "speed": 1,
                 "immortality": 0.1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(18 * 32, 4 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
@@ -165,7 +165,7 @@ class ItemsList():
             "name": "Paw",
             "category": Categories.COMMON,
             "stats": {
-                "speed": -0.1,
+                "speed": -1,
                 "health": 1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
@@ -177,7 +177,7 @@ class ItemsList():
             "stats": {
                 "health": -1,
                 "dmg": 0.25,
-                "speed": -0.25
+                "speed": -1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(13 * 32, 9 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -198,7 +198,7 @@ class ItemsList():
             "stats": {
                 "health": 1,
                 "dmg": 0.1,
-                "speed": -0.25
+                "speed": -1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(17 * 32, 10 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -275,16 +275,6 @@ class ItemsList():
         
         #LEGENDARY ITEMS
 
-        self.legendaries["friendly_ghost"] = {
-            "name": "Friendly ghost",
-            "category": Categories.LEGENDARY,
-            "stats": {
-                "description": "A friendly ghost is there to assist you",
-                "friendly_ghost": 1
-            },
-            "image": pygame.transform.scale(game.image_loader.get_image("friend_ghost").subsurface(pygame.Rect(0, 0, game.settings.MOB_SIZE, game.settings.MOB_SIZE)), (game.settings.TILE_SIZE // 2, game.settings.TILE_SIZE // 2))
-        }
-
         self.legendaries["PHD"] = {
             "name": "PHD",
             "category": Categories.LEGENDARY,
@@ -293,6 +283,16 @@ class ItemsList():
                 "PHD_obtained": 1,
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.legendaries["friendly_ghost"] = {
+            "name": "Friendly ghost",
+            "category": Categories.LEGENDARY,
+            "stats": {
+                "description": "A friendly ghost is there to assist you",
+                "friendly_ghost": 1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("friend_ghost").subsurface(pygame.Rect(0, 0, game.settings.MOB_SIZE, game.settings.MOB_SIZE)), (game.settings.TILE_SIZE // 2, game.settings.TILE_SIZE // 2))
         }
 
         self.legendaries["eye_of_horus"] = {
@@ -307,7 +307,7 @@ class ItemsList():
                 "luck": 0.1,
                 "immortality": 0.5,
                 "shooting_cooldown": 0.1,
-                "speed": 0.5
+                "speed": 1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -345,4 +345,14 @@ class ItemsList():
         return None
     
     def get_boss_item(self, boss):
-        pass
+        match boss:
+            case "monstro":
+                return self.legendaries["PHD"]
+            case "husk":
+                return self.legendaries["friendly_ghost"]
+            case "satan":
+                return self.legendaries["eye_of_horus"]
+            case "forsaken":
+                return self.legendaries["bulls_eye"]
+            case _:
+                return None

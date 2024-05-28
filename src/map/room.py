@@ -260,13 +260,13 @@ class Room():
                 case 2:
                     self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 3:
-                    self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 4:
                     self.enemies.append(Husk(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 4:
+                    self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 5:
-                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 6:
                     self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                case 6:
+                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
                 case 7:
                     self.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
 

@@ -1,5 +1,6 @@
 import random
 import pygame
+from config import GOLD
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from map.block import Block
@@ -11,8 +12,8 @@ class ShopStand(Block):
         self.image = self.content.image
 
         self.font_path = 'resources/fonts/IsaacGame.ttf'
-        self.font = pygame.font.Font(self.font_path, 40)
-        self.font_color = (255, 255, 255)
+        self.font = pygame.font.Font(self.font_path, 20)
+        self.font_color = GOLD
         self.text_pos = (self.rect.left, self.rect.bottom)
         self.text = self.font.render(str(self.price), True, self.font_color)
 

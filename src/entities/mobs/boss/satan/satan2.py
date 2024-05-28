@@ -64,3 +64,5 @@ class Satan2(Satan):
             v_x, v_y = self.calculate_rigth_speed(bullet_velocity, alpha)
             Bullet(self.game, x, y, Directions.UP, v_y, False, 1, 0, v_x)
         
+    def drop_lootable(self):
+        pass

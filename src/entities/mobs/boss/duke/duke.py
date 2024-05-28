@@ -5,6 +5,9 @@ import pygame
 from entities.mobs.boss.duke.duke_animation import DukeAnimation
 from entities.mobs.fly_aggresive import FlyAggresive
 from entities.mobs.slime import Enemy
+from items.lootables.golden_coin import GoldenCoin
+from items.lootables.pickup_heart import PickupHeart
+from items.lootables.silver_coin import SilverCoin
 
 class Duke(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -106,3 +109,12 @@ class Duke(Enemy):
             self.rect.x += x_speed
             self.rect.y += y_speed
         
+    def drop_lootable(self):
+        for _ in range(15):
+            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(10):
+            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+
+        for _ in range(2):
+            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
