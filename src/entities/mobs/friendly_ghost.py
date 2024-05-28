@@ -10,6 +10,7 @@ class FriendlyGhost(Ghost):
         self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 10
         self._reversed_moves = reversed_moves
+        self._shot_time_left = self._shot_cd
 
         #ANIMATION
         self.img = game.image_loader.mobs["ghost"]
@@ -37,13 +38,14 @@ class FriendlyGhost(Ghost):
                 self.images.append(pygame.transform.scale(img_help, (mob_size, mob_size)))
   
     def attack(self):
-        self._shot_time_left -= 1
-        if self._shot_time_left <= 0 and self.game.enemies:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.ENEMY, 
-                   self._projectal_speed, True, self._damage, self._bullet_decay_sec)
-            self.roll_next_shot_cd()
-            self._shot_time_left = self._shot_cd
-    
+        if self.game.enemies:
+            self._shot_time_left -= 1
+            if self._shot_time_left <= 0:
+                Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.ENEMY, 
+                    self._projectal_speed, True, self._damage, self._bullet_decay_sec)
+                self.roll_next_shot_cd()
+                self._shot_time_left = self._shot_cd
+        
     def move_because_of_player(self, chase:bool=True):
         self.is_moving = False
         player_horizontal_facing = self.game.player.last_horizontall_facing
