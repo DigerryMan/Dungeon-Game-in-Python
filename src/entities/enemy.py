@@ -153,14 +153,15 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.correct_facing()
 
     def collide_player(self):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                self.game.damage_player(self._collision_damage)
-                if self._is_wandering:
-                    self._is_wandering = False
-                    self.group_attacked()
+        if not self._is_dead:
+            rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
+            if rect_hits:
+                mask_hits = self.get_mask_colliding_sprite(rect_hits)
+                if mask_hits:
+                    self.game.damage_player(self._collision_damage)
+                    if self._is_wandering:
+                        self._is_wandering = False
+                        self.group_attacked()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -245,9 +246,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
     
     def start_dying(self):
         self._is_dead = True
+        self.play_death_sound()
+        self.final_death()
+
+    def final_death(self):
         self.kill()
         self.drop_lootable()
-        self.play_death_sound()
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
