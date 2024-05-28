@@ -20,7 +20,7 @@ class StatBars():
 
         self.coin = game.image_loader.get_stat_bar_image("coin")
         self.coin_x = self.TILE_SIZE // 5
-        self.coin_y = self.TILE_SIZE * 1.25
+        self.coin_y = int(self.TILE_SIZE * 1.6)
         self.coin_center_y = self.coin_y + self.coin.get_height() // 2
 
         self.bomb = game.image_loader.get_stat_bar_image("bomb")

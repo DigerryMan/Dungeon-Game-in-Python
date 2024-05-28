@@ -61,33 +61,42 @@ class Equipment():
         self.update_player_stats()
 
     def unpack_item(self, item):
-        stats = item["stats"]
-        healValue = 0
-        if stats.get("description") is not None:
-            for key, value in stats.items():
-                if key != "description" and self.extra_stats.get(key) is not None:
-                    if key.find("multiplier") != -1:
-                        self.extra_stats[key] *= value
-                    else:
-                        self.extra_stats[key] += value
-
-                    if self.extra_stats[key] > self.extra_stats_max[key]:
-                        self.extra_stats[key] = self.extra_stats_max[key]
-                    elif key == "friendly_ghost":
-                        self.player.spawn_pets(False)
+        item_stats_dict = item["stats"]
+        if item_stats_dict.get("description") is not None:
+            self.unpack_item_with_description(item_stats_dict)
         else:
-            for key, value in stats.items():
+            self.unpack_item_with_stats(item_stats_dict)
+            
+    
+    def unpack_item_with_description(self, item_stats_dict):
+        for key, value in item_stats_dict.items():
+            if key != "description" and self.extra_stats.get(key) is not None:
+                if key.find("multiplier") != -1:
+                    self.extra_stats[key] *= value
+                else:
+                    self.extra_stats[key] += value
+
+                if self.extra_stats[key] > self.extra_stats_max[key]:
+                    self.extra_stats[key] = self.extra_stats_max[key]
+                elif key == "friendly_ghost":
+                    self.player.spawn_pets(False)
+
+    def unpack_item_with_stats(self, item_stats_dict):
+        healValue = 0
+        for key, value in item_stats_dict.items():
                 if self.stats.get(key) is not None:
                     self.stats[key] += value
                     if self.stats[key] > self.max_stats[key]:
                         self.stats[key] = self.max_stats[key]
-                    if key == "health":
+                    if self.stats[key] < self.min_stats[key]:
+                        self.stats[key] = self.min_stats[key]    
+                    if key == "health" and value > 0:
                         healValue = value
             
-            self.update_player_stats()
-            if healValue:
-                self.player.heal(healValue)
-    
+        self.update_player_stats()
+        if healValue:
+            self.player.heal(healValue)
+
     def update_player_stats(self):
         self.player.max_health = self.player.BASE_MAX_HEALTH + self.stats["health"] 
         if self.player.health > self.player.max_health:

@@ -25,7 +25,7 @@ class PlayerTypes(Enum):
 
             #PlayerTypes.LAZARUS: (3, 0.8, 10),
             # FOR TESTING 
-            PlayerTypes.LAZARUS: (20, 10, 12),
+            PlayerTypes.LAZARUS: (17, 10, 12),
             PlayerTypes.EVE: (3, 1.5, 7)
         }
         

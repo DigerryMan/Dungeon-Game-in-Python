@@ -116,12 +116,16 @@ class EquipmentDisplay():
     
         else:
             for key, value in item["stats"].items():
-                char = "+" if key != "shooting_cooldown" else "-"
+                char = "+" if value >= 0 else ""
+                if key == "shooting_cooldown":
+                    if value > 0: char = "-"
+                    else:         value *= -1
+
                 stat = font_2.render(key.replace("_", " ") + f": {char}{value}", True, self.font_color)
                 stat_rect = stat.get_rect(center=(x, y))
                 screen.blit(stat, stat_rect)
                 y += self.big_item_size//4
-        
+
     def prepare_desc_lines(self, description, description_lines):
         line = ""
         for word in description.split():

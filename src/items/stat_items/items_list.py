@@ -325,6 +325,8 @@ class ItemsList():
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
+            return self.epics["darkhold"]
+            return self.very_commons["health_pill"]
             return self.legendaries["friendly_ghost"]
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
