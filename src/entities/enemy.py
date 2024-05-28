@@ -244,11 +244,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
             if axis == 'y':
                 self.y_change = self._speed
     
-    def start_dying(self):
+    def start_dying(self, instant_death=True):
         self._is_dead = True
         self.play_death_sound()
-        self.final_death()
-
+        if instant_death:
+            self.final_death()
+    
     def final_death(self):
         self.kill()
         self.drop_lootable()

@@ -61,18 +61,19 @@ class Fly(Enemy):
                 self.image = self.images[self.curr_frame]
                 self.time = self.next_frame_ticks_cd
         else:
-            self.start_dying()
+            self.death_animation()
 
     def start_dying(self):
-        self._is_dead = True
+        super().start_dying(False)
+
+    def death_animation(self):
         if self.dead_animation_time_left == self.dead_animation_time:
             self.curr_frame = 0
             self.image = pygame.transform.scale(self.death_images[self.curr_frame], (self.MOB_SIZE, self.MOB_SIZE))
         
         self.dead_animation_time_left -= 1
         if self.dead_animation_time_left < 0:
-            self.kill()
-            self.drop_lootable()
+            self.final_death()
         elif self.dead_animation_time_left % self.next_frame_time == 0:
             self.next_frame()
 
