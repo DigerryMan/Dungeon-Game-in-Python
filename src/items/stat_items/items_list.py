@@ -45,7 +45,7 @@ class ItemsList():
             "name": "Shooting cooldown pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "shooting_cooldown": [-0.8, -0.04, 0.04, 0.8]
+                "shooting_cooldown": [0.04, 0.8, -0.8, -0.04]
             },
             "image": game.image_loader.lootables["shooting_cooldown_pill"]
         }
@@ -187,7 +187,7 @@ class ItemsList():
             "category": Categories.COMMON,
             "stats": {
                 "dmg": 0.1,
-                "shooting_cooldown": -0.1
+                "shooting_cooldown": 0.1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 4 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }

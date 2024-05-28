@@ -68,8 +68,11 @@ class Laser(pygame.sprite.Sprite):
             list[index]= pygame.transform.scale(image, self.rect.size)
 
     def update(self):
-        if self.opacity_time > 0:
-            self.opacity_time -= 1
+        if self.opacity_time >= 0:
+            if self.opacity_time > 0:
+                self.opacity_time -= 1
+            else:
+                self.play_audio()
         else:  
             self.collide()
         self.decay()
