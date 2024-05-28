@@ -46,8 +46,8 @@ class Forsaken(Enemy):
         self.flying_cd = 10 * FPS
         self.flying_time = self.flying_cd
 
-        self.y_speed = 12
-        self.x_speed = 5
+        self.y_speed = int(18 * self.game.settings.SCALE)
+        self.x_speed = int(8 * self.game.settings.SCALE)
         self.y_multiplier = -1
 
         self.changes_made = 0
@@ -124,6 +124,7 @@ class Forsaken(Enemy):
             self.respect_collisions = False
             self.enemies_active = True
             self.changes_made = 0
+            self.y_multiplier = -1
         
         elif self.flying_time < int(8 * FPS):
             self.fly()
@@ -149,5 +150,5 @@ class Forsaken(Enemy):
                 if self.changes_made == 6:
                     self.x_speed *= -1
                     self.changes_made = 0
-        else:
+        elif self.rect.centery < self.game.settings.WIN_HEIGHT // 2:
             self.respect_collisions = True

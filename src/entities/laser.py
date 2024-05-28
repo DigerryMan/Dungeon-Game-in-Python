@@ -10,8 +10,8 @@ class Laser(pygame.sprite.Sprite):
         self.direction = direction
         self.is_friendly = is_friendly
         self.opacity_time = int(opacity_time * FPS)
-        self.width = 50
-        self.height = 50
+        self.width = int(75 * game.settings.SCALE)
+        self.height = int(75 * game.settings.SCALE)
 
         self.time_decay = int(time_decay_in_seconds * FPS)
         self.time_left = self.time_decay

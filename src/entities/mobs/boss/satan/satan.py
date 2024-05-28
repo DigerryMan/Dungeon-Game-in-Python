@@ -63,10 +63,10 @@ class Satan(Enemy):
         #FLYING
         self.flying_active = False
         self.flying_period = int(1.5 * FPS)
-        self.flying_time = self.mouth_attack_period
+        self.flying_time = self.flying_period
         self.first_short_fly = True
         self.fly_multiplier = 1
-        self.fly_speed = 4
+        self.fly_speed = round(9 * self.game.settings.SCALE)
 
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
@@ -128,6 +128,7 @@ class Satan(Enemy):
         speed = self.fly_speed * self.fly_multiplier
         if self.first_short_fly:
             speed /= 2
+            print(speed)
         self.rect.x += speed
         if self.flying_time <= 0:
             self.fly_multiplier *= -1

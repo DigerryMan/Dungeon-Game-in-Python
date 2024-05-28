@@ -16,7 +16,7 @@ class Satan2(Satan):
         self.health_bar = BossHealthBar(game, self)
         self.animation = SatanAnimiation(self, game, "satan2")
 
-        self.fly_speed = 7
+        self.fly_speed = round(10 * self.game.settings.SCALE)
         self.max_mouth_attacks = 1
     
     def mouth_attack(self):
