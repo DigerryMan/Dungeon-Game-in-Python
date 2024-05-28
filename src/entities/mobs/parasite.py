@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import FPS
 from entities.bullet import Bullet
@@ -79,6 +80,8 @@ class Parasite(Enemy):
         self.curr_frame = (self.curr_frame + 1) % 8 
         self.frame = self.images[self.curr_frame]
         
+        self.play_audio()        
+        
         if player_shoot_frame:
             x_p, _ = self.game.player.get_center_position()
             if x_p < self.rect.centerx:
@@ -96,3 +99,10 @@ class Parasite(Enemy):
         self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height
         self.rect.bottom = old_bottom
         self.rect.centerx = old_x_center
+
+    def play_audio(self):
+        if self.curr_frame == 1:
+            self.game.sound_manager.play(f"parasiteBurstOut{random.randint(1, 2)}")
+
+        if self.curr_frame == 6:
+            self.game.sound_manager.play(f"parasiteEnterGround{random.randint(1, 2)}")

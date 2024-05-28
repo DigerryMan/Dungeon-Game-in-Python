@@ -53,7 +53,7 @@ class Coin(LootableItem):
         self.shine_timer = self.shine_timer - 1 if self.shine_timer > 0 else self.shine_interval
         if self.drop_animation_time > 0:
             if self.drop_animation_time == 5:
-                self.game.sound_manager.play("coinDrop")
+                self.game.sound_manager.play(f"coinDrop{random.randint(1, 2)}")
             if self.drop_animation_time % self.time_per_frame_drop == 0:
                 self.drop_animation_frame = (self.drop_animation_frame + 1) % 8
                 self.image = self.game.image_loader.lootables[f"{self.type}_coin_drop{self.drop_animation_frame}"].copy()

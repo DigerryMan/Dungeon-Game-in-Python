@@ -9,7 +9,7 @@ class BossIntroScreen():
         self.start_time = None
 
     def display(self, boss):
-        self.game.sound_manager.play_with_fadein("bossIntro", 1000)
+        self.game.sound_manager.play("bossIntro")
         should_display = True
         self.start_time = pygame.time.get_ticks()
 
@@ -76,7 +76,7 @@ class BossIntroScreen():
             self.game.clock.tick(FPS)
             pygame.display.update()
 
-        self.game.sound_manager.stop_with_fadeout("bossIntro", 1000)
+        #self.game.sound_manager.stop_with_fadeout("bossIntro", 1000)
 
     def display_names(self, player_name, vs, boss_name):
         vs_position = (self.game.settings.WIN_WIDTH//5, self.game.settings.WIN_HEIGHT//5)

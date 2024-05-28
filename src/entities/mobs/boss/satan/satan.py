@@ -18,6 +18,7 @@ from utils.directions import Directions
 class Satan(Enemy):
     def __init__(self, game, x:int, y:int):
         super().__init__(game, x, y)
+        self.size = "Large"
         self._max_health = 50
         self._health = self._max_health
         self._damage = 1

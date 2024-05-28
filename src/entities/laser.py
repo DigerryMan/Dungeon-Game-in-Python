@@ -140,3 +140,6 @@ class Laser(pygame.sprite.Sprite):
         for sprite in rect_hits:
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
+            
+    def play_audio(self):
+        self.game.sound_manager.play("bloodLaser")

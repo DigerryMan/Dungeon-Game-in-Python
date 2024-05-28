@@ -60,6 +60,8 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         self._bullet_decay_sec = bullet_decay_sec
 
+        self.size = "Small"
+
         self._is_dead = False
         self.game = game
         self.room = game.map.get_current_room()
@@ -215,6 +217,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 self.facing = Directions.DOWN 
 
     def get_hit(self, dmg:int):
+        self.game.sound_manager.play(f"enemyHit{random.randint(1, 3)}")
         self._health -= dmg
         self._is_wandering = False
         self.group_attacked()
@@ -244,7 +247,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._is_dead = True
         self.kill()
         self.drop_lootable()
-        self.game.sound_manager.play("enemyDeath")
+        self.play_death_sound()
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
@@ -278,3 +281,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
     
     def get_bombed(self):
         self.get_hit(1)
+
+    def play_death_sound(self):
+        if self.size == "Large":
+            self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
+        elif self.size == "Small":
+            self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")
