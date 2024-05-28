@@ -1,5 +1,4 @@
 import random
-from config import FPS
 from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 from entities.mobs.boss.satan.satan import Satan

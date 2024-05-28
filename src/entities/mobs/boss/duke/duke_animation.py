@@ -1,5 +1,4 @@
 import pygame
-from config import FPS
 
 class DukeAnimation():
     def __init__(self, boss, game):

@@ -1,5 +1,5 @@
 import random
-from config import FPS, GREEN, WALL_MARKS
+from config import FPS, WALL_MARKS
 from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
 import pygame

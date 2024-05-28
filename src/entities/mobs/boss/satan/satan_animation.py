@@ -1,5 +1,4 @@
 import pygame
-from config import FPS
 
 class SatanAnimiation():
     def __init__(self, boss, game, _skin:str="satan"):

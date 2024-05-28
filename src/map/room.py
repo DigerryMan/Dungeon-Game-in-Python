@@ -1,20 +1,6 @@
 import random
 from collections import deque
-from entities.mobs.alpha_maggot import AlphaMaggot
-from entities.mobs.boss.duke.duke import Duke
-from entities.mobs.boss.forsaken.forsaken import Forsaken
-from entities.mobs.boss.husk.husk import Husk
-from entities.mobs.boss.monstro.monstro import Monstro
-from entities.mobs.boss.monstro.monstro2 import Monstro2
-from entities.mobs.boss.satan.satan import Satan
-from entities.mobs.boss.satan.satan2 import Satan2
-from entities.mobs.fly import Fly
-from entities.mobs.ghost import Ghost
-from entities.mobs.legs import Legs
-from entities.mobs.maggot import Maggot
-from entities.mobs.parasite import Parasite
-from entities.mobs.slime import Slime
-from entities.mobs.wanderer import Wanderer
+from map.mob_spawner import MobSpawner
 from map.shop_stand import ShopStand
 from map.trap_door import TrapDoor
 from map.treasure_block import TreasureBlock
@@ -47,8 +33,7 @@ class Room():
         self.select_graphics()
 
         self.crucial_positions = []
-        self.mob_spawn_positions = []
-        self.mobs_amount = 2 + level // 2
+        self.mob_spawner = MobSpawner(self, game)
         self.well_generated = False
 
         self.doors = []
@@ -115,7 +100,7 @@ class Room():
                             self.trap_door = TrapDoor(self.game, x + 1, y)
 
                         elif col == 'E':
-                            self.mob_spawn_positions.append((y, x))
+                            self.mob_spawner.mob_spawn_positions.append((y, x))
                             self.crucial_positions.append((y, x))
 
                         else:
@@ -130,7 +115,7 @@ class Room():
 
                 if self.check_if_room_well_generated(room_map) == False:
                     self.crucial_positions.clear()
-                    self.mob_spawn_positions.clear()
+                    self.mob_spawner.mob_spawn_positions.clear()
                     self.doors = []
                     self.chest:Chest = None
                     self.enemies = []
@@ -229,60 +214,13 @@ class Room():
             y += 1
     
     def spawn_player(self, entry_direction):
-        if entry_direction == Directions.UP:
-            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE + self.game.settings.PLAYER_SIZE * 0.9)
-
-        elif entry_direction == Directions.DOWN:
-            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.TILE_SIZE * 1.1)
-
-        elif entry_direction == Directions.LEFT:
-            self.player.set_rect_position((self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
-                                          self.player.rect.y)
-
-        elif entry_direction == Directions.RIGHT:
-            self.player.set_rect_position(self.game.settings.TILE_SIZE - (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
-                                          self.player.rect.y)
-
-        elif entry_direction == Directions.CENTER:
-            self.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
+        self.mob_spawner.spawn_player(entry_direction, self.game)
 
     def spawn_mobs(self):
-        self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
-        self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
-
-        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
-        index = random.randint(0, len(mobs) - 1)
-
-        if self.room_type == "boss":
-            match self.level:
-                case 1:
-                    self.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 2:
-                    self.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 3:
-                    self.enemies.append(Husk(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 4:
-                    self.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 5:
-                    self.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 6:
-                    self.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-                case 7:
-                    self.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
-
-            return
-
-        for (y, x) in self.mob_spawn_positions:
-            new_mob = mobs[index]
-            self.enemies.append(new_mob(self.game, x, y))
-            index = random.randint(0, len(mobs) - 1)
-            break # ADDED FOR ONLY 1 MOB TO SPAWN
+        self.mob_spawner.spawn_mobs()
 
     def spawn_mob(self, mob_class, x, y, boss=None):
-        if boss:
-            self.enemies.append(mob_class(self.game, x, y, boss))
-        else:
-            self.enemies.append(mob_class(self.game, x, y))
+        self.mob_spawner.spawn_mob(mob_class, x, y, boss)
 
     def get_doors_positions(self):
         doors_positions = []
