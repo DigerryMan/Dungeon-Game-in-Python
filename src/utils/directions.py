@@ -6,8 +6,8 @@ class Directions(Enum):
     LEFT = (0, -1)
     RIGHT = (0, 1)
     CENTER = (0, 0)
-    PLAYER = (0, 0)
-    ENEMY = (0, 0)
+    PLAYER = "player"
+    ENEMY = "enemy"
 
     def reverse(self):
         if self == Directions.UP:
