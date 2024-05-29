@@ -79,8 +79,7 @@ class Parasite(Enemy):
     def nextFrame(self, player_shoot_frame=False):
         self.curr_frame = (self.curr_frame + 1) % 8 
         self.frame = self.images[self.curr_frame]
-        
-        self.play_audio()        
+        self.sound_managment()        
         
         if player_shoot_frame:
             x_p, _ = self.game.player.get_center_position()
@@ -100,9 +99,8 @@ class Parasite(Enemy):
         self.rect.bottom = old_bottom
         self.rect.centerx = old_x_center
 
-    def play_audio(self):
+    def sound_managment(self):
         if self.curr_frame == 1:
-            self.game.sound_manager.play(f"parasiteBurstOut{random.randint(1, 2)}")
-
-        if self.curr_frame == 6:
-            self.game.sound_manager.play(f"parasiteEnterGround{random.randint(1, 2)}")
+            self.play_audio(f"parasiteBurstOut{random.randint(1, 2)}")
+        elif self.curr_frame == 6:
+            self.play_audio(f"parasiteEnterGround{random.randint(1, 2)}")
