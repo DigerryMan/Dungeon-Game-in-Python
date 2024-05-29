@@ -33,6 +33,7 @@ class Game:
         self.menu_playing = False
         self.running = True
         self.paused = False
+        self.game_over_playing = False
 
         self.character_type = PlayerTypes.ISAAC
 
@@ -95,6 +96,9 @@ class Game:
             if self.menu_playing:
                 self.menu.display_main_menu()
 
+            if self.game_over_playing:
+                self.game_over()
+
             if not self.paused and self.running:
                 self.update()
                 self.draw()
@@ -145,6 +149,7 @@ class Game:
 
     def game_over(self):
         self.menu.display_game_over()
+        self.game_over_playing = False
 
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
