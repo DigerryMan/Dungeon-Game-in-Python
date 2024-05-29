@@ -38,7 +38,7 @@ class TrapDoor(pygame.sprite.Sprite):
 
         if distance <= self.game.settings.TILE_SIZE / 2 and self.animated:
             if self.game.map.level == 7:
-                self.game.game_over()
+                self.game.game_over_playing = True
             else:
                 self.game.render_new_map()
 
