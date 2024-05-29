@@ -40,13 +40,8 @@ class Husk(Duke):
         self.destination = random.randint(1, largest_x_possible), random.randint(1, largest_y_possible)
 
     def drop_lootable(self):
-        for _ in range(7):
-            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(5):
-            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(3):
-            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="husk"))
+        drops = [SilverCoin] * 7 + [GoldenCoin] * 5 + [PickupHeart] * 3
+        for drop in drops:
+            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
+        
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="husk"))

@@ -111,11 +111,6 @@ class Duke(Enemy):
             self.rect.y += y_speed
         
     def drop_lootable(self):
-        for _ in range(15):
-            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(10):
-            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(2):
-            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+        drops = [SilverCoin] * 15 + [GoldenCoin] * 10 + [PickupHeart] * 2
+        for drop in drops:
+            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))

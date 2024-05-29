@@ -134,7 +134,6 @@ class Satan(Enemy):
         speed = self.fly_speed * self.fly_multiplier
         if self.first_short_fly:
             speed /= 2
-            print(speed)
         self.rect.x += speed
         if self.flying_time <= 0:
             self.fly_multiplier *= -1
@@ -204,13 +203,8 @@ class Satan(Enemy):
         self.game.sound_manager.play("enemyDeath")
 
     def drop_lootable(self):
-        for _ in range(10):
-            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(5):
-            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(3):
-            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="satan"))
+        drops = [SilverCoin] * 10 + [GoldenCoin] * 5 + [PickupHeart] * 3
+        for drop in drops:
+            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
+       
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="satan"))

@@ -159,13 +159,8 @@ class Forsaken(Enemy):
             self.respect_collisions = True
 
     def drop_lootable(self):
-        for _ in range(15):
-            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(10):
-            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
-
-        for _ in range(3):
-            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="forsaken"))
+        drops = [SilverCoin] * 15 + [GoldenCoin] * 10 + [PickupHeart] * 3
+        for drop in drops:
+            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
+        
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="forsaken"))
