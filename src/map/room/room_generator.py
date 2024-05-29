@@ -30,11 +30,11 @@ class RoomGenerator:
 
             for y, row in enumerate(self.room_layout):
                 for x, col in enumerate(row):
-                    if col == 'C' and not self.room.chest and random.uniform(0, 1) < 0.60: # 60% chance to actually spawn a chest
+                    if col == 'C' and not self.room.chest and random.uniform(0, 1) < 0.50 + self.game.player.get_luck():
                         rand = random.uniform(0, 1)
-                        if rand < 0.5:
+                        if rand < 0.5 - self.game.player.get_luck():
                             self.room.chest = Chest(self.game, x, y, "small")
-                        elif rand < 0.85:
+                        elif rand < 0.85 - self.game.player.get_luck() // 2:
                             self.room.chest = Chest(self.game, x, y, "medium")
                         else:
                             self.room.chest = Chest(self.game, x, y, "large")

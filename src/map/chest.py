@@ -109,7 +109,7 @@ class Chest(pygame.sprite.Sprite):
     def roll_item(self, chest_type):
         match chest_type:
             case "medium":
-                category = random.choices([Categories.COMMON, Categories.EPIC], weights=[0.8, 0.2])[0]
+                category = random.choices([Categories.COMMON, Categories.EPIC], weights=[0.9, 0.1])[0]
                 return Item(self.game, self.rect.centerx, self.rect.centery, category)
             
             case "large":
