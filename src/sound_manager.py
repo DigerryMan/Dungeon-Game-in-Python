@@ -13,10 +13,18 @@ def load_sounds(directory):
 class SoundManager:
     def __init__(self):
         mixer.init()
+        mixer.set_num_channels(32)
         self.music = load_sounds("resources/music")
         self.sounds = load_sounds("resources/sounds")
         self.set_music_volume(0.2)
         self.set_sound_volume(0.5)
+        self.decrease_volume()
+
+    def decrease_volume(self):
+        sounds_to_decrease = ["satanFound", "satanAppear", "satanShootHands", "satanLaser", "satanShoot", "satanFly", "satanHit"]
+        for sound in sounds_to_decrease:
+            self.sounds[sound].set_volume(0.1) # 0.01 - 1 krecha 
+
 
     def set_music_volume(self, volume):
         for sound in self.music.values():

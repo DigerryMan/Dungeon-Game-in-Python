@@ -88,13 +88,18 @@ class Satan(Enemy):
 
     def perform_boss_stage(self):
         if self.boss_figth_start_active:
+            if self.start_time == 3 * FPS:
+                self.play_audio_with_fadein("satanFound", 1000)
             self.start_time -= 1
             if self.start_time <= 0:
+                self.play_audio("satanAppear"),
                 self.boss_figth_start_active = False
                 self.bullets_from_hands_active = True
                 self.game.not_voulnerable.remove(self)
 
         elif self.bullets_from_hands_active:
+            if self.bullets_from_hands_time == self.bullets_from_hands_period:
+                self.play_audio("satanShootHands")
             self.bullets_from_hands_time -= 1
             if self.bullets_from_hands_time == self.bullets_from_hands_period // 2:
                 self.bullets_from_hands_attack()
@@ -104,6 +109,8 @@ class Satan(Enemy):
                 self.next_move_type()
                 
         elif self.laser_breath_active:
+            if self.laser_breath_time == self.laser_breath_period:
+                self.play_audio("satanLaser")
             self.laser_breath_time -= 1
             if self.laser_breath_time == int(self.laser_breath_period * 0.75):
                 self.laser_breath_attack()
@@ -116,6 +123,8 @@ class Satan(Enemy):
                 self.next_move_type("laser_breath")
         
         elif self.mouth_attack_active:
+            if self.mouth_attack_time == self.mouth_attack_period:
+                self.play_audio("satanShoot")
             self.mouth_attack_time -= 1
             if self.mouth_attack_time == int(self.mouth_attack_period * 0.55):
                 self.mouth_attack()
@@ -127,6 +136,8 @@ class Satan(Enemy):
                     self.next_move_type("mouth_attack")
 
         elif self.flying_active:
+            if self.flying_time == self.flying_period:
+                self.play_audio("satanFly")
             self.fly()
             
     def fly(self):
@@ -208,3 +219,12 @@ class Satan(Enemy):
             self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
        
         self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="satan"))
+
+    def play_audio(self, audio:str):
+        self.game.sound_manager.play(audio)
+    
+    def play_audio_with_fadein(self, audio:str, time_ms):
+        self.game.sound_manager.play_with_fadein(audio, time_ms)
+
+    def play_hit_sound(self):
+        self.play_audio("satanHit")
