@@ -234,5 +234,8 @@ class Slime(Enemy):
         frame_changed.append(True)
     
     def draw_additional_images(self, screen):
+        self.draw_shadow(screen)
+    
+    def draw_shadow(self, screen):
         if self.is_jumping:
             screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))

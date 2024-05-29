@@ -23,6 +23,7 @@ class Monstro(Slime):
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
         self.MOB_SIZE = game.settings.MOB_SIZE * 2
+        self.img_shadow = pygame.transform.scale(self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6)))
 
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
@@ -103,6 +104,7 @@ class Monstro(Slime):
     def calculate_parabolic_jump(self):
         self.z = self.new_jump_x - self.old_jump_x
         self.v_x = self.z / (self.t)
+        self.v_shadow_y = (self.new_jump_y - self.old_jump_y) / self.t
         if self.v_x == 0:
             self.tg = None
             self.v_y = (self.new_jump_y - self.old_jump_y) / (self.t)
@@ -143,9 +145,6 @@ class Monstro(Slime):
     def roll_next_jumps_amount(self):
         self.max_number_of_jumps = random.randint(1, 3)
 
-    def draw_additional_images(self, screen):
-        self.health_bar.draw(screen)
-
     def do_bullet_attack_stage0(self):
         self.bullet_shooting_time_left -= 1
         if self.bullet_shooting_time_left == int(self.bullet_shooting_cd * 0.6):
@@ -179,13 +178,16 @@ class Monstro(Slime):
         self.attack()
 
     def drop_lootable(self):
-        for _ in range(5):
-            self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+        drops = [SilverCoin] * 5 + [GoldenCoin] * 3 + [PickupHeart] * 2
+        for drop in drops:
+            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
 
-        for _ in range(3):
-            self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="monstro"))
 
-        for _ in range(2):
-            self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
-
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, drop_animation=True, boss="monstro"))
+    def draw_additional_images(self, screen):
+        super().draw_additional_images(screen)
+        self.health_bar.draw(screen)
+    
+    def draw_shadow(self, screen):
+        if self.is_jumping:
+            screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))
