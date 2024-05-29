@@ -89,6 +89,12 @@ class Forsaken(Enemy):
             self.lasers_time = self.laser_cd
             self.game.not_voulnerable.remove(self)
 
+        self.playing_delayed_laser_sound()
+
+    def playing_delayed_laser_sound(self):
+        if self.lasers_time in [int(6.3* FPS), int(4.3* FPS), int(1.3* FPS)]:
+            Laser.play_audio(self.game.sound_manager)
+
     def enemies_spawner(self):
         self.enemies_time -= 1
         if self.enemies_time <= 0:
@@ -111,7 +117,7 @@ class Forsaken(Enemy):
         for x in range(3, self.game.settings.MAP_WIDTH - 1, 2):
             new_x = x * tile_size + tile_size // 12
             new_y = tile_size
-            Laser(self.game, new_x, new_y, Directions.DOWN, False, 1, duration, opacity_time)
+            Laser(self.game, new_x, new_y, Directions.DOWN, False, 1, duration, opacity_time, audio_on=False)
     
     def spawn_lasers_vertically(self, duration=1.5, opacity_time=0.4):
         self.lasers_active = True
@@ -119,7 +125,7 @@ class Forsaken(Enemy):
         for y in range(2, self.game.settings.MAP_HEIGHT, 2):
             new_x =tile_size
             new_y = y * tile_size 
-            Laser(self.game, new_x, new_y, Directions.RIGHT, False, 1, duration, opacity_time)
+            Laser(self.game, new_x, new_y, Directions.RIGHT, False, 1, duration, opacity_time, audio_on=False)
     
     def flying(self):
         self.flying_time -= 1

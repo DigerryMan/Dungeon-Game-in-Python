@@ -3,8 +3,11 @@ from config import FPS, RED
 from utils.directions import Directions
 
 class Laser(pygame.sprite.Sprite):
+    def play_audio(sound_manager):
+        sound_manager.play("bloodLaser")
+
     def __init__(self, game, x, y, direction:Directions, is_friendly=True, 
-                 dmg=1, time_decay_in_seconds:float=0, opacity_time=0):
+                 dmg=1, time_decay_in_seconds:float=0, opacity_time=0, audio_on=True):
         #MAIN
         self.dmg = dmg
         self.direction = direction
@@ -15,6 +18,7 @@ class Laser(pygame.sprite.Sprite):
 
         self.time_decay = int(time_decay_in_seconds * FPS)
         self.time_left = self.time_decay
+        self.audio_on = audio_on
         self.game = game
 
         #SKIN
@@ -69,10 +73,9 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self):
         if self.opacity_time >= 0:
-            if self.opacity_time > 0:
-                self.opacity_time -= 1
-            else:
-                self.play_audio()
+            self.opacity_time -= 1
+            if self.opacity_time <= 0 and self.audio_on:
+                self.game.sound_manager.play("bloodLaser")
         else:  
             self.collide()
         self.decay()
@@ -143,6 +146,3 @@ class Laser(pygame.sprite.Sprite):
         for sprite in rect_hits:
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
-            
-    def play_audio(self):
-        self.game.sound_manager.play("bloodLaser")
