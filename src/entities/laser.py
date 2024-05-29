@@ -54,17 +54,15 @@ class Laser(pygame.sprite.Sprite):
     def prepare_images(self, name:str, list:list):
         img = self.game.image_loader.others[name]
         for x in range(2):
-            list.append(img.subsurface(pygame.Rect(x * 407, 0, 407, 906)))
+            list.append(img.subsurface(pygame.Rect(x * 407, 0, 407, 1692)))
 
         if self.direction == Directions.UP:
             for index, image in enumerate(list):
                 list[index] = pygame.transform.rotate(image, 180)
         elif self.direction == Directions.RIGHT:
-            #self.rect.width , self.rect.height = self.rect.height, self.rect.width
             for index, image in enumerate(list):
                 list[index] = pygame.transform.rotate(image, 90)
         elif self.direction == Directions.LEFT:
-            #self.rect.width , self.rect.height = self.rect.height, self.rect.width
             for index, image in enumerate(list):
                 list[index] = pygame.transform.rotate(image, 270)
 
