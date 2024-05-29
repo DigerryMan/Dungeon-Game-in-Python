@@ -26,6 +26,7 @@ class Husk(Duke):
         self.animation = HuskAnimation(self, game)
     
     def spawn_enemy(self):
+        self.play_audio(f"dukeSpawnEnemy{random.randint(1,2)}")
         x = self.rect.centerx // self.game.settings.TILE_SIZE
         y = self.rect.centery // self.game.settings.TILE_SIZE
         room = self.game.map.get_current_room()

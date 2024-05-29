@@ -74,7 +74,9 @@ class Forsaken(Enemy):
 
     def laser_spawner(self):
         self.lasers_time -= 1
-        if self.lasers_time == int(6.5* FPS):
+        if self.lasers_time == int(7.99* FPS):
+            self.play_audio("forsakenLaser")
+        elif self.lasers_time == int(6.5* FPS):
             self.spawn_lasers_horizontally()
         elif self.lasers_time == int(4.5 * FPS):
             self.spawn_lasers_vertically()
@@ -94,6 +96,7 @@ class Forsaken(Enemy):
             self.enemies_time = self.enemies_cd
             self.lasers_active = True
         elif self.enemies_time == int(4.5 * FPS) or self.enemies_time == int(3.5 * FPS):
+            self.play_audio("forsakenSpawn")
             self.game.map.get_current_room().spawn_mob(Legs, self.rect.centerx//self.game.settings.TILE_SIZE, self.rect.centery//self.game.settings.TILE_SIZE)
 
     def animate(self):
@@ -120,10 +123,14 @@ class Forsaken(Enemy):
     
     def flying(self):
         self.flying_time -= 1
+        if self.flying_time == int(8.8 * FPS):
+            self.play_audio("forsakenRoar")
+        
         if self.flying_time == int(9 * FPS):
             self.setup_start_of_fly()
         
         elif self.flying_time <= 0:
+            self.play_audio("forsakenRoar")
             self.flying_active = False
             self.flying_time = self.flying_cd
             self.respect_collisions = False
@@ -150,6 +157,7 @@ class Forsaken(Enemy):
         if rect_hits:
             mask_hits = self.get_mask_colliding_sprite(rect_hits)
             if mask_hits and self.respect_collisions:
+                self.play_audio("forsakenRockHit")
                 self.changes_made += 1
                 self.y_multiplier *= -1
                 if self.changes_made == 6:

@@ -75,6 +75,7 @@ class Duke(Enemy):
         self.destination = random.randint(2, largest_x_possible), random.randint(2, largest_y_possible)
 
     def spawn_enemy(self):
+        self.play_audio(f"dukeSpawnEnemy{random.randint(1,2)}")
         x = self.rect.centerx // self.game.settings.TILE_SIZE
         y = self.rect.centery // self.game.settings.TILE_SIZE
         room = self.game.map.get_current_room()
@@ -97,6 +98,7 @@ class Duke(Enemy):
             self.moving_time -= 1
             if self.moving_time <= 0:
                 self.is_moving = True
+                self.play_audio("dukeMove")
                 self.moving_time = self.moving_time_cd
     
     def move_to_destination(self, speed_multiplier=2):
