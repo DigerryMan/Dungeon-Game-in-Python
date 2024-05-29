@@ -220,9 +220,6 @@ class Satan(Enemy):
        
         self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="satan"))
 
-    def play_audio(self, audio:str):
-        self.game.sound_manager.play(audio)
-    
     def play_audio_with_fadein(self, audio:str, time_ms):
         self.game.sound_manager.play_with_fadein(audio, time_ms)
 

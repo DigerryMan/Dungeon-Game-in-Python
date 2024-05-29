@@ -109,6 +109,7 @@ class Slime(Enemy):
     def jump(self):
         self.jump_time_left -= 1
         if self.jump_time_left <= 0: #end of jump
+            self.play_audio("monstroLand")
             self.x = self.new_jump_x
             self.y = self.new_jump_y
             self.rect.x = self.new_jump_x * self.game.settings.TILE_SIZE
@@ -120,6 +121,8 @@ class Slime(Enemy):
             self.prepare_atack = True
 
         else: #jump
+            if self.jump_time_left == self.jump_cd - 1:
+                self.play_audio("monstroJump")
             elapsed_time_sec = (self.jump_time - self.jump_time_left) / FPS
             y = self.calculate_current_y(elapsed_time_sec)
             x = self.old_jump_x + self.v_x * elapsed_time_sec

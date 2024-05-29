@@ -225,7 +225,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.check_if_dead()
     
     def play_hit_sound(self):
-        self.game.sound_manager.play(f"enemyHit{random.randint(1, 3)}")
+        self.play_audio(f"enemyHit{random.randint(1, 3)}")
+
+    def play_audio(self, audio:str):
+        self.game.sound_manager.play(audio)
 
     def check_if_dead(self):
         if self._health <= 0:

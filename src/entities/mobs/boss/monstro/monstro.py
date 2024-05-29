@@ -160,6 +160,7 @@ class Monstro(Slime):
         self.bullet_direction = Directions.get_direction_from_two_points(self.rect.centerx, self.rect.centery, x_p, y_p) 
 
     def shoot_one_of_crazy_bullets(self):
+        self.play_audio(f"monstroShoot{random.randint(1,3)}")
         self.update_bullet_direction()
         for i in range(9):
             x, y = self.rect.centerx + random.randint(-12, 12), self.rect.centery + random.randint(-12, 12)
@@ -191,3 +192,6 @@ class Monstro(Slime):
     def draw_shadow(self, screen):
         if self.is_jumping:
             screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))
+    
+    def play_hit_sound(self):
+        self.play_audio(f"monstroHit{random.randint(1, 3)}")

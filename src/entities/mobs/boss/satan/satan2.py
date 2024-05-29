@@ -29,7 +29,6 @@ class Satan2(Satan):
             Bullet(self.game, x, y, Directions.PLAYER, speed, 
                 False, self._damage, decay, additional_speed)
        
-        self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
         self.mouth_attack_amount += 1
     
     def next_move_type(self, to_exclude:str=""):
