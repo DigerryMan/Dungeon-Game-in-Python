@@ -278,6 +278,8 @@ class ImageLoader:
         self.lootables["full_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(0, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
         self.lootables["half_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(32, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
 
+        self.lootables["bomb"] = pygame.transform.scale(self.images_dict["bombs"].subsurface(pygame.Rect(128, 64, 32, 32)), (size_to_scale[0] // 2.2, size_to_scale[1] // 2.2)).convert_alpha()
+
         size_to_scale = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
         self.lootables["speed_pill"] = pygame.transform.scale(self.images_dict["pills"].subsurface(pygame.Rect(0, 0, 32, 32)), size_to_scale).convert_alpha()

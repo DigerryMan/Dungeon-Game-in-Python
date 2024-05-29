@@ -34,11 +34,14 @@ class PlayerCollisionEngine():
             for item in items:
                 if item and not item.is_picked_up:
                     type, item_info = item.picked_up()
-                    if type == ItemType.COIN:
-                        self.player.coins += item_info
-                    elif type == ItemType.PICKUP_HEART:
-                        self.player.heal(item_info)
-                    elif type == ItemType.ITEM:
-                        self.player.eq.add_item(item_info)
-                    elif type == ItemType.PILL:
-                        self.player.eq.use_pill(item_info)
+                    match type:
+                        case ItemType.COIN:
+                            self.player.coins += item_info
+                        case ItemType.PICKUP_HEART:
+                            self.player.heal(item_info)
+                        case ItemType.ITEM:
+                            self.player.eq.add_item(item_info)
+                        case ItemType.PILL:
+                            self.player.eq.use_pill(item_info)
+                        case ItemType.PICKUP_BOMB:
+                            self.player.bombs += item_info

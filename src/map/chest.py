@@ -1,6 +1,7 @@
 import pygame
 import random
 from config import BLOCK_LAYER, DROP_LOOT_EVERYTIME
+from items.lootables.pickup_bomb import PickupBomb
 from items.lootables.silver_coin import SilverCoin
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
@@ -85,6 +86,9 @@ class Chest(pygame.sprite.Sprite):
                 if random.random() < 0.5:
                     items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
+                for _ in range(random.randint(0, 1)):
+                    items_to_craft.append(PickupBomb(self.game, self.rect.centerx, self.rect.centery))
+
             elif self.type == "large":
                 for _ in range(random.randint(3, 5)):
                     items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
@@ -94,9 +98,13 @@ class Chest(pygame.sprite.Sprite):
 
                 items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
+                for _ in range(random.randint(1, 2)):
+                    items_to_craft.append(PickupBomb(self.game, self.rect.centerx, self.rect.centery))
+
             item = self.roll_item(self.type)
             if item:
                 items_to_craft.append(item)
+
     
     def roll_item(self, chest_type):
         match chest_type:

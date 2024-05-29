@@ -28,8 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.health = self.max_health
         self.PLAYER_SIZE = game.settings.PLAYER_SIZE
         self.coins = 0
-        #self.bombs = 0
-        self.bombs = 10
+        self.bombs = 5
         self.rooms_cleared = 0
         
         #SKIN
