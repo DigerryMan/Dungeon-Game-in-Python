@@ -22,6 +22,7 @@ class ShopStand(Block):
             self.game.player.coins -= self.price
             self.game.player.eq.add_item(self.content.item)
             self.game.map.get_current_room().remove_shop_stand(self)
+            self.game.sound_manager.play("lift")
             self.kill()
 
         else:

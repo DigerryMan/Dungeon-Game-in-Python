@@ -7,7 +7,7 @@ class AudioSettingsScreen():
         self.menu = main_settings.menu
         self.game = main_settings.game
         
-        self.current_music_volume = 3
+        self.current_music_volume = 2
         self.current_gameplay_volume = 5
 
     def display(self):

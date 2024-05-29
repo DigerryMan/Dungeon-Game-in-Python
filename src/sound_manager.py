@@ -15,7 +15,7 @@ class SoundManager:
         mixer.init()
         self.music = load_sounds("resources/music")
         self.sounds = load_sounds("resources/sounds")
-        self.set_music_volume(0.3)
+        self.set_music_volume(0.2)
         self.set_sound_volume(0.5)
 
     def set_music_volume(self, volume):
