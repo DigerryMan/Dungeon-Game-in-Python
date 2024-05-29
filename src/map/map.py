@@ -3,8 +3,8 @@ from math import inf
 from config import MAP_RANGE
 from map.minimap import Minimap
 from utils.map_generator import MapGenerator
-from .room_types import rooms
-from .room import Room
+from .room.room_types import rooms
+from .room.room import Room
 from entities.player.player import Player
 from utils.directions import Directions
 

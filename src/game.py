@@ -12,6 +12,7 @@ from utils.directions import Directions
 from utils.image_loader import ImageLoader
 from utils.settings import Settings
 
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -97,11 +98,6 @@ class Game:
             if not self.paused and self.running:
                 self.update()
                 self.draw()
-
-                #test
-                #boss = Satan(self, 0, 0)
-                #self.menu.display_boss_intro(boss)
-                #test
 
             if self.paused:
                 self.menu.display_pause()
