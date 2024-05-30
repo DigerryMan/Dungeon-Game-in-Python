@@ -189,3 +189,6 @@ class Player(pygame.sprite.Sprite):
 
     def get_bombed(self):
         self.get_hit(1)
+
+    def draw_additional_images(self, screen):
+        self.animation.draw_additional_images(screen)

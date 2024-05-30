@@ -1,4 +1,5 @@
 import pygame
+from config import FPS
 from utils.directions import Directions
 
 class PlayerAnimation():
@@ -31,6 +32,14 @@ class PlayerAnimation():
         self.next_frame_ticks_cd = 3
         self.time = 0
         
+        #PICK UP ITEM ANIMATION
+        self.item_frames = ["pick0", "pick1", "pick2", "pick1"]
+        self.item_pick_up_cd = int(0.6 * FPS)
+        self.item_pick_up_time = self.item_pick_up_cd
+        self.item_picked_up = False
+        self.item_picked_up_index = 0
+        self.picked_up_item_image = None
+
         #DEATH ANIMATION
         self.death_frame_cd = 12
         self.death_time_left = self.death_frame_cd
@@ -44,6 +53,9 @@ class PlayerAnimation():
 
         for x in range(6):
             self.head_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, 0, self.PLAYER_SIZE, self.PLAYER_SIZE)))
+
+    def prepare_item_pick_up_images(self):
+        pass
 
     def prepare_intro_images(self):
         img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["image"]
@@ -62,22 +74,39 @@ class PlayerAnimation():
         self.head_tear_anime_time_left = self.head_tear_anime_cd
 
     def animate(self):
-        self.reversed_body_frame = False
-        if self.player.is_moving:
-            self.time -= 1
-        
-        if self.time <= 0:
-            self.time = self.next_frame_ticks_cd 
-            self.x_legs_frame = (self.x_legs_frame + 1) % 10
-        
-        self.set_body_frame()
-        if not self.player.is_moving:
-            self.set_standing_frame()
+        if not self.item_picked_up:
+            self.reversed_body_frame = False
+            if self.player.is_moving:
+                self.time -= 1
+            
+            if self.time <= 0:
+                self.time = self.next_frame_ticks_cd 
+                self.x_legs_frame = (self.x_legs_frame + 1) % 10
+            
+            self.set_body_frame()
+            if not self.player.is_moving:
+                self.set_standing_frame()
 
-        self.check_tear_animation()
-        self.set_head_frame()
-        self.next_frame()
+            self.check_tear_animation()
+            self.set_head_frame()
+            self.next_frame()
+        else:
+            self.item_pick_up_animate()
     
+    def item_pick_up_animate(self):
+        frames_times = [0.95, 0.8, 0.7, 0.1]
+        frames = [int(time * self.item_pick_up_cd) for time in frames_times]
+        self.item_pick_up_time -= 1
+        if self.item_pick_up_time <= 0:
+            self.item_pick_up_time = self.item_pick_up_cd
+            self.item_picked_up = False
+        elif self.item_pick_up_time in frames:
+            frame_name = self.item_frames[self.item_picked_up_index]
+            self.set_player_animation_image(frame_name)
+            self.image = self.player.image
+            self.item_picked_up_index = (1 + self.item_picked_up_index) % len(self.item_frames)
+             
+
     def check_tear_animation(self):
         self.head_tear_anime_time_left -= 1
         if self.head_tear_anime_time_left == self.head_tear_anime_cd - 1 or self.head_tear_anime_time_left == 1:
@@ -121,8 +150,6 @@ class PlayerAnimation():
         self.head_frame = pygame.transform.scale(self.head_frame, (self.PLAYER_SIZE*0.9, self.PLAYER_SIZE*0.9))
     
     def play_death_animation(self):
-        center_x = self.player.rect.centerx
-        center_y = self.player.rect.centery
         self.death_time_left -= 1
         if self.death_time_left <= 0:
             if self.death_index > self.last_death_index:
@@ -130,14 +157,13 @@ class PlayerAnimation():
                 return
             
             frame_name = "die" + str(self.death_index)
-            self.player.image = self.game.image_loader.player_animations_list[self.player_type.get_index()][frame_name]
-            self.player.rect.width = self.player.image.get_width()
-            self.player.rect.height = self.player.image.get_height()
-            self.player.rect.centerx = center_x
-            self.player.rect.centery = center_y
+            self.set_player_animation_image(frame_name)
 
             self.death_time_left = self.death_frame_cd
             self.death_index += 1
+
+    def set_player_animation_image(self, frame_name:str):
+        self.player.image = self.game.image_loader.player_animations_list[self.player_type.get_index()][frame_name]
 
     def get_init_mask(self):
         self.animate()
@@ -154,3 +180,13 @@ class PlayerAnimation():
         mask.erase(cut_mask_sides, (0, 0))
         mask.erase(cut_mask_sides, (mask.get_size()[0] - cut_mask_sides.get_size()[0], 0))
         mask.erase(cut_mask_top, (0, 0))
+
+    def draw_additional_images(self, screen):
+        if self.item_picked_up:
+            blit_position = (self.player.rect.centerx - self.picked_up_item_image.get_width() // 2, self.player.rect.y - self.picked_up_item_image.get_height() // 1.5)
+            screen.blit(self.picked_up_item_image, blit_position)
+
+    def prepare_item_pick_up_animation(self, item_image):
+        self.item_picked_up = True
+        self.picked_up_item_image = item_image
+        self.item_pick_up_time = self.item_pick_up_cd

@@ -41,6 +41,8 @@ class PlayerCollisionEngine():
                             self.player.heal(item_info)
                         case ItemType.ITEM:
                             self.player.eq.add_item(item_info)
+                            item_image = pygame.transform.scale(item_info["image"], (self.game.settings.TILE_SIZE//1.3, self.game.settings.TILE_SIZE//1.3))
+                            self.player.animation.prepare_item_pick_up_animation(item_image)
                         case ItemType.PILL:
                             self.player.eq.use_pill(item_info)
                         case ItemType.PICKUP_BOMB:

@@ -327,18 +327,18 @@ class ImageLoader:
 
     def load_player_animation(self):
         frame_names = ["die2", "like0", "like1", "die4", 
-                       "die0", "pick", "die3", "bad1",
-                       "die1", "sit", "happy0", "happy1"]
+                       "die0", "pick2", "die3", "bad1",
+                       "die1", "sit", "pick1", "pick0"]
         
         for player_type in self.player_types:
             index = 0
             img = pygame.image.load(f"resources/mobs/{player_type}.png")
             player_animation = {}
             self.player_animations_list.append(player_animation)
-            for y in range(2, 5):
+            for y in range(3):
                 for x in range(4):
-                    sub_img = img.subsurface(pygame.Rect(x * 64, y * 64, 64, 64))
-                    new_size = int(1.95*self.settings.PLAYER_SIZE), int(1.95*self.settings.PLAYER_SIZE)
+                    sub_img = img.subsurface(pygame.Rect(13 + x * 64, 150 + y * 64, 38, 38))
+                    new_size = self.settings.PLAYER_SIZE, self.settings.PLAYER_SIZE
                     player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
                     index += 1
 

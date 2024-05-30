@@ -1,5 +1,6 @@
 import random
 from entities.enemy import Enemy
+from entities.player.player import Player
 from .room_types import special_rooms
 
 
@@ -60,6 +61,8 @@ class RoomDrawer:
             if isinstance(sprite, Enemy):
                 sprite.draw_additional_images(screen)
             screen.blit(sprite.image, sprite.rect)
+            if isinstance(sprite, Player):
+                sprite.draw_additional_images(screen)
             
 
         screen.blit(self.room_graphics["shading"], (-self.game.settings.WIN_WIDTH * 0.04, -self.game.settings.WIN_HEIGHT * 0.04))

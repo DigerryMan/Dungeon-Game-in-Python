@@ -17,7 +17,7 @@ class GameOverScreen():
 
         if self.game.player.is_alive:
             player_image = self.game.player.animation.win_image
-            player_image_position = (self.game.settings.WIN_WIDTH//2 - player_image.get_width()//2, self.game.settings.WIN_HEIGHT//2.5)
+            player_image_position = (self.game.settings.WIN_WIDTH//2 - player_image.get_width()//2, self.game.settings.WIN_HEIGHT//1.65)
 
         else:
             player_image = self.game.player.animation.intro_image
