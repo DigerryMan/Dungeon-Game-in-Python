@@ -93,18 +93,20 @@ class Enemy(pygame.sprite.Sprite, ABC):
         
         self.correct_facing()
         self.correct_layer()
+        self.check_hit_and_animate()
+
+        self.x_change = 0
+        self.y_change = 0
+
+    def check_hit_and_animate(self):
         if self.hit_time > 0:
             self.hit_time -= 1
             if self.hit_time == 0:
                 self.restore_image_colors()
-
         self.is_change_of_frame = False
         self.animate()
         if self.is_change_of_frame and self.hit_time > 0:
             self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
-
-        self.x_change = 0
-        self.y_change = 0
 
     def restore_image_colors(self):
         self.image = self.unchanged_image

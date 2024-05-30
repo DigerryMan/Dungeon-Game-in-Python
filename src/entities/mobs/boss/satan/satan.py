@@ -84,16 +84,7 @@ class Satan(Enemy):
         self.perform_boss_stage()
         self.collide_player()
         self.correct_layer()
-        
-        if self.hit_time > 0:
-            self.hit_time -= 1
-            if self.hit_time == 0:
-                self.restore_image_colors()
-
-        self.is_change_of_frame = False
-        self.animate()
-        if self.is_change_of_frame and self.hit_time > 0:
-            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+        self.check_hit_and_animate()
 
     def perform_boss_stage(self):
         if self.boss_figth_start_active:
