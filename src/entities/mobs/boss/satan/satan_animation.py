@@ -1,5 +1,7 @@
 import pygame
 
+from entities.mobs.boss.shaking_animation import ShakingAnimation
+
 class SatanAnimiation():
     waking_up_frames = [21, 22, 23, 1]
     hands_frames = [1, 13, 14, 15, 1]
@@ -27,10 +29,7 @@ class SatanAnimiation():
         self.index = 0
 
         #SHAKING
-        self.shake_time_x_left = 5
-        self.x_change = 1
-        self.shake_time_y_left = 5
-        self.y_change = 1
+        self.shaking_animation = ShakingAnimation(boss)
         
         #TIME STAGES OF FRAMES
         self.waking_up_time_stages = [0.99, 0.2, 0.12, 0.06]
@@ -76,19 +75,19 @@ class SatanAnimiation():
         if self.boss.boss_figth_start_active:
             self.waking_up_animation()
         elif self.boss.bullets_from_hands_active:
-            self.shaking_animation_x()
-            self.shaking_animation_y()
+            self.shaking_animation.shaking_animation_x()
+            self.shaking_animation.shaking_animation_y()
             self.animate_bullets_from_hands()
         elif self.boss.laser_breath_active:
-            self.shaking_animation_x(True)
+            self.shaking_animation.shaking_animation_x(True)
             self.animate_laser_breath()
         elif self.boss.mouth_attack_active:
-            self.shaking_animation_x()
+            self.shaking_animation.shaking_animation_x()
             self.animate_mouth_attack()
         elif self.boss.flying_active:
             self.flying_animation()
-            self.shaking_animation_x()
-            self.shaking_animation_y()
+            self.shaking_animation.shaking_animation_x()
+            self.shaking_animation.shaking_animation_y()
             
     def waking_up_animation(self):
         self.animate_full_time_stage(self.boss.start_time, self.waking_up_time_stages, 
@@ -118,20 +117,3 @@ class SatanAnimiation():
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(modulo_cond)     
-    
-    def shaking_animation_x(self, with_laser=False):
-        self.shake_time_x_left -= 1
-        if self.shake_time_x_left <= 0:
-            self.boss.rect.centerx += 5 * self.x_change
-            if with_laser and self.boss.laser is not None:
-                self.boss.laser.rect.centerx += 5 * self.x_change
-            
-            self.x_change *= -1
-            self.shake_time_x_left = 3
-
-    def shaking_animation_y(self):
-        self.shake_time_y_left -= 1
-        if self.shake_time_y_left <= 0:
-            self.boss.rect.centery += 2 * self.y_change
-            self.y_change *= -1
-            self.shake_time_y_left = 7

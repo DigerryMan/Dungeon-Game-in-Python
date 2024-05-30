@@ -1,5 +1,7 @@
 import pygame
 
+from entities.mobs.boss.shaking_animation import ShakingAnimation
+
 class DukeAnimation():
     def __init__(self, boss, game):
         self.boss = boss
@@ -20,11 +22,7 @@ class DukeAnimation():
         self.frame_index = 0
 
         #SHAKING
-        self.change = 1
-        self.y_change = 1
-
-        self.shake_time_left = 0
-        self.shake_time_y_left = 0
+        self.shaking_animation = ShakingAnimation(boss)
 
         # SPAWNING MOBS
         self.spawn_frames = [0, 3, 0, 2]
@@ -44,12 +42,11 @@ class DukeAnimation():
                 self.images.append(pygame.transform.scale(image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)))
 
     def animate(self):
-        self.shaking_animation()
-        self.shaking_animation_y()
+        self.shaking_animation.shaking_animation_x()
+        self.shaking_animation.shaking_animation_y()
         if self.boss.is_spawning_mobs:
             self.enemies_spawning_animation()
         
-    
     def enemies_spawning_animation(self):
         if self.boss.spawning_time in self.spawn_times_of_frames:
             self.boss.image = self.images[self.spawn_frames[self.spawn_index]]
@@ -67,17 +64,3 @@ class DukeAnimation():
                     if a != 0:
                         image.set_at((x, y), (r, g, b, opacity))
         return image
-    
-    def shaking_animation(self, ):
-        self.shake_time_left -= 1
-        if self.shake_time_left <= 0:
-            self.boss.rect.centerx += 5 * self.change
-            self.change *= -1
-            self.shake_time_left = 3
-
-    def shaking_animation_y(self):
-        self.shake_time_y_left -= 1
-        if self.shake_time_y_left <= 0:
-            self.boss.rect.centery += 2 * self.y_change
-            self.y_change *= -1
-            self.shake_time_y_left = 7
