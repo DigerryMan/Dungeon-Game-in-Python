@@ -253,12 +253,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def start_dying(self, instant_death=True):
         self._is_dead = True
         self.play_death_sound()
+        self.drop_lootable()
         if instant_death:
             self.final_death()
     
     def final_death(self):
         self.kill()
-        self.drop_lootable()
 
     def drop_lootable(self):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
