@@ -26,6 +26,7 @@ class Slime(Enemy):
 
         self.prepare_images()
         self.image = self.images[0]
+        self.unchanged_image = self.image.copy()
         self.mask = pygame.mask.from_surface(self.image)
 
         self.frame_x = 0
@@ -188,54 +189,54 @@ class Slime(Enemy):
     
     def animate(self):
         if not self.is_jumping:
-            frame_changed = []
             unconvention_change = False
 
             if self.next_jump_time_left > int(0.7 * self.jump_cd): #landing
                 if self.next_jump_time_left in self.animation_land_time:
-                    self.change_of_frame(frame_changed)
+                    self.change_of_frame()
 
             elif self.next_jump_time_left < int(0.3 * self.jump_cd): #jumping
                 if self.next_jump_time_left in self.animation_jump_time:
                     if self.next_jump_time_left == self.animation_jump_time[-1] and self.is_small_change_of_x:
-                        self.change_of_frame(frame_changed, self.is_small_change_of_x)
+                        self.change_of_frame(self.is_small_change_of_x)
                         unconvention_change = True
                         self.is_small_change_of_x = False
                     else:
-                        self.change_of_frame(frame_changed)
+                        self.change_of_frame()
             
             else: #afk 
                 if self.next_jump_time_left in self.animation_afk_time:
-                    self.change_of_frame(frame_changed)
+                    self.change_of_frame()
                     if self.frame_x > 1:
                         self.frame_x = 0
 
             if self.frame_x > 3:
-                    self.frame_x = 0
-                    self.frame_y += 1
+                self.frame_x = 0
+                self.frame_y += 1
             if self.frame_y > 1:
                 self.frame_y = 0 
 
-            if frame_changed:
+            if self.is_change_of_frame:
                 self.frame = self.images[self.frame_x + self.frame_y * 4]
                 if self.is_jumping_left and self.next_jump_time_left < int(0.3 * self.jump_cd):
                     self.frame = pygame.transform.flip(self.frame, True, False)
    
                 self.image = self.frame
+                self.unchanged_images = self.frame
                 self.mask = pygame.mask.from_surface(self.image)
 
                 if unconvention_change:
                     self.frame_x = 0
                     self.frame_y = 1
 
-    def change_of_frame(self, frame_changed: list, unconvention_change=False):
+    def change_of_frame(self, unconvention_change=False):
+        self.is_change_of_frame = True
         if not unconvention_change:
             self.frame_x += 1
         else:
             self.frame_x = 0
             self.frame_y = 0
-        frame_changed.append(True)
-    
+        
     def draw_additional_images(self, screen):
         self.draw_shadow(screen)
     

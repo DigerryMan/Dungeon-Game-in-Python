@@ -20,8 +20,7 @@ class Ghost(Enemy):
         self.img = game.image_loader.mobs["ghost"]
         self.__prepare_images()
         self.image = self.images[0]
-
-        self.mask = pygame.mask.from_surface(self.image) 
+        self.unchanged_image = self.image.copy()
 
         #HITBOX
         self.rect = self.images[0].get_rect()
@@ -33,7 +32,6 @@ class Ghost(Enemy):
         self.facing = Directions.DOWN
         self.frame_direction_offset = 0
         
-
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -52,7 +50,7 @@ class Ghost(Enemy):
             self.next_frame()
 
     def next_frame(self):
-    
+        self.is_change_of_frame = True
         if self.facing == Directions.LEFT:
             self.frame_direction_offset = 8
             self.image = pygame.transform.flip(self.images[self.which_frame + self.frame_direction_offset], True, False)
@@ -65,6 +63,8 @@ class Ghost(Enemy):
         else:
             self.frame_direction_offset = 4
             self.image = self.images[self.which_frame + self.frame_direction_offset]   
+        
+        self.unchanged_image = self.image.copy()
             
     def correct_layer(self):
         self._layer = 3000

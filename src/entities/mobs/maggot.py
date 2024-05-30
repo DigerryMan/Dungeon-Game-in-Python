@@ -42,7 +42,6 @@ class Maggot(Enemy):
         self.next_frame()
 
     def prepare_images(self):
-        self.images.clear()
         for y in range(4):
             for x in range(4):
                 self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE)))
@@ -177,6 +176,7 @@ class Maggot(Enemy):
         self._random_dir_change_cd = random.randint(mini, maxi)
 
     def next_frame(self):
+        self.is_change_of_frame = True
         self.x_frame = (self.x_frame + 1) % 4
         self.set_new_image()
         self.set_new_hitbox()
@@ -200,7 +200,7 @@ class Maggot(Enemy):
         if center_cords:
             self.rect.center = center_cords
 
-        #self.image.fill(GREEN)
+        self.unchanged_image = self.image.copy()
 
     def merge_into_one_frame(self):
         self.frame = (pygame.Surface((self.MOB_SIZE, self.MOB_SIZE), pygame.SRCALPHA))

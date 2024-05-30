@@ -18,6 +18,7 @@ class Parasite(Enemy):
         self.img = game.image_loader.get_image("parasite")
         self.prepare_images()
         self.image = self.images[0]
+        self.unchanged_image = self.image.copy()
 
         #REST
         self.is_dig = True
@@ -75,8 +76,11 @@ class Parasite(Enemy):
                 self.nextFrame(player_shoot_frame=True)
             if self.time_left_to_shoot == int(0.2 * self.shoot_cd_after_dig_out):
                 self.nextFrame()
+        
+        super().animate()
 
     def nextFrame(self, player_shoot_frame=False):
+        self.is_change_of_frame = True
         self.curr_frame = (self.curr_frame + 1) % 8 
         self.frame = self.images[self.curr_frame]
         self.sound_managment()        
@@ -87,6 +91,7 @@ class Parasite(Enemy):
                 self.frame = pygame.transform.flip(self.frame, True, False)
 
         self.remove_transparency_from_frame()
+       
     
     def remove_transparency_from_frame(self):
         old_x_center = self.rect.centerx
@@ -94,6 +99,7 @@ class Parasite(Enemy):
 
         bounding_rect = self.frame.get_bounding_rect() 
         self.image = self.frame.subsurface(bounding_rect)
+        self.unchanged_image = self.image.copy()
 
         self.rect.width, self.rect.height = self.image.get_rect().width, self.image.get_rect().height
         self.rect.bottom = old_bottom

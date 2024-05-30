@@ -11,6 +11,8 @@ from map.block import Block
 from utils.directions import Directions
 from abc import ABC, abstractmethod
 
+from utils.image_transformer import ImageTransformer
+
 class Enemy(pygame.sprite.Sprite, ABC):
     is_group_attacked:bool = False
     def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
@@ -36,6 +38,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
+        self.unchanged_image = self.image.copy()
         self.mask = pygame.mask.from_surface(self.image) 
         self.frame = None
         self.images = []
@@ -45,7 +48,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.rect.x = x * game.settings.TILE_SIZE
         self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
-     
+
+        # GETTING HIT ANIMATION
+        self.hit_time_cd = int(0.1 * FPS)
+        self.hit_time = 0     
+        self.is_change_of_frame = False  
+
         #REST
         self._check_block_colisions = check_block_colisions
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
@@ -85,10 +93,21 @@ class Enemy(pygame.sprite.Sprite, ABC):
         
         self.correct_facing()
         self.correct_layer()
+        if self.hit_time > 0:
+            self.hit_time -= 1
+            if self.hit_time == 0:
+                self.restore_image_colors()
+
+        self.is_change_of_frame = False
         self.animate()
+        if self.is_change_of_frame and self.hit_time > 0:
+            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
 
         self.x_change = 0
         self.y_change = 0
+
+    def restore_image_colors(self):
+        self.image = self.unchanged_image
 
     def move(self):
         if not self._is_dead:
@@ -223,6 +242,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._is_wandering = False
         self.group_attacked()
         self.check_if_dead()
+
+        self.hit_time = self.hit_time_cd
+        self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            
+        
     
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")

@@ -19,6 +19,7 @@ class Legs(Enemy):
     
         self.prepare_images()
         self.image = self.images[0]
+        self.unchanged_image = self.image.copy()
 
         #HITBOX
         self.mask = pygame.mask.from_surface(self.image)
@@ -38,16 +39,18 @@ class Legs(Enemy):
             self.time -= 1
    
         if self.time <= 0:
+            self.is_change_of_frame = True
             self.time = self.next_frame_ticks_cd 
             self.which_frame += 1
             self.which_frame %= 10
-
-            self.next_frame()
+        
+        self.next_frame()
 
     def next_frame(self):
         curr_frame = self.which_frame # if up/down
 
         if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
+            self.is_change_of_frame = True
             curr_frame += 10
             if self.facing == Directions.LEFT:
                 self.reversed_frame = True
@@ -56,4 +59,5 @@ class Legs(Enemy):
             self.image = pygame.transform.flip(self.images[curr_frame], True, False)
         else:
             self.image = self.images[curr_frame]
-    
+        
+        self.unchanged_image = self.image.copy()

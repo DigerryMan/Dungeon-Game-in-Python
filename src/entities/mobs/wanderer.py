@@ -43,8 +43,10 @@ class Wanderer(Enemy):
             self.time -= 1
         else:
             self.image = self.images_legs[0]
+            self.unchanged_image = self.image.copy()
 
         if self.time <= 0:
+            self.is_change_of_frame = True
             self.time = self.next_frame_ticks_cd 
             self.legs_frame += 1
             self.legs_frame %= 10
@@ -65,6 +67,7 @@ class Wanderer(Enemy):
         self.frame.blit(head_frame, ((self.MOB_SIZE - head_frame.get_width())//2, -3))
         
         self.image = self.frame
+        self.unchanged_image = self.image.copy()
 
     def set_up_legs_frame(self):
         # if up/down
@@ -73,6 +76,7 @@ class Wanderer(Enemy):
             return 0
         
         if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
+            self.is_change_of_frame = True
             curr_frame += 10
             if self.facing == Directions.LEFT:
                 self.reversed_frame = True
@@ -82,6 +86,7 @@ class Wanderer(Enemy):
     def set_up_head_frame(self):
         self.head_time_left -= 1
         if self.head_time_left <= 0:
+            self.is_change_of_frame = True
             self.head_time_left = self.next_head_frame_cd
             self.head_frame += 1
             self.head_frame %= 6
