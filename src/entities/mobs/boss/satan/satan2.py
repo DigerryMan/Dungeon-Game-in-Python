@@ -39,9 +39,9 @@ class Satan2(Satan):
         move = to_exclude
         while move == to_exclude:
             rolled = random.random()
-            for move_try in moves:
-                if move_try[0] <= rolled <= move_try[1]:
-                    move = moves[move_try]
+            for move_range, move_name in moves.items():
+                if move_range[0] <= rolled <= move_range[1]:
+                    move = move_name
 
         if move == "bullets_from_hands":
             self.bullets_from_hands_active = True
