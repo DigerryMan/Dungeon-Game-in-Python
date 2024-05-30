@@ -94,10 +94,8 @@ class Monstro(Slime):
 
         self.calculate_parabolic_jump()
 
-
     def is_valid_move(self, x, y):
         if x <= 0 or x >= self.game.settings.MAP_WIDTH - 2 or y <= 0  or y >= self.game.settings.MAP_HEIGHT - 2:
-
             return False
         return self.room_layout[y][x] not in WALL_MARKS    
 
@@ -147,8 +145,7 @@ class Monstro(Slime):
     def do_bullet_attack_stage0(self):
         self.bullet_shooting_time_left -= 1
         if self.bullet_shooting_time_left == int(self.bullet_shooting_cd * 0.6):
-            self.shoot_one_of_crazy_bullets()
-            
+            self.shoot_one_of_crazy_bullets()       
         elif self.bullet_shooting_time_left <= 0:
             self.bullet_shooting_time_left = self.bullet_shooting_cd
             self.stage = 1
@@ -161,17 +158,15 @@ class Monstro(Slime):
     def shoot_one_of_crazy_bullets(self):
         self.play_audio(f"monstroShoot{random.randint(1,3)}")
         self.update_bullet_direction()
-        for i in range(9):
+        for _ in range(9):
             x, y = self.rect.centerx + random.randint(-12, 12), self.rect.centery + random.randint(-12, 12)
             decay = random.random() * 0.2 + 0.3
             speed = random.randint(15, 25) 
-
             additional_speed = random.randint(-4, 4) 
             Bullet(self.game, x, y, self.bullet_direction, speed, 
                 False, self._damage, decay, additional_speed)
                 
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
-        
 
     def do_to_player_jumps_stage1(self):
         self.move()

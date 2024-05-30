@@ -12,11 +12,11 @@ from utils.directions import Directions
 class Monstro2(Monstro):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
-        #STATS
         self._max_health = 55
         self._health = self._max_health
         self._damage = 1.25
         self._projectal_speed = 11
+        
         self.health_bar = BossHealthBar(game, self)
 
         #ANIMATION
@@ -38,11 +38,10 @@ class Monstro2(Monstro):
         self.stage_1_time = None
         
     def shoot_one_of_crazy_bullets(self):
-        for i in range(11):
+        for _ in range(11):
             x, y = self.rect.centerx + random.randint(-12, 12), self.rect.centery + random.randint(-12, 12)
             decay = random.random() * 0.25 + 0.4
             speed = random.randint(18, 23) 
-
             additional_speed = random.randint(-4, 4) 
             Bullet(self.game, x, y, Directions.PLAYER, speed, 
                 False, self._damage, decay, additional_speed)
