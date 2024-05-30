@@ -337,7 +337,7 @@ class ImageLoader:
             self.player_animations_list.append(player_animation)
             for y in range(3):
                 for x in range(4):
-                    sub_img = img.subsurface(pygame.Rect(13 + x * 64, 150 + y * 64, 38, 38))
+                    sub_img = img.subsurface(pygame.Rect(14 + x * 64, 150 + y * 64, 36, 36))
                     new_size = self.settings.PLAYER_SIZE, self.settings.PLAYER_SIZE
                     player_animation[frame_names[index]] = pygame.transform.scale(sub_img, new_size).convert_alpha()
                     index += 1
