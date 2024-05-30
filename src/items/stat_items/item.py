@@ -42,7 +42,7 @@ class Item(LootableItem):
         self.kill()
         self.is_picked_up = True
 
-        self.game.sound_manager.play("lift")
+        self.game.sound_manager.play_if_not_playing("lift")
 
         if self.item["category"] == Categories.VERY_COMMON:
             return ItemType.PILL, self.item

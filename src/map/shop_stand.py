@@ -22,11 +22,11 @@ class ShopStand(Block):
             self.game.player.coins -= self.price
             self.game.player.eq.add_item(self.content.item)
             self.game.map.get_current_room().remove_shop_stand(self)
-            self.game.sound_manager.play("lift")
+            self.game.sound_manager.play_if_not_playing("lift")
             self.kill()
 
         else:
-            self.game.sound_manager.play("error")
+            self.game.sound_manager.play_if_not_playing("error")
 
     def update(self):
         player_pos = pygame.Vector2(self.game.player.rect.centerx, self.game.player.rect.centery)

@@ -28,7 +28,8 @@ class MobSpawner():
         self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
         self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
 
-        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        #mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        mobs = [Slime]
         index = random.randint(0, len(mobs) - 1)
 
         if self.room.room_type == "boss":

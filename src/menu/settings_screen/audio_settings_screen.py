@@ -7,8 +7,8 @@ class AudioSettingsScreen():
         self.menu = main_settings.menu
         self.game = main_settings.game
         
-        self.current_music_volume = 3
-        self.current_gameplay_volume = 3
+        self.current_music_volume = 2
+        self.current_gameplay_volume = 4
 
     def display(self):
         arrow_positions = [(self.game.settings.WIN_WIDTH//2.61, self.game.settings.WIN_HEIGHT//2.73), 
