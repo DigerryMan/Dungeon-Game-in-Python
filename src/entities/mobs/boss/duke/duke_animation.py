@@ -1,5 +1,4 @@
 import pygame
-
 from entities.mobs.boss.shaking_animation import ShakingAnimation
 
 class DukeAnimation():
@@ -42,8 +41,7 @@ class DukeAnimation():
                 self.images.append(pygame.transform.scale(image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)))
 
     def animate(self):
-        self.shaking_animation.shaking_animation_x()
-        self.shaking_animation.shaking_animation_y()
+        self.shaking_animation.shake_animation_x_and_y()
         if self.boss.is_spawning_mobs:
             self.enemies_spawning_animation()
         

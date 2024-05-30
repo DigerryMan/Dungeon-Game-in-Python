@@ -14,7 +14,6 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
-from utils.image_transformer import ImageTransformer
 
 class Satan(Enemy):
     moves = ["bullets_from_hands", "laser_breath", "mouth_attack", "flying"]

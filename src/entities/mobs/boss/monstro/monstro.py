@@ -11,7 +11,6 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
-from utils.image_transformer import ImageTransformer
 
 class Monstro(Slime):
     def __init__(self, game, x: int, y: int):

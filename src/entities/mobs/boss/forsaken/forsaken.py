@@ -11,7 +11,6 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
-from utils.image_transformer import ImageTransformer
 
 class Forsaken(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -135,7 +134,6 @@ class Forsaken(Enemy):
         
         if self.flying_time == int(9 * FPS):
             self.setup_start_of_fly()
-        
         elif self.flying_time <= 0:
             self.play_audio("forsakenRoar")
             self.flying_active = False
@@ -144,7 +142,6 @@ class Forsaken(Enemy):
             self.enemies_active = True
             self.changes_made = 0
             self.y_multiplier = -1
-        
         elif self.flying_time < int(8 * FPS):
             self.fly()
            
@@ -157,7 +154,6 @@ class Forsaken(Enemy):
         self.block_collision_detection()
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed * self.y_multiplier
-
 
     def block_collision_detection(self):
         rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)

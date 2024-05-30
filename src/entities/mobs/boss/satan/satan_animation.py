@@ -1,5 +1,4 @@
 import pygame
-
 from entities.mobs.boss.shaking_animation import ShakingAnimation
 
 class SatanAnimiation():
@@ -75,8 +74,7 @@ class SatanAnimiation():
         if self.boss.boss_figth_start_active:
             self.waking_up_animation()
         elif self.boss.bullets_from_hands_active:
-            self.shaking_animation.shaking_animation_x()
-            self.shaking_animation.shaking_animation_y()
+            self.shaking_animation.shake_animation_x_and_y()
             self.animate_bullets_from_hands()
         elif self.boss.laser_breath_active:
             self.shaking_animation.shaking_animation_x(True)
@@ -86,8 +84,7 @@ class SatanAnimiation():
             self.animate_mouth_attack()
         elif self.boss.flying_active:
             self.flying_animation()
-            self.shaking_animation.shaking_animation_x()
-            self.shaking_animation.shaking_animation_y()
+            self.shaking_animation.shake_animation_x_and_y()
             
     def waking_up_animation(self):
         self.animate_full_time_stage(self.boss.start_time, self.waking_up_time_stages, 

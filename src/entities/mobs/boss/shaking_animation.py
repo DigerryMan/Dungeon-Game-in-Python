@@ -1,5 +1,3 @@
-
-
 class ShakingAnimation():
     def __init__(self, boss):
         self.boss = boss
@@ -24,3 +22,7 @@ class ShakingAnimation():
             self.boss.rect.centery += 2 * self.y_change
             self.y_change *= -1
             self.shake_time_y_left = 7
+    
+    def shake_animation_x_and_y(self):
+        self.shaking_animation_x()
+        self.shaking_animation_y()
