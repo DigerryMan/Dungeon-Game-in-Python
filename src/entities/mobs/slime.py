@@ -222,7 +222,7 @@ class Slime(Enemy):
                     self.frame = pygame.transform.flip(self.frame, True, False)
    
                 self.image = self.frame
-                self.unchanged_images = self.frame
+                self.unchanged_image = self.image.copy()
                 self.mask = pygame.mask.from_surface(self.image)
 
                 if unconvention_change:

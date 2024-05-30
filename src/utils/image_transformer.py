@@ -10,8 +10,7 @@ class ImageTransformer():
                 if pixel_color.a <= 0:
                     new_image.set_at((x, y), pixel_color)
                 else:
-                    # W przeciwnym razie zwiększ czerwień
-                    new_red = min(pixel_color.r + 100, 255)  # Zwiększ czerwień o 50 (możesz dostosować tę wartość)
+                    new_red = min(pixel_color.r + 100, 255) 
                     new_pixel_color = (new_red, pixel_color.g, pixel_color.b, pixel_color.a)
                     new_image.set_at((x, y), new_pixel_color)
         
