@@ -17,6 +17,7 @@ from utils.directions import Directions
 from utils.image_transformer import ImageTransformer
 
 class Satan(Enemy):
+    moves = ["bullets_from_hands", "laser_breath", "mouth_attack", "flying"]
     def __init__(self, game, x:int, y:int):
         super().__init__(game, x, y)
         self.size = "Large"
@@ -38,12 +39,7 @@ class Satan(Enemy):
         self.rect.centery = y * game.settings.TILE_SIZE - int(self.MOB_HEIGHT * 0.8)
         self._layer = self.rect.bottom
 
-        #ANIMATION
-        self.animation = SatanAnimiation(self, game)
-
-        # BOSS STAGES
-        self.stage = 0
-
+        
         # START
         self.boss_figth_start_active = True
         self.start_time = 3 * FPS
@@ -75,6 +71,9 @@ class Satan(Enemy):
         self.fly_multiplier = 1
         self.fly_speed = round(9 * self.game.settings.SCALE)
 
+        #ANIMATION
+        self.animation = SatanAnimiation(self, game)
+
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
 
@@ -98,57 +97,68 @@ class Satan(Enemy):
 
     def perform_boss_stage(self):
         if self.boss_figth_start_active:
-            if self.start_time == 3 * FPS:
-                self.play_audio_with_fadein("satanFound", 1000)
-            self.start_time -= 1
-            if self.start_time <= 0:
-                self.play_audio("satanAppear"),
-                self.boss_figth_start_active = False
-                self.bullets_from_hands_active = True
-                self.game.not_voulnerable.remove(self)
-
+            self.boss_figth_start_stage()
         elif self.bullets_from_hands_active:
-            if self.bullets_from_hands_time == self.bullets_from_hands_period:
-                self.play_audio("satanShootHands")
-            self.bullets_from_hands_time -= 1
-            if self.bullets_from_hands_time == self.bullets_from_hands_period // 2:
-                self.bullets_from_hands_attack()
-            elif self.bullets_from_hands_time <= 0:
-                self.bullets_from_hands_time = self.bullets_from_hands_period
-                self.bullets_from_hands_active = False
-                self.next_move_type()
-                
+            self.bullets_from_hands_stage()      
         elif self.laser_breath_active:
-            if self.laser_breath_time == self.laser_breath_period:
-                self.play_audio("satanLaser")
-            self.laser_breath_time -= 1
-            if self.laser_breath_time == int(self.laser_breath_period * 0.75):
-                self.laser_breath_attack()
-            elif self.laser_breath_time == int(self.laser_breath_period * 0.42):
-                self.laser.kill()
-                self.laser = None
-            elif self.laser_breath_time <= 0:
-                self.laser_breath_time = self.laser_breath_period
-                self.laser_breath_active = False
-                self.next_move_type("laser_breath")
-        
+            self.laser_breath_stage()
         elif self.mouth_attack_active:
-            if self.mouth_attack_time == self.mouth_attack_period:
-                self.play_audio("satanShoot")
-            self.mouth_attack_time -= 1
-            if self.mouth_attack_time == int(self.mouth_attack_period * 0.55):
-                self.mouth_attack()
-            elif self.mouth_attack_time <= 0:
-                self.mouth_attack_time = self.mouth_attack_period
-                if self.mouth_attack_amount == self.max_mouth_attacks:
-                    self.mouth_attack_active = False
-                    self.mouth_attack_amount = random.randint(-1, 0)
-                    self.next_move_type("mouth_attack")
-
+            self.mouth_attack_stage()
         elif self.flying_active:
-            if self.flying_time == self.flying_period:
-                self.play_audio("satanFly")
-            self.fly()
+            self.flying_stage()
+
+    def flying_stage(self):
+        if self.flying_time == self.flying_period:
+            self.play_audio("satanFly")
+        self.fly()
+
+    def mouth_attack_stage(self):
+        if self.mouth_attack_time == self.mouth_attack_period:
+            self.play_audio("satanShoot")
+        self.mouth_attack_time -= 1
+        if self.mouth_attack_time == int(self.mouth_attack_period * 0.55):
+            self.mouth_attack()
+        elif self.mouth_attack_time <= 0:
+            self.mouth_attack_time = self.mouth_attack_period
+            if self.mouth_attack_amount == self.max_mouth_attacks:
+                self.mouth_attack_active = False
+                self.mouth_attack_amount = random.randint(-1, 0)
+                self.next_move_type("mouth_attack")
+
+    def laser_breath_stage(self):
+        if self.laser_breath_time == self.laser_breath_period:
+            self.play_audio("satanLaser")
+        self.laser_breath_time -= 1
+        if self.laser_breath_time == int(self.laser_breath_period * 0.75):
+            self.laser_breath_attack()
+        elif self.laser_breath_time == int(self.laser_breath_period * 0.42):
+            self.laser.kill()
+            self.laser = None
+        elif self.laser_breath_time <= 0:
+            self.laser_breath_time = self.laser_breath_period
+            self.laser_breath_active = False
+            self.next_move_type("laser_breath")
+
+    def bullets_from_hands_stage(self):
+        if self.bullets_from_hands_time == self.bullets_from_hands_period:
+            self.play_audio("satanShootHands")
+        self.bullets_from_hands_time -= 1
+        if self.bullets_from_hands_time == self.bullets_from_hands_period // 2:
+            self.bullets_from_hands_attack()
+        elif self.bullets_from_hands_time <= 0:
+            self.bullets_from_hands_time = self.bullets_from_hands_period
+            self.bullets_from_hands_active = False
+            self.next_move_type()
+
+    def boss_figth_start_stage(self):
+        if self.start_time == 3 * FPS:
+            self.play_audio_with_fadein("satanFound", 1000)
+        self.start_time -= 1
+        if self.start_time <= 0:
+            self.play_audio("satanAppear"),
+            self.boss_figth_start_active = False
+            self.bullets_from_hands_active = True
+            self.game.not_voulnerable.remove(self)
             
     def fly(self):
         self.flying_time -= 1
@@ -165,12 +175,12 @@ class Satan(Enemy):
 
 
     def next_move_type(self, to_exclude:str=""):
-        moves = ["bullets_from_hands", "laser_breath", "mouth_attack", "flying"]
         try:
-            moves.remove(to_exclude)
+            moves_copy = Satan.moves.copy()
+            moves_copy.remove(to_exclude)
         except ValueError:
             pass
-        move = random.choice(moves)
+        move = random.choice(moves_copy)
         if move == "bullets_from_hands":
             self.bullets_from_hands_active = True
         elif move == "laser_breath":
