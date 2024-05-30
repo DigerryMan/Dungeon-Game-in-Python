@@ -28,3 +28,4 @@ class Block(pygame.sprite.Sprite):
     def get_bombed(self):
         self.kill()
         self.game.map.get_current_room().remove_block(self)
+        self.game.sound_manager.play("rockBreak")

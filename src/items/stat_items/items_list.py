@@ -12,11 +12,13 @@ class ItemsList():
         self.epics = {}
         self.legendaries = {}
 
+        #VERY COMMON ITEMS
+
         self.very_commons["health_pill"] = {
             "name": "Health pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "health": [-1, -0.5, 0.5, 1]
+                "health": [-1, 1]
             },
             "image": game.image_loader.lootables["health_pill"]
         }
@@ -43,7 +45,7 @@ class ItemsList():
             "name": "Shooting cooldown pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "shooting_cooldown": [-0.8, -0.04, 0.04, 0.8]
+                "shooting_cooldown": [0.04, 0.8, -0.8, -0.04]
             },
             "image": game.image_loader.lootables["shooting_cooldown_pill"]
         }
@@ -70,7 +72,7 @@ class ItemsList():
             "name": "Speed pill",
             "category": Categories.VERY_COMMON,
             "stats": {
-                "speed": [-0.5, -0.25, 0.25, 0.5]
+                "speed": [-1, 1]
             },
             "image": game.image_loader.lootables["speed_pill"]
         }
@@ -92,6 +94,8 @@ class ItemsList():
             },
             "image": game.image_loader.lootables["immortality_pill"]
         }
+
+        #COMMON ITEMS
 
         self.commons["heart"] = {
             "name": "Heart",
@@ -126,7 +130,7 @@ class ItemsList():
             "stats": {
                 "bullet_fly_time": 0.2
             },
-            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(12 * 32, 3 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(0 * 32, 12 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
         self.commons["green_syringe"] = {
@@ -138,9 +142,77 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(13 * 32, 0 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
+        self.commons["red_pepper"] = {
+            "name": "Red pepper",
+            "category": Categories.COMMON,
+            "stats": {
+                "speed": 2
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(22 * 32, 9 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
 
+        self.commons["pills"] = {
+            "name": "Pills",
+            "category": Categories.COMMON,
+            "stats": {
+                "speed": 1,
+                "immortality": 0.1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(18 * 32, 4 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
 
+        self.commons["paw"] = {
+            "name": "Paw",
+            "category": Categories.COMMON,
+            "stats": {
+                "health": 1,
+                "bullet_fly_time": 0.1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 6 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
 
+        self.commons["suspicous_juice"] = {
+            "name": "Suspicious juice",
+            "category": Categories.COMMON,
+            "stats": {
+                "health": -1,
+                "dmg": 0.25,
+                "speed": -1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(13 * 32, 9 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.commons["gameboy"] = {
+            "name": "Gameboy",
+            "category": Categories.COMMON,
+            "stats": {
+                "dmg": 0.1,
+                "shooting_cooldown": 0.1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 4 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.commons["peanut_butter"] = {
+            "name": "Peanut butter",
+            "category": Categories.COMMON,
+            "stats": {
+                "health": 1,
+                "dmg": 0.1,
+                "speed": -1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(17 * 32, 10 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.commons["explorers_guide"] = {
+            "name": "Explorer's guide",
+            "category": Categories.COMMON,
+            "stats": {
+                "speed": 1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(19 * 32, 5 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        #EPIC ITEMS
 
         self.epics["angel"] = {
             "name": "Angel",
@@ -180,9 +252,32 @@ class ItemsList():
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(7 * 32, 17 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
 
-        self.epics["PHD"] = {
-            "name": "PHD",
+        self.epics["darkhold"] = {
+            "name": "Darkhold",
             "category": Categories.EPIC,
+            "stats": {
+                "dmg": 1,
+                "health": -2
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(7 * 32, 14 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        self.epics["holy_bullet"] = {
+            "name": "Holy bullet",
+            "category": Categories.EPIC,
+            "stats": {
+                "dmg": 0.5,
+                "immortality": 0.1
+            },
+            "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(9 * 32, 18 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
+        }
+
+        
+        #LEGENDARY ITEMS
+
+        self.legendaries["PHD"] = {
+            "name": "PHD",
+            "category": Categories.LEGENDARY,
             "stats":{
                 "description": "You are immune to negative effects of the pills",
                 "PHD_obtained": 1,
@@ -212,7 +307,7 @@ class ItemsList():
                 "luck": 0.1,
                 "immortality": 0.5,
                 "shooting_cooldown": 0.1,
-                "speed": 0.5
+                "speed": 1
             },
             "image": pygame.transform.scale(game.image_loader.get_image("items").subsurface(pygame.Rect(33 * 32, 8 * 32, 32, 32)), (game.settings.TILE_SIZE, game.settings.TILE_SIZE))
         }
@@ -230,7 +325,9 @@ class ItemsList():
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            return self.legendaries["eye_of_horus"]
+            return self.epics["darkhold"]
+            return self.very_commons["health_pill"]
+            return self.legendaries["friendly_ghost"]
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
             return random.choice(list(self.legendaries.values()))
@@ -248,3 +345,16 @@ class ItemsList():
                 return random.choice(list(self.legendaries.values()))
             
         return None
+    
+    def get_boss_item(self, boss):
+        match boss:
+            case "monstro":
+                return self.legendaries["PHD"]
+            case "husk":
+                return self.legendaries["friendly_ghost"]
+            case "satan":
+                return self.legendaries["eye_of_horus"]
+            case "forsaken":
+                return self.legendaries["bulls_eye"]
+            case _:
+                return None

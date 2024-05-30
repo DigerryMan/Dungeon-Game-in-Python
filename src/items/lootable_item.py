@@ -31,7 +31,6 @@ class LootableItem(pygame.sprite.Sprite):
             x = self.horizontal_velocity * self.drop_animation_time
             y = -(((5/4) * TS**2 - x**2)**0.5)
 
-            #final_x = x + self.x
             final_y = y + self.y + TS//4
 
             self.acceleration = 0.5 * game.settings.SCALE

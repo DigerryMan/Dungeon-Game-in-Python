@@ -1,3 +1,4 @@
+import random
 import pygame
 from config import FPS
 from utils.directions import Directions
@@ -31,7 +32,7 @@ class Bullet(pygame.sprite.Sprite):
         #DEATH ANIMATION
         self.is_alive = True
         self.frame = 0
-        self.animation_time = 45
+        self.animation_time = 30
         self.time_per_frame = self.animation_time // 15
 
         #REST
@@ -100,8 +101,8 @@ class Bullet(pygame.sprite.Sprite):
             direction = pygame.math.Vector2()
         
         velocity = direction * self.speed
-        self.x_change = int(velocity.x)
-        self.y_change = int(velocity.y)
+        self.x_change = int(velocity.x + self.additional_speed * random.choice([-1, 1]))
+        self.y_change = int(velocity.y + self.additional_speed * random.choice([-1, 1]))
 
     def calculate_speed_to_enemy(self):
         self.enemies = self.game.enemies.sprites()
@@ -168,7 +169,8 @@ class Bullet(pygame.sprite.Sprite):
             self.is_alive = False
 
     def animate_and_destroy(self):
-        if self.animation_time == 45:
+        if self.animation_time == 30:
+            self.game.sound_manager.play("tearPop")
             self.rect.x -= self.BULLET_SIZE
             self.rect.y -= self.BULLET_SIZE
             self.image = self.game.image_loader.tears[self.color + "_tear_pop" + str(self.frame)].copy()

@@ -60,6 +60,8 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         self._bullet_decay_sec = bullet_decay_sec
 
+        self.size = "Small"
+
         self._is_dead = False
         self.game = game
         self.room = game.map.get_current_room()
@@ -151,14 +153,15 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.correct_facing()
 
     def collide_player(self):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                self.game.damage_player(self._collision_damage)
-                if self._is_wandering:
-                    self._is_wandering = False
-                    self.group_attacked()
+        if not self._is_dead:
+            rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
+            if rect_hits:
+                mask_hits = self.get_mask_colliding_sprite(rect_hits)
+                if mask_hits:
+                    self.game.damage_player(self._collision_damage)
+                    if self._is_wandering:
+                        self._is_wandering = False
+                        self.group_attacked()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -215,11 +218,18 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 self.facing = Directions.DOWN 
 
     def get_hit(self, dmg:int):
+        self.play_hit_sound()
         self._health -= dmg
         self._is_wandering = False
         self.group_attacked()
         self.check_if_dead()
     
+    def play_hit_sound(self):
+        self.play_audio(f"enemyHit{random.randint(1, 3)}")
+
+    def play_audio(self, audio:str):
+        self.game.sound_manager.play(audio)
+
     def check_if_dead(self):
         if self._health <= 0:
             self.start_dying()
@@ -240,8 +250,13 @@ class Enemy(pygame.sprite.Sprite, ABC):
             if axis == 'y':
                 self.y_change = self._speed
     
-    def start_dying(self):
+    def start_dying(self, instant_death=True):
         self._is_dead = True
+        self.play_death_sound()
+        if instant_death:
+            self.final_death()
+    
+    def final_death(self):
         self.kill()
         self.drop_lootable()
 
@@ -277,3 +292,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
     
     def get_bombed(self):
         self.get_hit(1)
+
+    def play_death_sound(self):
+        if self.size == "Large":
+            self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
+        elif self.size == "Small":
+            self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")

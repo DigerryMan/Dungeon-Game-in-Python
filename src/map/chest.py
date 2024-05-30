@@ -1,6 +1,7 @@
 import pygame
 import random
 from config import BLOCK_LAYER, DROP_LOOT_EVERYTIME
+from items.lootables.pickup_bomb import PickupBomb
 from items.lootables.silver_coin import SilverCoin
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
@@ -45,6 +46,8 @@ class Chest(pygame.sprite.Sprite):
 
             self.drop_loot(items)
 
+            self.game.sound_manager.play("chestOpen")
+
             return items
 
     def update(self):
@@ -83,6 +86,9 @@ class Chest(pygame.sprite.Sprite):
                 if random.random() < 0.5:
                     items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
+                for _ in range(random.randint(0, 1)):
+                    items_to_craft.append(PickupBomb(self.game, self.rect.centerx, self.rect.centery))
+
             elif self.type == "large":
                 for _ in range(random.randint(3, 5)):
                     items_to_craft.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
@@ -92,12 +98,23 @@ class Chest(pygame.sprite.Sprite):
 
                 items_to_craft.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
 
-                if random.uniform(0, 1) < 0.6:
-                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.COMMON))
+                for _ in range(random.randint(1, 2)):
+                    items_to_craft.append(PickupBomb(self.game, self.rect.centerx, self.rect.centery))
 
-                elif random.uniform(0, 0.4) < 0.35:
-                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.EPIC))
+            item = self.roll_item(self.type)
+            if item:
+                items_to_craft.append(item)
 
-                else:
-                    items_to_craft.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY))
+    
+    def roll_item(self, chest_type):
+        match chest_type:
+            case "medium":
+                category = random.choices([Categories.COMMON, Categories.EPIC], weights=[0.9, 0.1])[0]
+                return Item(self.game, self.rect.centerx, self.rect.centery, category)
             
+            case "large":
+                category = random.choices([Categories.COMMON, Categories.EPIC, Categories.LEGENDARY], weights=[0.6, 0.3, 0.1])[0]
+                return Item(self.game, self.rect.centerx, self.rect.centery, category)
+            
+            case _:
+                return None

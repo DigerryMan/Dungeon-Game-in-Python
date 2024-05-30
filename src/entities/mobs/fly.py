@@ -5,9 +5,9 @@ from entities.enemy import Enemy
 
 class Fly(Enemy):
     is_group_attacked = False
-    def __init__(self, game, x: int, y: int):
+    def __init__(self, game, x: int, y: int, wanders=True):
         super().__init__(game, x, y, check_block_colisions=True, 
-                         is_wandering=True, bullet_decay_sec=2.0)
+                         is_wandering=wanders, bullet_decay_sec=2.0)
         #CHANGEABLE STATS
         self._health = 4
         self._speed = 1 * game.settings.SCALE
@@ -36,6 +36,9 @@ class Fly(Enemy):
         for x in range(multi, 2 + multi):
             self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, 0, self.MOB_SIZE, self.MOB_SIZE)))       
 
+        self.prepare_death_images()
+
+    def prepare_death_images(self):
         death_mob_size = self.MOB_SIZE * 2
         for y in range(1, 4):
             for x in range(4):
@@ -58,18 +61,19 @@ class Fly(Enemy):
                 self.image = self.images[self.curr_frame]
                 self.time = self.next_frame_ticks_cd
         else:
-            self.start_dying()
+            self.death_animation()
 
     def start_dying(self):
-        self._is_dead = True
+        super().start_dying(False)
+
+    def death_animation(self):
         if self.dead_animation_time_left == self.dead_animation_time:
             self.curr_frame = 0
             self.image = pygame.transform.scale(self.death_images[self.curr_frame], (self.MOB_SIZE, self.MOB_SIZE))
         
         self.dead_animation_time_left -= 1
         if self.dead_animation_time_left < 0:
-            self.kill()
-            self.drop_lootable()
+            self.final_death()
         elif self.dead_animation_time_left % self.next_frame_time == 0:
             self.next_frame()
 
@@ -81,6 +85,10 @@ class Fly(Enemy):
     def move_because_of_player(self, chase:bool=False):
         super().move_because_of_player(chase)
     
+    def attack(self):
+        if not self._is_dead:
+            super().attack()
+
     @staticmethod
     def check_group_attacked():
         return Fly.is_group_attacked

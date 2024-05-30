@@ -4,11 +4,11 @@ from items.lootable_item import LootableItem
 from items.stat_items.categories import Categories
 
 class Item(LootableItem):
-    def __init__(self, game, x, y, category, drop_animation = True):
+    def __init__(self, game, x, y, category, drop_animation = True, boss = None):
         super().__init__(game, x, y, drop_animation)
         
         self.item = None
-        self.roll_item(category)
+        self.roll_item(category, boss)
 
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
@@ -27,8 +27,11 @@ class Item(LootableItem):
         self.mask = pygame.mask.from_surface(self.image)
         
 
-    def roll_item(self, category):
-        self.item = self.game.items_list.get_random_item(category)
+    def roll_item(self, category, boss):
+        if boss:
+            self.item = self.game.items_list.get_boss_item(boss)
+        else:
+            self.item = self.game.items_list.get_random_item(category)
         #self.item = self.game.items_list.legendaries["friendly_ghost"]
 
     def picked_up(self):
@@ -38,6 +41,8 @@ class Item(LootableItem):
         self.clean_up()
         self.kill()
         self.is_picked_up = True
+
+        self.game.sound_manager.play("lift")
 
         if self.item["category"] == Categories.VERY_COMMON:
             return ItemType.PILL, self.item

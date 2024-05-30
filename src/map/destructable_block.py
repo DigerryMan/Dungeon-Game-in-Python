@@ -20,3 +20,4 @@ class DestructableBlock(Block):
         if self.durability <= 0:
             self.kill()
             self.game.map.get_current_room().remove_block(self)
+            self.game.sound_manager.play("rockBreak")

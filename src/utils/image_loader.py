@@ -6,21 +6,26 @@ class ImageLoader:
         self.settings = settings
         self.tile_size_tuple = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 
-        self.menu_ = ["introbackground", "menucard", "settingscard", "menuoverlay", "pausecard", "arrow", "maintitle", "character_selection"]
+        self.menu_ = ["introbackground", "menucard", "settingscard", "resolutionsettingscard", "soundsettingscard", "spotlight",
+                      "menuoverlay", "pausecard", "arrow", "tick", "tick_transparent", "maintitle", "character_selection"]
         self.characters = ["isaac_display", "eve_display", "lazarus_display"]
 
         self.player_types = PlayerTypes.get_all_characters_values()
-        self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "ghost", "friend_ghost", "slime_shadow"]
+        self.mobs_ = ["alpha_maggot", "fly", "legs", "maggot", "parasite", "slime", "wanderer", "friend_ghost", "slime_shadow"]
         self.mobs_.extend(self.player_types)
+        self.mobs = {"ghost" : pygame.image.load(f"resources/mobs/ghost.png").convert_alpha()}
 
-        self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave"]
-        self.doors_ = ["boss_door", "devil_door", "basement_door1", "red_door"]
+        self.rooms_ = ["controls", "shading", "shop_room", "basement", "cave", "catacombs", "necropolis", "depths", "bluewomb", "womb"]
+        self.doors_ = ["boss_door", "wood_door", "red_door", "shop_door", "dark_door"]
         self.blocks_ = ["rocks"]
 
         self.images_dict = {}
         self.load_images_to_dict()
         self.scale_menu_images()
         self.scale_character_displays()
+
+        self.boss_intro = {}
+        self.load_boss_intro()
 
         self.blocks = {}
         self.load_blocks()
@@ -52,6 +57,32 @@ class ImageLoader:
         self.player_animations_list = []
         self.load_player_animation()
 
+        self.others = {}
+        self.load_others()
+
+        self.bosses = {}
+        self.load_bosses()
+
+    def load_bosses(self):
+        bosses = ["monstro","monstro2", "satan", "satan2", "forsaken", "duke"]
+        for boss in bosses:
+            self.bosses[boss] = pygame.image.load(f"resources/mobs/bosses/{boss}.png").convert_alpha()
+
+    def load_others(self):
+        others = ["laser", "laser_opacity"]
+        for other in others:
+            self.others[other] = pygame.image.load(f"resources/other/{other}.png").convert_alpha()
+
+    def load_boss_intro(self):
+        img = pygame.image.load("resources/boss_intro/vs.png").convert_alpha()
+        self.boss_intro["vs"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
+
+        img = pygame.image.load("resources/boss_intro/bossspot.png").convert_alpha()
+        self.boss_intro["bossspot"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
+
+        img = pygame.image.load("resources/boss_intro/playerspot.png").convert_alpha()
+        self.boss_intro["playerspot"] = pygame.transform.scale(img, (img.get_width() * 4 * self.settings.SCALE, img.get_height() * 4 * self.settings.SCALE))
+
     def load_images_to_dict(self):
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load("resources/menu/" + menu_element + ".png")
@@ -62,6 +93,9 @@ class ImageLoader:
             self.images_dict[character]["name"] = pygame.image.load("resources/menu/characters/" + character + "/name.png")
             self.images_dict[character]["stats"] = pygame.image.load("resources/menu/characters/" + character + "/stats.png")
 
+            self.images_dict[character]["boss_intro"] = {}
+            self.images_dict[character]["boss_intro"]["name"] = pygame.image.load("resources/menu/characters/" + character + "/boss_intro/name.png")
+            self.images_dict[character]["boss_intro"]["image"] = pygame.image.load("resources/menu/characters/" + character + "/boss_intro/image.png")
 
         for mob in self.mobs_:
             img = pygame.image.load("resources/mobs/" + mob + ".png").convert_alpha()
@@ -87,6 +121,26 @@ class ImageLoader:
             elif room == "cave":
                 for i in range(1, 6):
                     self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/cave/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "catacombs":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/catacombs/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "necropolis":
+                for i in range(1, 2):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/necropolis/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "depths":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/depths/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "bluewomb":
+                for i in range(1, 4):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/bluewomb/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
+
+            elif room == "womb":
+                for i in range(1, 5):
+                    self.images_dict[room + str(i)] = pygame.transform.scale(pygame.image.load("resources/rooms/womb/" + room + str(i) + ".png"), room_scaled_size).convert_alpha()
 
             else:
                 self.images_dict[room] = pygame.transform.scale(pygame.image.load("resources/rooms/" + room + ".png"), room_scaled_size).convert_alpha()
@@ -118,15 +172,26 @@ class ImageLoader:
         self.images_dict["introbackground"] = pygame.transform.scale(self.images_dict["introbackground"], screen_size).convert_alpha()
         self.images_dict["menucard"] = pygame.transform.scale(self.images_dict["menucard"], screen_size).convert_alpha()
         self.images_dict["settingscard"] = pygame.transform.scale(self.images_dict["settingscard"], screen_size).convert_alpha()
+        self.images_dict["resolutionsettingscard"] = pygame.transform.scale(self.images_dict["resolutionsettingscard"], screen_size).convert_alpha()
+        self.images_dict["soundsettingscard"] = pygame.transform.scale(self.images_dict["soundsettingscard"], screen_size).convert_alpha()
         self.images_dict["menuoverlay"] = pygame.transform.scale(self.images_dict["menuoverlay"], screen_size).convert_alpha()
         self.images_dict["character_selection"] = pygame.transform.scale(self.images_dict["character_selection"], screen_size).convert_alpha()
-        
+
+        img = self.images_dict["spotlight"]
+        self.images_dict["spotlight"] = pygame.transform.scale(img, (img.get_width() * 2.5 * self.settings.SCALE, img.get_height() * 2.5 * self.settings.SCALE))
+
         self.images_dict["pausecard"] = pygame.transform.scale(self.images_dict["pausecard"],
                                                                 (self.images_dict["pausecard"].get_width() * self.settings.SCALE, self.images_dict["pausecard"].get_height() * self.settings.SCALE)).convert_alpha()
         
         self.images_dict["arrow"] = pygame.transform.scale(self.images_dict["arrow"],
                                                             (self.images_dict["arrow"].get_width() * 0.7 * self.settings.SCALE, self.images_dict["arrow"].get_height() * 0.7 * self.settings.SCALE)).convert_alpha()
         
+        self.images_dict["tick"] = pygame.transform.scale(self.images_dict["tick"],
+                                                           (self.images_dict["tick"].get_width() * 2 * self.settings.SCALE, self.images_dict["tick"].get_height() * 2 * self.settings.SCALE)).convert_alpha()
+
+        self.images_dict["tick_transparent"] = pygame.transform.scale(self.images_dict["tick_transparent"],
+                                                           (self.images_dict["tick_transparent"].get_width() * 2 * self.settings.SCALE, self.images_dict["tick_transparent"].get_height() * 2 * self.settings.SCALE)).convert_alpha()
+
         self.images_dict["maintitle"] = pygame.transform.scale(self.images_dict["maintitle"],
                                                                (self.images_dict["maintitle"].get_width() * 2.8 * self.settings.SCALE, self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE)).convert_alpha()
 
@@ -143,6 +208,9 @@ class ImageLoader:
             self.images_dict[character]["stats"] = pygame.transform.scale(self.images_dict[character]["stats"],
                                                                           (self.images_dict[character]["stats"].get_width() * self.settings.SCALE * 2,
                                                                            self.images_dict[character]["stats"].get_height() * self.settings.SCALE * 2)).convert_alpha()
+            
+            self.images_dict[character]["boss_intro"]["name"] = self.images_dict[character]["boss_intro"]["name"].convert_alpha()
+            self.images_dict[character]["boss_intro"]["image"] = self.images_dict[character]["boss_intro"]["image"].convert_alpha()
 
     def load_blocks(self):
         self.blocks["rock1"] = pygame.transform.scale(self.images_dict["rocks"].subsurface(pygame.Rect(5, 5, 51, 55)), self.tile_size_tuple).convert_alpha()
@@ -176,10 +244,19 @@ class ImageLoader:
 
     def load_doors(self):
         for i in range(19):
-            self.doors[f"basement_door1_{i}"] = pygame.transform.scale(self.images_dict["basement_door1"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+            self.doors[f"wood_door_{i}"] = pygame.transform.scale(self.images_dict["wood_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
         for i in range(11):
             self.doors[f"boss_door_{i}"] = pygame.transform.scale(self.images_dict["boss_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+
+        for i in range(12):
+            self.doors[f"shop_door_{i}"] = pygame.transform.scale(self.images_dict["shop_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+
+        for i in range(13):
+            self.doors[f"dark_door_{i}"] = pygame.transform.scale(self.images_dict["dark_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
+
+        for i in range(13):
+            self.doors[f"red_door_{i}"] = pygame.transform.scale(self.images_dict["red_door"].subsurface(pygame.Rect(i * 49, 0, 49, 33)), (self.settings.TILE_SIZE * 1.3, self.settings.TILE_SIZE * 1.3)).convert_alpha()
 
     def load_trap_door(self):
         self.trap_door["opened"] = pygame.transform.scale(self.images_dict["trap_door"].subsurface(pygame.Rect(16, 16, 32, 32)), self.tile_size_tuple).convert_alpha()
@@ -200,6 +277,8 @@ class ImageLoader:
 
         self.lootables["full_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(0, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
         self.lootables["half_heart"] = pygame.transform.scale(self.images_dict["hearts"].subsurface(pygame.Rect(32, 0, 32, 32)), (size_to_scale[0] // 1.8, size_to_scale[1] // 1.8)).convert_alpha()
+
+        self.lootables["bomb"] = pygame.transform.scale(self.images_dict["bombs"].subsurface(pygame.Rect(128, 64, 32, 32)), (size_to_scale[0] // 2.2, size_to_scale[1] // 2.2)).convert_alpha()
 
         size_to_scale = (self.settings.TILE_SIZE, self.settings.TILE_SIZE)
 

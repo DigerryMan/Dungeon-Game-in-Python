@@ -15,6 +15,10 @@ class PlayerAnimation():
         self.frame = None
         self.image = self.body_images[0]
 
+        self.intro_image = None
+        self.intro_name = None
+        self.prepare_intro_images()
+
         #ANIMATION
         self.x_legs_frame = 0
         self.body_frame = None
@@ -40,6 +44,15 @@ class PlayerAnimation():
 
         for x in range(6):
             self.head_images.append(self.img.subsurface(pygame.Rect(x * self.PLAYER_SIZE, 0, self.PLAYER_SIZE, self.PLAYER_SIZE)))
+
+    def prepare_intro_images(self):
+        img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["image"]
+        self.intro_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+        img = self.game.image_loader.images_dict[f"{self.player_type.value}_display"]["boss_intro"]["name"]
+        self.intro_name = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
+
+        img = self.game.image_loader.player_animations_list[self.player_type.get_index()]["like0"]
+        self.win_image = pygame.transform.scale(img, (img.get_width() * 4 * self.game.settings.SCALE, img.get_height() * 4 * self.game.settings.SCALE))
     
     def animate_and_get_image(self):
         self.animate()
@@ -125,3 +138,19 @@ class PlayerAnimation():
 
             self.death_time_left = self.death_frame_cd
             self.death_index += 1
+
+    def get_init_mask(self):
+        self.animate()
+        mask = pygame.mask.from_surface(self.image)
+        self.correct_player_mask(mask)
+        return mask
+
+    def correct_player_mask(self, mask):
+        removed_hitbox_from_sides = pygame.Surface((mask.get_size()[0] * 0.25, mask.get_size()[1]))
+        removed_hitbox_from_top = pygame.Surface((mask.get_size()[0], mask.get_size()[1] * 0.25))
+        cut_mask_sides = pygame.mask.from_surface(removed_hitbox_from_sides)
+        cut_mask_top = pygame.mask.from_surface(removed_hitbox_from_top)
+
+        mask.erase(cut_mask_sides, (0, 0))
+        mask.erase(cut_mask_sides, (mask.get_size()[0] - cut_mask_sides.get_size()[0], 0))
+        mask.erase(cut_mask_top, (0, 0))

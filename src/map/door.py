@@ -4,9 +4,12 @@ from utils.directions import Directions
 
 class Door(pygame.sprite.Sprite):
     types = {"boss_door": {"name": "boss_door", "frames": 11},
-             "basement_door1": {"name": "basement_door1", "frames": 19}}
+             "shop_door": {"name": "shop_door", "frames": 12},
+             "wood_door": {"name": "wood_door", "frames": 19},
+             "dark_door": {"name": "dark_door", "frames": 13},
+             "red_door":  {"name": "red_door",  "frames": 13}}
     
-    def __init__(self, game, x, y, direction:Directions, door_type:str="basement_door1"):
+    def __init__(self, game, x, y, direction:Directions, level, door_type:str=None):
         self.is_open = False
         self.game = game
         self._layer = BLOCK_LAYER
@@ -18,8 +21,10 @@ class Door(pygame.sprite.Sprite):
         self.x = x * game.settings.TILE_SIZE
         self.y = y * game.settings.TILE_SIZE
 
-        self.animation_frames = Door.types[door_type]['frames']
-        self.images = [game.image_loader.doors[f"{Door.types[door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
+        self.door_type = self.select_doortype_based_on_level_and_doortype(level, door_type)
+
+        self.animation_frames = Door.types[self.door_type]['frames']
+        self.images = [game.image_loader.doors[f"{Door.types[self.door_type]['name']}_{i}"].copy() for i in range(self.animation_frames)]
         self.image = self.images[0]
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -96,11 +101,13 @@ class Door(pygame.sprite.Sprite):
         self.timer = self.time_per_frame * (self.animation_frames - 1)
         self.current_frame = self.animation_frames - 1
         self.reverse_animation = True
+        self.game.sound_manager.play("doorClose")
 
     def animate_opening(self):
         self.timer = self.time_per_frame * (self.animation_frames - 1)
         self.current_frame = 0
         self.reverse_animation = False
+        self.game.sound_manager.play("doorOpen")
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
@@ -112,3 +119,17 @@ class Door(pygame.sprite.Sprite):
     def open(self):
         self.is_open = True
         self.animate_opening()
+
+    def select_doortype_based_on_level_and_doortype(self, level, door_type):
+        if door_type is not None:
+            return door_type
+        
+        match level:
+            case 1 | 2 | 3 | 4:
+                return "wood_door"
+            case 5 | 6:
+                return "dark_door"
+            case 7:
+                return "red_door"
+            case _:
+                return "wood_door"

@@ -148,6 +148,9 @@ class MapGenerator():
                         new_col = col + d_col[i]
 
                         if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE and arr[new_row][new_col] > 0:
+                            if d_row[i] == -1: # entry to boss can't be from the top
+                                neighbors = 0
+                                break
                             neighbors += 1
 
                     if neighbors == 1:

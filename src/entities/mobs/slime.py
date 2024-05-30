@@ -109,6 +109,7 @@ class Slime(Enemy):
     def jump(self):
         self.jump_time_left -= 1
         if self.jump_time_left <= 0: #end of jump
+            self.play_audio("monstroLand")
             self.x = self.new_jump_x
             self.y = self.new_jump_y
             self.rect.x = self.new_jump_x * self.game.settings.TILE_SIZE
@@ -120,6 +121,8 @@ class Slime(Enemy):
             self.prepare_atack = True
 
         else: #jump
+            if self.jump_time_left == self.jump_cd - 1:
+                self.play_audio("monstroJump")
             elapsed_time_sec = (self.jump_time - self.jump_time_left) / FPS
             y = self.calculate_current_y(elapsed_time_sec)
             x = self.old_jump_x + self.v_x * elapsed_time_sec
@@ -170,21 +173,12 @@ class Slime(Enemy):
     def attack(self):
         if self.prepare_atack:
             self.prepare_atack = False
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.LEFT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.RIGHT, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.UP, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
-            
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.DOWN, 
-                   speed=self._projectal_speed, is_friendly=False, dmg=1, 
-                   time_decay_in_seconds=self._bullet_decay_sec)
+            direction_to_shoot = Directions.LEFT
+            for _ in range(4):
+                Bullet(self.game, self.rect.centerx, self.rect.centery, direction_to_shoot, 
+                    speed=self._projectal_speed, is_friendly=False, dmg=1, 
+                    time_decay_in_seconds=self._bullet_decay_sec)
+                direction_to_shoot = direction_to_shoot.rotate_clockwise()
     
     def correct_layer(self):
         if self.is_jumping:
@@ -243,5 +237,8 @@ class Slime(Enemy):
         frame_changed.append(True)
     
     def draw_additional_images(self, screen):
+        self.draw_shadow(screen)
+    
+    def draw_shadow(self, screen):
         if self.is_jumping:
             screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))

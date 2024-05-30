@@ -3,8 +3,8 @@ from math import inf
 from config import MAP_RANGE
 from map.minimap import Minimap
 from utils.map_generator import MapGenerator
-from .room_types import rooms
-from .room import Room
+from .room.room_types import rooms
+from .room.room import Room
 from entities.player.player import Player
 from utils.directions import Directions
 
@@ -88,7 +88,9 @@ class Map():
 
     def set_room_cleared(self):
         x, y = self.current_position
-        self.room_map[x][y].set_room_cleared()
+        room = self.room_map[x][y]
+        if not room.is_cleared:
+            room.set_room_cleared()
 
     def draw_minimap(self, screen):
         self.minimap.draw(screen)

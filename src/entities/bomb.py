@@ -47,6 +47,7 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y - self.game.settings.TILE_SIZE // 1.5)
         self.check_collisions()
+        self.game.sound_manager.play("explosion")
 
     def check_collisions(self):
         for group in [self.game.player_sprite, self.game.enemies, self.game.blocks]:

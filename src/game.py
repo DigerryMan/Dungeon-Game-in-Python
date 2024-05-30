@@ -6,10 +6,12 @@ from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
 from map.map import Map
 from entities.player.player import Player
-from menu import Menu
+from menu.menu import Menu
+from sound_manager import SoundManager
 from utils.directions import Directions
 from utils.image_loader import ImageLoader
 from utils.settings import Settings
+
 
 class Game:
     def __init__(self):
@@ -24,12 +26,14 @@ class Game:
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
         self.menu = Menu(self)
+        self.sound_manager = SoundManager()
 
         self.clock = pygame.time.Clock()
         self.intro_playing = True
         self.menu_playing = False
         self.running = True
         self.paused = False
+        self.game_over_playing = False
 
         self.character_type = PlayerTypes.ISAAC
 
@@ -41,12 +45,12 @@ class Game:
 
         self.prepare_game()
 
+
     def prepare_game(self):
         self.map = None
         self.player = None
         self.stat_bars = None
 
-        self.difficulty = 1
         self.current_level = 0
         self.e_pressed = False
         self.space_pressed = False
@@ -84,13 +88,16 @@ class Game:
         self.map.render_initial_room()
 
     def run(self):
-        self.menu.intro_screen()
+        self.menu.display_intro_screen()
 
         while self.running:
             self.events()
 
             if self.menu_playing:
-                self.menu.main_menu()
+                self.menu.display_main_menu()
+
+            if self.game_over_playing:
+                self.game_over()
 
             if not self.paused and self.running:
                 self.update()
@@ -141,7 +148,8 @@ class Game:
         pygame.display.update()
 
     def game_over(self):
-        pass
+        self.menu.display_game_over()
+        self.game_over_playing = False
 
     def render_next_room(self, direction:Directions):
         self.clear_sprites()
@@ -186,7 +194,8 @@ class Game:
 
     def display_eq(self):
         self.player.eq.user_eq_input(None) #show big_item first time
-        
+        self.sound_manager.play("pageTurn")
+
         while(self.player.eq_opened):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -195,6 +204,7 @@ class Game:
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_TAB or event.key == pygame.K_ESCAPE:
+                        self.sound_manager.play("pageTurn")
                         self.player.eq_opened = False
 
                     self.player.eq.user_eq_input(event.key)
