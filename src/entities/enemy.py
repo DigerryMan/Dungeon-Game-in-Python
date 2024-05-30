@@ -2,6 +2,7 @@ import pygame
 import random
 from config import *
 from entities.bullet import Bullet
+from entities.enemy_collisions import EnemyCollisions
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
@@ -21,6 +22,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._health = 4
         self._damage = 1
         self._collision_damage = 1
+        self.size = "Small"
         
         self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
         self._chase_speed_debuff = 1
@@ -55,7 +57,8 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.is_change_of_frame = False  
 
         #REST
-        self._check_block_colisions = check_block_colisions
+        self.collisions_manager = EnemyCollisions(self, game, check_block_colisions)
+        
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
         self._is_wandering = is_wandering
@@ -68,35 +71,28 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         self._bullet_decay_sec = bullet_decay_sec
 
-        self.size = "Small"
-
         self._is_dead = False
         self.game = game
         self.room = game.map.get_current_room()
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
    
-
     def update(self):
         self.move()
         self.collide_player()
         if not self._is_wandering:
             self.attack()
 
-        self.rect.x += self.x_change
-        if self._check_block_colisions:
-            self.collide_blocks('x')
-
-        self.rect.y += self.y_change
-        if self._check_block_colisions:
-            self.collide_blocks('y')
-        
+        self.terrain_collisions()
         self.correct_facing()
         self.correct_layer()
         self.check_hit_and_animate()
 
         self.x_change = 0
         self.y_change = 0
+
+    def terrain_collisions(self):
+        self.collisions_manager.terrain_collisions()
 
     def check_hit_and_animate(self):
         if self.hit_time > 0:
@@ -174,15 +170,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.correct_facing()
 
     def collide_player(self):
-        if not self._is_dead:
-            rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-            if rect_hits:
-                mask_hits = self.get_mask_colliding_sprite(rect_hits)
-                if mask_hits:
-                    self.game.damage_player(self._collision_damage)
-                    if self._is_wandering:
-                        self._is_wandering = False
-                        self.group_attacked()
+        self.collisions_manager.collide_player()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -193,27 +181,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self._shot_time_left = self._shot_cd
 
     def collide_blocks(self, orientation:str):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                if orientation == 'x':
-                    self.rect.x -= self.x_change
-                if orientation == 'y':
-                    self.rect.y -= self.y_change
+        self.collisions_manager.collide_blocks(orientation)
 
     def get_mask_colliding_sprite(self, rect_hits):
-        for sprite in rect_hits:
-            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked by rough blocks
-                block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
-                block_mask = pygame.mask.from_surface(block_surface)
-                offset_x = sprite.rect.x - self.rect.x
-                offset_y = sprite.rect.y - self.rect.y
-                if self.mask.overlap(block_mask, (offset_x, offset_y)):
-                    return sprite
-                
-            if pygame.sprite.collide_mask(self, sprite):
-                return sprite
+        self.collisions_manager.get_mask_colliding_sprite(self, rect_hits)
 
     def _correct_rounding(self):
         self.x_change += (1 if self.x_change >= 0 else -1)
