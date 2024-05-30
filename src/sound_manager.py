@@ -1,3 +1,4 @@
+import time
 from pygame import mixer
 import os
 
@@ -19,8 +20,10 @@ class SoundManager:
         mixer.set_num_channels(32)
         self.music = load_sounds("resources/music")
         self.sounds = load_sounds("resources/sounds2")
-        self.set_music_volume(3)
-        self.set_sound_volume(3)
+        self.set_music_volume(2)
+        self.set_sound_volume(4)
+        self.last_played = {}
+        self.channels = {}
 
     def set_music_volume(self, volume):
         for sound in self.music.values():
@@ -43,6 +46,18 @@ class SoundManager:
             self.sounds[sound_name].play(-1 if looped else 0, fade_ms=fadein_time)
         elif sound_name in self.music:
             self.music[sound_name].play(-1 if looped else 0, fade_ms=fadein_time)
+        else:
+            print(f"Sound '{sound_name}' not found!")
+
+    def play_if_not_playing(self, sound_name):
+        current_time = time.time()
+        if sound_name in self.last_played and current_time - self.last_played[sound_name] < 0.25:
+            return  # Don't play the sound if it was played less than 0.25 seconds ago
+
+        if sound_name in self.sounds:
+            if sound_name not in self.channels or not self.channels[sound_name].get_busy():
+                self.channels[sound_name] = self.sounds[sound_name].play()
+                self.last_played[sound_name] = current_time
         else:
             print(f"Sound '{sound_name}' not found!")
 

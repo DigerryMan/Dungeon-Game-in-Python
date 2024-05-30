@@ -17,7 +17,6 @@ class RoomGenerator:
         self.game = room.game
         self.room = room
         self.room_type = self.room.room_type
-        self.room_layout = self.room.room_layout
         self.level = self.room.level
         self.doors_to_spawn = self.room.doors_to_spawn
         self.well_generated = False
@@ -26,9 +25,9 @@ class RoomGenerator:
         random_block_density_factor = random.uniform(0.05, 0.1)
         while not self.well_generated:
             doors_positions = self.get_doors_positions()
-            room_map = [[self.room_layout[y][x] for x in range(len(self.room_layout[y]))] for y in range(len(self.room_layout))]
+            room_map = [[self.room.layout[y][x] for x in range(len(self.room.layout[y]))] for y in range(len(self.room.layout))]
 
-            for y, row in enumerate(self.room_layout):
+            for y, row in enumerate(self.room.layout):
                 for x, col in enumerate(row):
                     if col == 'C' and not self.room.chest and random.uniform(0, 1) < 0.50 + self.game.player.get_luck():
                         rand = random.uniform(0, 1)
@@ -66,7 +65,6 @@ class RoomGenerator:
                             else:
                                 self.room.blocks.append(Block(self.game, x, y))
                                 room_map[y][x] = 'B'
-
 
             if self.check_if_room_well_generated(room_map) == False:
                 self.room.crucial_positions.clear()
@@ -114,7 +112,7 @@ class RoomGenerator:
                 if door.direction == entry_direction.reverse(): #if the door is the one the player used to enter the room
                     door.animate_closing()
 
-            self.room_layout = room_map
+            self.room.layout = room_map
             self.spawn_mobs()
 
     def spawn_mobs(self):

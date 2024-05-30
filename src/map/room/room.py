@@ -13,9 +13,9 @@ from items.lootable_item import LootableItem
 class Room():    
     def __init__(self, room_type, game, doors_to_spawn:Directions, level):
         if room_type in special_rooms:
-            self.room_layout = special_rooms[room_type]
+            self.layout = special_rooms[room_type]
         else:
-            self.room_layout = rooms[room_type]
+            self.layout = rooms[room_type]
 
         self.game = game
         self.player = game.player
@@ -107,7 +107,7 @@ class Room():
             self.game.player.update_rooms_cleared()
 
     def get_block_layout(self):
-        return self.room_layout
+        return self.layout
 
     def draw(self, screen):
         self.room_drawer.draw(screen)

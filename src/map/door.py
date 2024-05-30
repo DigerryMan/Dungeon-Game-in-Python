@@ -101,13 +101,13 @@ class Door(pygame.sprite.Sprite):
         self.timer = self.time_per_frame * (self.animation_frames - 1)
         self.current_frame = self.animation_frames - 1
         self.reverse_animation = True
-        self.game.sound_manager.play("doorClose")
+        self.game.sound_manager.play_if_not_playing("doorClose")
 
     def animate_opening(self):
         self.timer = self.time_per_frame * (self.animation_frames - 1)
         self.current_frame = 0
         self.reverse_animation = False
-        self.game.sound_manager.play("doorOpen")
+        self.game.sound_manager.play_if_not_playing("doorOpen")
 
     def collide(self):
         hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)

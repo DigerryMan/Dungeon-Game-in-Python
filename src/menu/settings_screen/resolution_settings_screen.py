@@ -7,7 +7,7 @@ class ResolutionSettingsScreen():
         self.menu = main_settings.menu
         self.game = main_settings.game
 
-        self.current_resolution_index = 0
+        self.current_resolution_index = 2
 
     def display(self):
         arrow_positions = None
