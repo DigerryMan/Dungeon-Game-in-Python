@@ -245,8 +245,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         self.hit_time = self.hit_time_cd
         self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
-            
-        
     
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")

@@ -14,6 +14,7 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
+from utils.image_transformer import ImageTransformer
 
 class Satan(Enemy):
     def __init__(self, game, x:int, y:int):
@@ -84,7 +85,16 @@ class Satan(Enemy):
         self.perform_boss_stage()
         self.collide_player()
         self.correct_layer()
+        
+        if self.hit_time > 0:
+            self.hit_time -= 1
+            if self.hit_time == 0:
+                self.restore_image_colors()
+
+        self.is_change_of_frame = False
         self.animate()
+        if self.is_change_of_frame and self.hit_time > 0:
+            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
 
     def perform_boss_stage(self):
         if self.boss_figth_start_active:

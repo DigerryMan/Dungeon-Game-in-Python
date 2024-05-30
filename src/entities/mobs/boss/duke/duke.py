@@ -8,6 +8,7 @@ from entities.mobs.slime import Enemy
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
+from utils.image_transformer import ImageTransformer
 
 class Duke(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -24,7 +25,7 @@ class Duke(Enemy):
 
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
-
+        self.unchanged_image = self.image.copy()
         #HITBOX
         self.rect = self.image.get_rect()
         self.rect.centerx = x * game.settings.TILE_SIZE
@@ -52,7 +53,16 @@ class Duke(Enemy):
     def update(self):
         self.collide_player()
         self.correct_layer()
+        if self.hit_time > 0:
+            self.hit_time -= 1
+            if self.hit_time == 0:
+                self.restore_image_colors()
+
+        self.is_change_of_frame = False
         self.animate()
+        if self.is_change_of_frame and self.hit_time > 0:
+            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            
         self.move()
         self.enemies_spawner()
 

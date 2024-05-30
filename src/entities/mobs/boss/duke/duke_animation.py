@@ -8,6 +8,7 @@ class DukeAnimation():
         self.images = []
         self.prepare_images()
         self.boss.image = self.images[2]
+        self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
         self.intro_image = None
@@ -52,6 +53,8 @@ class DukeAnimation():
     def enemies_spawning_animation(self):
         if self.boss.spawning_time in self.spawn_times_of_frames:
             self.boss.image = self.images[self.spawn_frames[self.spawn_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.spawn_index += 1
             self.spawn_index %= 4
         

@@ -1,5 +1,6 @@
 import pygame
 from config import FPS
+from utils.image_transformer import ImageTransformer
 
 class ForsakenAnimation():
     def __init__(self, boss, game):
@@ -9,6 +10,7 @@ class ForsakenAnimation():
         self.images = []
         self.prepare_images()
         self.boss.image = self.images[0]
+        self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
         self.intro_image = None
@@ -63,11 +65,15 @@ class ForsakenAnimation():
             self.index += 1
             self.index %= 2
             self.boss.image = self.images[frames[self.index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             
 
     def laser_animation(self):
         if self.boss.lasers_time == (8 * FPS - 1):
             self.boss.image = self.change_opacity(self.images[5], 100)
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.game.not_voulnerable.add(self.boss)
         self.shaking_animation()
         self.shaking_animation_y()
@@ -110,15 +116,25 @@ class ForsakenAnimation():
             self.index += 1
             self.index %= len(frames)
             self.boss.image = self.images[frames[self.index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
 
     def disappearing_animation(self):
         if self.boss.flying_time == int(9.7 * FPS):
             self.game.not_voulnerable.add(self.boss)
             self.boss.image = self.change_opacity(self.images[5], 150)
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
+
         elif self.boss.flying_time == int(9.3 * FPS):
             self.boss.image = self.change_opacity(self.images[5], 50)
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
+
         elif self.boss.flying_time == int(8.8 * FPS):
             self.game.not_voulnerable.remove(self.boss)
             self.boss.image = self.images[5]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
 
        

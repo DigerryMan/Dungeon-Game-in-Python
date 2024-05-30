@@ -10,6 +10,7 @@ class SatanAnimiation():
         self.prepare_images()
 
         self.boss.image = self.images[21]
+        self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
         self.intro_image = None
@@ -65,6 +66,8 @@ class SatanAnimiation():
         time_stages = [int(time * self.boss.bullets_from_hands_period) for time in time_stages]
         if self.boss.start_time in time_stages:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(time_stages)
@@ -75,6 +78,8 @@ class SatanAnimiation():
         time_stages = [int(time * self.boss.bullets_from_hands_period) for time in time_stages]
         if self.boss.bullets_from_hands_time in time_stages:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(time_stages)
@@ -85,6 +90,8 @@ class SatanAnimiation():
         time_stages = [int(time * self.boss.laser_breath_period) for time in time_stages]
         if self.boss.laser_breath_time in time_stages:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(time_stages)
@@ -95,6 +102,8 @@ class SatanAnimiation():
         time_stages = [int(time * self.boss.mouth_attack_period) for time in time_stages]
         if self.boss.mouth_attack_time in time_stages:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(time_stages)
@@ -138,6 +147,8 @@ class SatanAnimiation():
         time_stages = [int(time * self.boss.flying_period) for time in time_stages]
         if self.boss.flying_time in time_stages:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(frames)

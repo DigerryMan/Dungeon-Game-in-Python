@@ -9,6 +9,8 @@ class MonstroAnimation():
         self.images = []
         self.prepare_images()
         self.boss.image = self.images[2]
+        self.boss.is_change_of_frame = True
+        self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
         self.intro_image = None
@@ -61,6 +63,8 @@ class MonstroAnimation():
 
     def bullet_shoot_anime(self):
         self.boss.image = self.image_rotator(self.images[3])
+        self.boss.is_change_of_frame = True
+        self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
     def idle_anime(self, time):
@@ -70,11 +74,15 @@ class MonstroAnimation():
             self.idle_frame = 1 + self.idle_frame % 2
             self.idle_time_left = time
             self.boss.image = self.image_rotator(self.images[self.idle_frame])
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
     
     def jumping_anime(self):
         if int(self.boss.jump_time_left) in self.list_of_jumpers:
             self.boss.image = self.image_rotator(self.images[self.jumps_order[self.jump_index]])
+            self.boss.is_change_of_frame = True
+            self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.jump_index += 1
             self.jump_index %= len(self.jumps_order) 
