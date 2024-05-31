@@ -123,7 +123,9 @@ class Slime(Enemy):
 
         else: #jump
             if self.jump_time_left == self.jump_cd - 1:
+                pass # does not work without that
                 self.play_audio("monstroJump")
+
             elapsed_time_sec = (self.jump_time - self.jump_time_left) / FPS
             y = self.calculate_current_y(elapsed_time_sec)
             x = self.old_jump_x + self.v_x * elapsed_time_sec

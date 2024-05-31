@@ -23,7 +23,6 @@ class SoundManager:
         self.set_music_volume(2)
         self.set_sound_volume(4)
         self.last_played = {}
-        self.channels = {}
 
     def set_music_volume(self, volume):
         for sound in self.music.values():
@@ -51,13 +50,12 @@ class SoundManager:
 
     def play_if_not_playing(self, sound_name):
         current_time = time.time()
-        if sound_name in self.last_played and current_time - self.last_played[sound_name] < 0.25:
-            return  # Don't play the sound if it was played less than 0.25 seconds ago
+        if sound_name in self.last_played and current_time - self.last_played[sound_name] < 0.05:
+            return
 
         if sound_name in self.sounds:
-            if sound_name not in self.channels or not self.channels[sound_name].get_busy():
-                self.channels[sound_name] = self.sounds[sound_name].play()
-                self.last_played[sound_name] = current_time
+            self.sounds[sound_name].play()
+            self.last_played[sound_name] = current_time
         else:
             print(f"Sound '{sound_name}' not found!")
 
