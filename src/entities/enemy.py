@@ -2,12 +2,13 @@ import pygame
 import random
 from config import *
 from entities.bullet import Bullet
+from entities.enemy_collisions import EnemyCollisions
+from entities.enemy_moves import EnemyMoves
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
-from map.block import Block
 from utils.directions import Directions
 from abc import ABC, abstractmethod
 
@@ -21,16 +22,15 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._health = 4
         self._damage = 1
         self._collision_damage = 1
+        self.size = "Small"
         
         self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
+        self._bullet_decay_sec = bullet_decay_sec
         self._shot_cd = int(2.5 * FPS)
         self._shot_time_left = self._shot_cd
-
-        self._wander_interval = [int(0.7 * FPS), int(1.7 * FPS)]
-        self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
-
+        
         #POSITION
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.x_change = 0
@@ -55,20 +55,14 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.is_change_of_frame = False  
 
         #REST
-        self._check_block_colisions = check_block_colisions
+        self.collisions_manager = EnemyCollisions(self, game, check_block_colisions)
+        
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
+        #WAZNE
+        self.enemy_moves = EnemyMoves(self, game)
         self._is_wandering = is_wandering
-        self._wander_time = self.roll_interval(self._wander_interval)
-        self._wander_time_left = self._wander_time
-        
-        self._idle_time = self.roll_interval(self._idle_interval)
         self._is_idling = self._is_wandering
-        self._idle_time_left = self._idle_time
-
-        self._bullet_decay_sec = bullet_decay_sec
-
-        self.size = "Small"
 
         self._is_dead = False
         self.game = game
@@ -76,27 +70,22 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
    
-
     def update(self):
         self.move()
         self.collide_player()
         if not self._is_wandering:
             self.attack()
 
-        self.rect.x += self.x_change
-        if self._check_block_colisions:
-            self.collide_blocks('x')
-
-        self.rect.y += self.y_change
-        if self._check_block_colisions:
-            self.collide_blocks('y')
-        
+        self.terrain_collisions()
         self.correct_facing()
         self.correct_layer()
         self.check_hit_and_animate()
 
         self.x_change = 0
         self.y_change = 0
+
+    def terrain_collisions(self):
+        self.collisions_manager.terrain_collisions()
 
     def check_hit_and_animate(self):
         if self.hit_time > 0:
@@ -113,76 +102,13 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
     def move(self):
         if not self._is_dead:
-            if self._is_wandering:
-                self.wander()
-            else:
-                self.move_because_of_player() 
-        
-    def wander(self):
-        if self._is_idling:
-            if not self.check_group_attacked():
-                self.idle()
-            else:
-                self._is_idling = False
-                self._is_wandering = False
-        else:
-            self._wander_time_left -= 1
-            if self._wander_time_left <= 0:
-                self._is_idling = True
-                self._wander_time = self.roll_interval(self._wander_interval)
-                self._wander_time_left = self._wander_time
-            else:
-                if self.facing == Directions.LEFT:
-                    self.x_change = -self._speed//2
-                elif self.facing == Directions.RIGHT:
-                    self.x_change = self._speed//2
-                    self.correct_low_speed_enemies("x")
-                elif self.facing == Directions.UP:
-                    self.y_change = -self._speed//2
-                elif self.facing == Directions.DOWN:
-                    self.y_change = self._speed//2
-                    self.correct_low_speed_enemies("y")
-                
-    def idle(self):
-        self._idle_time_left -= 1
-        if self._idle_time_left <= 0:
-            self._is_idling = False
-            self.roll_facing()
-            self._idle_time = self.roll_interval(self._idle_interval)
-            self._idle_time_left = self._idle_time
+            self.enemy_moves.move()
 
     def move_because_of_player(self, chase:bool=True):
-        player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
-        enemy_vector = pygame.math.Vector2(self.rect.center)
-        distance = (player_vector - enemy_vector).magnitude()
-        if distance > 3:
-            direction = None
-            if distance > 0:
-                direction = (player_vector - enemy_vector).normalize()
-            else:
-                direction = pygame.math.Vector2()
-            
-            speed = self._speed
-            if not chase:
-                direction.rotate_ip(180)
-                speed = self._speed * self._chase_speed_debuff
-
-            velocity = direction * speed
-            self.x_change = velocity.x
-            self.y_change = velocity.y
-            self._correct_rounding()
-            self.correct_facing()
+        self.enemy_moves.move_because_of_player(chase)
 
     def collide_player(self):
-        if not self._is_dead:
-            rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-            if rect_hits:
-                mask_hits = self.get_mask_colliding_sprite(rect_hits)
-                if mask_hits:
-                    self.game.damage_player(self._collision_damage)
-                    if self._is_wandering:
-                        self._is_wandering = False
-                        self.group_attacked()
+        self.collisions_manager.collide_player()
 
     def attack(self):
         self._shot_time_left -= 1
@@ -193,50 +119,17 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self._shot_time_left = self._shot_cd
 
     def collide_blocks(self, orientation:str):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                if orientation == 'x':
-                    self.rect.x -= self.x_change
-                if orientation == 'y':
-                    self.rect.y -= self.y_change
+        self.collisions_manager.collide_blocks(orientation)
 
     def get_mask_colliding_sprite(self, rect_hits):
-        for sprite in rect_hits:
-            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked by rough blocks
-                block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
-                block_mask = pygame.mask.from_surface(block_surface)
-                offset_x = sprite.rect.x - self.rect.x
-                offset_y = sprite.rect.y - self.rect.y
-                if self.mask.overlap(block_mask, (offset_x, offset_y)):
-                    return sprite
-                
-            if pygame.sprite.collide_mask(self, sprite):
-                return sprite
+        self.collisions_manager.get_mask_colliding_sprite(self, rect_hits)
 
     def _correct_rounding(self):
         self.x_change += (1 if self.x_change >= 0 else -1)
         self.y_change += (1 if self.y_change >= 0 else -1)
 
-    def roll_facing(self):
-        rand = random.choice([self.facing.rotate_clockwise(), self.facing.rotate_counter_clockwise(), self.facing.reverse(), self.facing])
-        self.facing = rand
-
     def correct_facing(self):
-        y_abs = abs(self.y_change)
-        x_abs = abs(self.x_change)
-
-        if(x_abs >= y_abs):
-            if self.x_change < 0:
-                self.facing = Directions.LEFT
-            elif self.x_change > 0:
-                self.facing = Directions.RIGHT
-        else:
-            if self.y_change < 0:
-                self.facing = Directions.UP
-            elif self.y_change > 0:
-                self.facing = Directions.DOWN 
+        self.enemy_moves.correct_facing()
 
     def get_hit(self, dmg:int):
         self.play_hit_sound()
@@ -258,21 +151,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
         if self._health <= 0:
             self.start_dying()
 
-    def roll_interval(self, interval):
-        return random.randint(interval[0], interval[1])
-
     def roll_next_shot_cd(self):
         self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
             
     def correct_layer(self):
         self._layer = self.rect.bottom
-
-    def correct_low_speed_enemies(self, axis:str):
-        if self._speed//2 == 0:
-            if axis == 'x':
-                self.x_change = self._speed
-            if axis == 'y':
-                self.y_change = self._speed
     
     def start_dying(self, instant_death=True):
         self._is_dead = True
