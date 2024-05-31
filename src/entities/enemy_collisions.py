@@ -24,8 +24,8 @@ class EnemyCollisions():
             if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked by rough blocks
                 block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
                 block_mask = pygame.mask.from_surface(block_surface)
-                offset_x = sprite.rect.x - self.rect.x
-                offset_y = sprite.rect.y - self.rect.y
+                offset_x = sprite.rect.x - self.enemy.rect.x
+                offset_y = sprite.rect.y - self.enemy.rect.y
                 if self.enemy.mask.overlap(block_mask, (offset_x, offset_y)):
                     return sprite
                 
