@@ -23,6 +23,7 @@ class Monstro(Slime):
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
         self.MOB_SIZE = game.settings.MOB_SIZE * 2
+        self.death_animator.scale_to_new_size(self.MOB_SIZE)
         self.img_shadow = pygame.transform.scale(self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6)))
 
         #SKINS
@@ -117,12 +118,15 @@ class Monstro(Slime):
         return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t ** 2
 
     def update(self):
-        self.perform_boss_stage()
-        self.collide_player()
-        self.correct_layer()
-        self.check_hit_and_animate()
-
-    def animate(self):
+        if not self._is_dead:
+            self.perform_boss_stage()
+            self.collide_player()
+            self.correct_layer()
+            self.check_hit_and_animate()
+        else:
+            self.check_hit_and_animate()
+            
+    def animate_alive(self):
         self.animation.animate()
     
     def perform_boss_stage(self):

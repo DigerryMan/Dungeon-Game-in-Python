@@ -88,7 +88,7 @@ class FriendlyGhost(Ghost):
     def collide_player(self):
         pass
 
-    def animate(self):
+    def animate_alive(self):
         if self.is_moving:
             self.time -= 1
             if self.time <= 0:

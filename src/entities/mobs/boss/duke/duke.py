@@ -8,7 +8,6 @@ from entities.mobs.slime import Enemy
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
-from utils.image_transformer import ImageTransformer
 
 class Duke(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -22,7 +21,7 @@ class Duke(Enemy):
        
         # CHANGED FROM ENEMY
         self.MOB_SIZE = int(game.settings.MOB_SIZE * 2.5)
-
+        self.death_animator.scale_to_new_size(self.MOB_SIZE)
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
         self.unchanged_image = self.image.copy()
@@ -51,11 +50,15 @@ class Duke(Enemy):
         self.animation = DukeAnimation(self, game)
 
     def update(self):
-        self.collide_player()
-        self.correct_layer()
-        self.check_hit_and_animate()
-        self.move()
-        self.enemies_spawner()
+        if not self._is_dead:
+            self.collide_player()
+            self.correct_layer()
+            self.check_hit_and_animate()
+            self.move()
+            self.enemies_spawner()
+        
+        else:
+            self.check_hit_and_animate()
 
     def enemies_spawner(self):
         if self.is_spawning_mobs:
@@ -83,7 +86,7 @@ class Duke(Enemy):
         x, y = self.rect.centerx//self.game.settings.TILE_SIZE, self.rect.centery//self.game.settings.TILE_SIZE
         room.spawn_mob(FlyAggresive, x, y, self)
 
-    def animate(self):
+    def animate_alive(self):
         self.animation.animate()
     
     def draw_additional_images(self, screen):

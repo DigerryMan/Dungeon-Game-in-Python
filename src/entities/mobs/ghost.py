@@ -41,7 +41,7 @@ class Ghost(Enemy):
                 img_help = self.img.subsurface(pygame.Rect(x * 48, y * 48, 48, 48))
                 self.images.append(pygame.transform.scale(img_help, (self.MOB_SIZE, self.MOB_SIZE)))
     
-    def animate(self):
+    def animate_alive(self):
         self.time -= 1
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd 

@@ -28,6 +28,7 @@ class Satan(Enemy):
         # CHANGED FROM ENEMY
         self.MOB_WIDTH = game.settings.MOB_SIZE * 5
         self.MOB_HEIGHT = int(game.settings.MOB_SIZE * 3.5)
+        self.death_animator.scale_to_new_size_v2(self.MOB_WIDTH, self.MOB_HEIGHT)
 
         #SKINS
         self.image = pygame.Surface([self.MOB_WIDTH, self.MOB_HEIGHT])
@@ -76,13 +77,14 @@ class Satan(Enemy):
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
 
-    def animate(self):
+    def animate_alive(self):
         self.animation.animate()
 
     def update(self):
-        self.perform_boss_stage()
-        self.collide_player()
-        self.correct_layer()
+        if not self._is_dead:
+            self.perform_boss_stage()
+            self.collide_player()
+            self.correct_layer()
         self.check_hit_and_animate()
 
     def perform_boss_stage(self):
@@ -219,9 +221,9 @@ class Satan(Enemy):
         self._is_dead = True
         if self.laser is not None:
             self.laser.kill()
-        self.kill()
         self.drop_lootable()
         self.game.sound_manager.play("enemyDeath")
+        self.game.not_voulnerable.add(self)
 
     def drop_lootable(self):
         drops = [SilverCoin] * 10 + [GoldenCoin] * 5 + [PickupHeart] * 3

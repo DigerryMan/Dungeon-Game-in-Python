@@ -4,11 +4,13 @@ from config import *
 from entities.bullet import Bullet
 from entities.enemy_collisions import EnemyCollisions
 from entities.enemy_moves import EnemyMoves
+from entities.mobs.death_animation import DeathAnimator
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
+from map.block import Block
 from utils.directions import Directions
 from abc import ABC, abstractmethod
 
@@ -54,12 +56,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.hit_time = 0     
         self.is_change_of_frame = False  
 
+
         #REST
         self.collisions_manager = EnemyCollisions(self, game, check_block_colisions)
-        
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
-        #WAZNE
+        self.death_animator = DeathAnimator(self, game)
         self.enemy_moves = EnemyMoves(self, game)
         self._is_wandering = is_wandering
         self._is_idling = self._is_wandering
@@ -71,16 +73,17 @@ class Enemy(pygame.sprite.Sprite, ABC):
         pygame.sprite.Sprite.__init__(self, self.groups)
    
     def update(self):
-        self.move()
-        self.collide_player()
-        if not self._is_wandering:
-            self.attack()
+        if not self._is_dead:
+            self.move()
+            self.collide_player()
+            if not self._is_wandering:
+                self.attack()
 
-        self.terrain_collisions()
-        self.correct_facing()
-        self.correct_layer()
+            self.terrain_collisions()
+            self.correct_facing()
+            self.correct_layer()
+        
         self.check_hit_and_animate()
-
         self.x_change = 0
         self.y_change = 0
 
@@ -90,11 +93,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def check_hit_and_animate(self):
         if self.hit_time > 0:
             self.hit_time -= 1
-            if self.hit_time == 0:
+            if self.hit_time == 0 and not self._is_dead:
                 self.restore_image_colors()
         self.is_change_of_frame = False
         self.animate()
-        if self.is_change_of_frame and self.hit_time > 0:
+        if self.is_change_of_frame and self.hit_time > 0 and not self._is_dead:
             self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
 
     def restore_image_colors(self):
@@ -122,7 +125,17 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.collisions_manager.collide_blocks(orientation)
 
     def get_mask_colliding_sprite(self, rect_hits):
-        self.collisions_manager.get_mask_colliding_sprite(self, rect_hits)
+        for sprite in rect_hits:
+            if isinstance(sprite, Block):
+                block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
+                block_mask = pygame.mask.from_surface(block_surface)
+                offset_x = sprite.rect.x - self.rect.x
+                offset_y = sprite.rect.y - self.rect.y
+                if self.mask.overlap(block_mask, (offset_x, offset_y)):
+                    return sprite
+                
+            if pygame.sprite.collide_mask(self, sprite):
+                return sprite
 
     def _correct_rounding(self):
         self.x_change += (1 if self.x_change >= 0 else -1)
@@ -132,14 +145,16 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.enemy_moves.correct_facing()
 
     def get_hit(self, dmg:int):
-        self.play_hit_sound()
-        self._health -= dmg
-        self._is_wandering = False
-        self.group_attacked()
-        self.check_if_dead()
+        if self not in self.game.not_voulnerable:
+            self.play_hit_sound()
+            self._health -= dmg
+            self._is_wandering = False
+            self.group_attacked()
+            self.check_if_dead()
 
-        self.hit_time = self.hit_time_cd
-        self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            self.hit_time = self.hit_time_cd
+            if not self._is_dead:
+                self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
     
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")
@@ -157,12 +172,14 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def correct_layer(self):
         self._layer = self.rect.bottom
     
-    def start_dying(self, instant_death=True):
+    def start_dying(self, instant_death=False):
         self._is_dead = True
         self.play_death_sound()
         self.drop_lootable()
         if instant_death:
             self.final_death()
+        else:
+            self.game.not_voulnerable.add(self)
     
     def final_death(self):
         self.kill()
@@ -185,9 +202,18 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def draw_additional_images(self, screen):
         pass
 
-    @abstractmethod
     def animate(self):
+        if not self._is_dead:
+            self.animate_alive()
+        else:
+            self.animate_dead()
+        
+    @abstractmethod    
+    def animate_alive(self):
         pass
+    
+    def animate_dead(self):
+        self.death_animator.death_animation()
 
     @staticmethod
     def check_group_attacked():

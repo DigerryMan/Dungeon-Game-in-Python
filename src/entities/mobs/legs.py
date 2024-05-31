@@ -32,7 +32,7 @@ class Legs(Enemy):
     def attack(self):
         pass
     
-    def animate(self):
+    def animate_alive(self):
         self.reversed_frame = False
 
         if not self._is_wandering or not self._is_idling:

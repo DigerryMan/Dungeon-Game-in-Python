@@ -63,7 +63,7 @@ class Parasite(Enemy):
         else:
             self.game.not_voulnerable.add(self)
     
-    def animate(self):
+    def animate_alive(self):
         if self.diging_time_left == int(self._dig_cooldown * 0.25):
             self.nextFrame()
         elif self.diging_time_left == int(self._dig_cooldown * 0.125):
@@ -76,8 +76,6 @@ class Parasite(Enemy):
                 self.nextFrame(player_shoot_frame=True)
             if self.time_left_to_shoot == int(0.2 * self.shoot_cd_after_dig_out):
                 self.nextFrame()
-        
-        super().animate()
 
     def nextFrame(self, player_shoot_frame=False):
         self.is_change_of_frame = True
@@ -92,7 +90,6 @@ class Parasite(Enemy):
 
         self.remove_transparency_from_frame()
        
-    
     def remove_transparency_from_frame(self):
         old_x_center = self.rect.centerx
         old_bottom = self.rect.bottom

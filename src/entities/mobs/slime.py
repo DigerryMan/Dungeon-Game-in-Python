@@ -99,7 +99,7 @@ class Slime(Enemy):
             self.possible_jumps.remove((1, y))
 
     def move(self):
-        if self.is_jumping:
+        if self.is_jumping and not self._is_dead:
             self.jump()
         else:
             self.next_jump_time_left -= 1
@@ -189,7 +189,7 @@ class Slime(Enemy):
         else:
             self._layer = self.rect.bottom
     
-    def animate(self):
+    def animate_alive(self):
         if not self.is_jumping:
             unconvention_change = False
 
@@ -240,7 +240,8 @@ class Slime(Enemy):
             self.frame_y = 0
         
     def draw_additional_images(self, screen):
-        self.draw_shadow(screen)
+        if not self._is_dead:
+            self.draw_shadow(screen)
     
     def draw_shadow(self, screen):
         if self.is_jumping:

@@ -37,21 +37,24 @@ class Wanderer(Enemy):
             img = self.img_head.subsurface(pygame.Rect(x * width, 0, width, width))
             self.images_head.append(pygame.transform.scale(img, (self.MOB_SIZE, self.MOB_SIZE)))
 
-    def animate(self):
-        self.reversed_frame = False
-        if not self._is_wandering or not self._is_idling:
-            self.time -= 1
-        else:
-            self.image = self.images_legs[0]
-            self.unchanged_image = self.image.copy()
+    def animate_alive(self):
+        if not self._is_dead:
+            self.reversed_frame = False
+            if not self._is_wandering or not self._is_idling:
+                self.time -= 1
+            else:
+                self.image = self.images_legs[0]
+                self.unchanged_image = self.image.copy()
 
-        if self.time <= 0:
-            self.is_change_of_frame = True
-            self.time = self.next_frame_ticks_cd 
-            self.legs_frame += 1
-            self.legs_frame %= 10
+            if self.time <= 0:
+                self.is_change_of_frame = True
+                self.time = self.next_frame_ticks_cd 
+                self.legs_frame += 1
+                self.legs_frame %= 10
 
-        self.next_frame()
+            self.next_frame()
+        
+        else: self.death_animator.death_animation()
 
     def next_frame(self):
         legs_frame = self.set_up_legs_frame() 

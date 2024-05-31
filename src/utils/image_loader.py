@@ -69,7 +69,7 @@ class ImageLoader:
             self.bosses[boss] = pygame.image.load(f"resources/mobs/bosses/{boss}.png").convert_alpha()
 
     def load_others(self):
-        others = ["laser", "laser_opacity"]
+        others = ["laser", "laser_opacity", "death_animation"]
         for other in others:
             self.others[other] = pygame.image.load(f"resources/other/{other}.png").convert_alpha()
 

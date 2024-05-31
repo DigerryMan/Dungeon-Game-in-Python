@@ -23,6 +23,7 @@ class Forsaken(Enemy):
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
         self.MOB_SIZE = int(game.settings.MOB_SIZE * 3.5)
+        self.death_animator.scale_to_new_size(self.MOB_SIZE)
 
         #SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
@@ -59,10 +60,13 @@ class Forsaken(Enemy):
         self.respect_collisions = False
 
     def update(self):
-        self.collide_player()
-        self.correct_layer()
-        self.check_hit_and_animate()
-        self.boss_stages()
+        if not self._is_dead:
+            self.collide_player()
+            self.correct_layer()
+            self.check_hit_and_animate()
+            self.boss_stages()
+        else: 
+            self.check_hit_and_animate()
 
     def boss_stages(self):
         if self.lasers_active:
@@ -105,7 +109,7 @@ class Forsaken(Enemy):
             self.play_audio("forsakenSpawn")
             self.game.map.get_current_room().spawn_mob(Legs, self.rect.centerx//self.game.settings.TILE_SIZE, self.rect.centery//self.game.settings.TILE_SIZE)
 
-    def animate(self):
+    def animate_alive(self):
         self.animation.animate()
     
     def draw_additional_images(self, screen):

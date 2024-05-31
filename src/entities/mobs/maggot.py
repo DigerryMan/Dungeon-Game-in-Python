@@ -47,19 +47,20 @@ class Maggot(Enemy):
                 self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, y * self.MOB_SIZE, self.MOB_SIZE, self.MOB_SIZE)))
 
     def move(self):
-        self.random_change_of_direction()
-        self.wall_collision()
-        if self.facing == Directions.LEFT:
-            self.x_change -= self._speed
+        if not self._is_dead:
+            self.random_change_of_direction()
+            self.wall_collision()
+            if self.facing == Directions.LEFT:
+                self.x_change -= self._speed
 
-        if self.facing == Directions.RIGHT:
-            self.x_change += self._speed
-        
-        if self.facing == Directions.UP:
-            self.y_change -= self._speed
+            if self.facing == Directions.RIGHT:
+                self.x_change += self._speed
+            
+            if self.facing == Directions.UP:
+                self.y_change -= self._speed
 
-        if self.facing == Directions.DOWN:
-            self.y_change += self._speed
+            if self.facing == Directions.DOWN:
+                self.y_change += self._speed
         
     def attack(self):
         pass
@@ -240,7 +241,7 @@ class Maggot(Enemy):
         bounding_rect = self.frame.get_bounding_rect() 
         return bounding_rect
 
-    def animate(self):
+    def animate_alive(self):
         self.time -= 1
         if self.time <= 0:
             self.time = self.next_frame_ticks_cd

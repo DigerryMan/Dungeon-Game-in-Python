@@ -12,7 +12,7 @@ class EnemyCollisions():
         if not self.enemy._is_dead:
             rect_hits = pygame.sprite.spritecollide(self.enemy, self.game.player_sprite, False)
             if rect_hits:
-                mask_hits = self.get_mask_colliding_sprite(rect_hits)
+                mask_hits = self.enemy.get_mask_colliding_sprite(rect_hits)
                 if mask_hits:
                     self.game.damage_player(self.enemy._collision_damage)
                     if self.enemy._is_wandering:
@@ -31,7 +31,8 @@ class EnemyCollisions():
                 
             if pygame.sprite.collide_mask(self.enemy, sprite):
                 return sprite
-    
+
+
     def collide_blocks(self, orientation:str):
         rect_hits = pygame.sprite.spritecollide(self.enemy, self.game.collidables, False)
         if rect_hits:

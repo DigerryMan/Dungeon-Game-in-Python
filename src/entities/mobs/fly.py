@@ -23,8 +23,6 @@ class Fly(Enemy):
         self.dead_animation_time_left = self.dead_animation_time
         
         self.img = game.image_loader.get_image("fly")
-        
-        self.death_images = []
         self.prepare_images()
 
         self.image = self.images[0]
@@ -36,14 +34,7 @@ class Fly(Enemy):
         for x in range(multi, 2 + multi):
             self.images.append(self.img.subsurface(pygame.Rect(x * self.MOB_SIZE, 0, self.MOB_SIZE, self.MOB_SIZE)))       
 
-        self.prepare_death_images()
-
-    def prepare_death_images(self):
-        death_mob_size = self.MOB_SIZE * 2
-        for y in range(1, 4):
-            for x in range(4):
-                image_help = self.img.subsurface(pygame.Rect(x * death_mob_size, y * death_mob_size, death_mob_size, death_mob_size))
-                self.death_images.append(pygame.transform.scale(image_help, (self.MOB_SIZE, self.MOB_SIZE)))       
+        self.death_animator.prepare_death_images_for_fly()
 
     def collide_blocks(self, orientation:str):
         rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
@@ -54,7 +45,7 @@ class Fly(Enemy):
             if orientation == 'y':
                 self.rect.y -= self.y_change
 
-    def animate(self):
+    def animate_alive(self):
         if not self._is_dead:
             self.time -= 1
             if self.time < 0:
@@ -64,25 +55,10 @@ class Fly(Enemy):
                 self.unchanged_image = self.image.copy()
                 self.time = self.next_frame_ticks_cd
         else:
-            self.death_animation()
+            self.death_animator.death_animation()
 
     def start_dying(self):
         super().start_dying(False)
-
-    def death_animation(self):
-        if self.dead_animation_time_left == self.dead_animation_time:
-            self.curr_frame = 0
-            self.image = self.death_images[self.curr_frame]
-        
-        self.dead_animation_time_left -= 1
-        if self.dead_animation_time_left < 0:
-            self.final_death()
-        elif self.dead_animation_time_left % self.next_frame_time == 0:
-            self.next_frame()
-
-    def next_frame(self):
-        self.curr_frame += 1
-        self.image = self.death_images[self.curr_frame]
 
     #Actually running away from the player
     def move_because_of_player(self, chase:bool=False):
