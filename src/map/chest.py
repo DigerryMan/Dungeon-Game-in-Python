@@ -11,12 +11,11 @@ from items.stat_items.item import Item
 class Chest(pygame.sprite.Sprite):
     def __init__(self, game, x, y, type):
         self.game = game
-        self._layer = BLOCK_LAYER
         self.type = type
         self.is_open = False
         self.opened_once = False
 
-        self.groups = self.game.all_sprites, self.game.chest, self.game.collidables
+        self.groups = self.game.all_sprites, self.game.chest
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.x = x * game.settings.TILE_SIZE
@@ -30,6 +29,8 @@ class Chest(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+
+        self._layer = self.rect.centery
 
         self.mask = pygame.mask.from_surface(self.image)
 

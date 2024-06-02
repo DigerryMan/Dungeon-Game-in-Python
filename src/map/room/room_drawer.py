@@ -1,7 +1,6 @@
 import random
 from entities.enemy import Enemy
 from entities.player.player import Player
-from .room_types import special_rooms
 
 
 class RoomDrawer:
@@ -47,14 +46,13 @@ class RoomDrawer:
 
         self.game.doors.draw(screen)
         self.game.blocks.draw(screen)
-        self.game.chest.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
 
         for shop_stand in self.room.shop_stands:
             shop_stand.draw()
 
-        to_be_sorted = self.game.entities.sprites() + self.game.items.sprites()
+        to_be_sorted = self.game.entities.sprites() + self.game.items.sprites() + self.game.chest.sprites()
         
         sprite_list = sorted(to_be_sorted, key=lambda sprite: sprite._layer)
         for sprite in sprite_list:

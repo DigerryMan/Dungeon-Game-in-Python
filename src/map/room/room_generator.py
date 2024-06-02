@@ -29,7 +29,7 @@ class RoomGenerator:
 
             for y, row in enumerate(self.room.layout):
                 for x, col in enumerate(row):
-                    if col == 'C' and not self.room.chest and random.uniform(0, 1) < 0.50 + self.game.player.get_luck():
+                    if col == 'C' and not self.room.chest and random.uniform(0, 1) < 0.2 + self.game.player.get_luck():
                         rand = random.uniform(0, 1)
                         if rand < 0.5 - self.game.player.get_luck():
                             self.room.chest = Chest(self.game, x, y, "small")

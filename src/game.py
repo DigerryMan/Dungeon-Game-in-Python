@@ -168,7 +168,6 @@ class Game:
         self.doors.add(objects["doors"])
         if objects["chest"]:
             self.chest.add(objects["chest"])
-            self.collidables.add(objects["chest"])
             self.all_sprites.add(self.chest)
 
         if objects["trap_door"]:
