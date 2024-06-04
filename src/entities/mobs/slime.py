@@ -21,7 +21,7 @@ class Slime(Enemy):
 
         # CHANGEABLE STATS
         self._health = 6
-        self._projectal_speed = 6
+        self._projectal_speed = int(8 * game.settings.SCALE)
 
         self.t = random.random() * 0.5 + 0.8  # time of jump in sec
         self.jump_time = int(self.t * FPS)

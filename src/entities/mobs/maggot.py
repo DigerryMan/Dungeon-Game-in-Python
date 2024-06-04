@@ -2,7 +2,6 @@ import random
 
 import pygame
 
-from config import FPS
 from entities.enemy import Enemy
 from utils.directions import Directions
 
@@ -13,7 +12,6 @@ class Maggot(Enemy):
         # CHANGEABLE STATS
         self._health = 4
         self._speed = 3 * game.settings.SCALE
-        self._random_dir_change_cd = int(2 * FPS) * 10000
 
         # SKIN
         self.x_frame = 1
@@ -32,8 +30,6 @@ class Maggot(Enemy):
 
         # REST
         self.moving_clockwise = moving_clockwise
-        self.change_of_direction_time_left = self._random_dir_change_cd
-
         self.facing = Directions.DOWN
         self.set_new_image()
         self.vertical_rect = self.get_rect_from_frame()
@@ -60,7 +56,6 @@ class Maggot(Enemy):
 
     def move(self):
         if not self._is_dead:
-            self.random_change_of_direction()
             self.wall_collision()
             if self.facing == Directions.LEFT:
                 self.x_change -= self._speed
@@ -94,8 +89,6 @@ class Maggot(Enemy):
                 self.rect.y -= self.y_change
 
             center = self.rect.center
-            old_width, old_height = self.rect.width, self.rect.height
-
             self.rotate_face_dir()
             self.set_new_hitbox(center)
 
@@ -151,30 +144,6 @@ class Maggot(Enemy):
             elif self.facing == Directions.DOWN:
                 self.rect.top = hits[0].rect.bottom + 1
 
-    def wall_collision2(self):
-        hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-
-        if hits:
-            if self.facing == Directions.LEFT:
-                self.rect.x = hits[0].rect.right
-
-            elif self.facing == Directions.RIGHT:
-                self.rect.x = hits[0].rect.left - self.game.settings.MOB_SIZE
-
-            elif self.facing == Directions.UP:
-                self.rect.y = hits[0].rect.bottom
-
-            elif self.facing == Directions.DOWN:
-                self.rect.y = hits[0].rect.top - self.game.settings.MOB_SIZE
-
-    def random_change_of_direction(self):
-        self.change_of_direction_time_left -= 1
-        if self.change_of_direction_time_left <= 0:
-            self.roll_rotation_cd(int(1.2 * FPS), int(2.2 * FPS))
-            self.change_of_direction_time_left = self._random_dir_change_cd
-
-            self.rotate_face_dir()
-
     def rotate_face_dir(self, reverse=False):
         if reverse:
             self.facing = self.facing.reverse()
@@ -183,9 +152,6 @@ class Maggot(Enemy):
             self.facing = self.facing.rotate_clockwise()
         else:
             self.facing = self.facing.rotate_counter_clockwise()
-
-    def roll_rotation_cd(self, mini: int, maxi: int):
-        self._random_dir_change_cd = random.randint(mini, maxi)
 
     def next_frame(self):
         self.is_change_of_frame = True

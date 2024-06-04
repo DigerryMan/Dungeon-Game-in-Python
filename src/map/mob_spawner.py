@@ -14,6 +14,7 @@ from entities.mobs.fly import Fly
 from entities.mobs.ghost import Ghost
 from entities.mobs.legs import Legs
 from entities.mobs.maggot import Maggot
+from entities.mobs.meat_slime import MeatSlime
 from entities.mobs.parasite import Parasite
 from entities.mobs.slime import Slime
 from entities.mobs.wanderer import Wanderer

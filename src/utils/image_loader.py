@@ -33,6 +33,7 @@ class ImageLoader:
             "maggot",
             "parasite",
             "slime",
+            "meat_slime",
             "wanderer",
             "friend_ghost",
             "slime_shadow",
