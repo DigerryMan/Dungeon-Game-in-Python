@@ -41,7 +41,7 @@ class ItemsList:
         self.very_commons["shooting_cooldown_pill"] = {
             "name": "Shooting cooldown pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"shooting_cooldown": [0.04, 0.8, -0.8, -0.04]},
+            "stats": {"shooting_cooldown": [0.04, 0.08, -0.08, -0.04]},
             "image": game.image_loader.lootables["shooting_cooldown_pill"],
         }
 
