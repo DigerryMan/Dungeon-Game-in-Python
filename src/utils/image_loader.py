@@ -35,7 +35,6 @@ class ImageLoader:
             "slime",
             "meat_slime",
             "wanderer",
-            "friend_ghost",
             "slime_shadow",
         ]
         self.mobs_.extend(self.player_types)
@@ -45,6 +44,7 @@ class ImageLoader:
                 f"resources/mobs/fast_ghost.png"
             ).convert_alpha(),
             "fatty": pygame.image.load(f"resources/mobs/fatty.png").convert_alpha(),
+            "friendly_ghost": pygame.image.load(f"resources/mobs/friendly_ghost.png").convert_alpha()
         }
 
         self.rooms_ = [

@@ -15,7 +15,7 @@ class FriendlyGhost(Ghost):
         self._shot_time_left = self._shot_cd
 
         # ANIMATION
-        self.img = game.image_loader.mobs["ghost"]
+        self.img = game.image_loader.mobs["friendly_ghost"]
         self.__prepare_images()
         self.image = self.images[0]
 
@@ -23,6 +23,9 @@ class FriendlyGhost(Ghost):
         self.time = 0
         self.which_frame = 0
         self.is_moving = False
+
+        self.shot_animation_cd = 10
+        self.shot_animation_left = 0
 
         # HITBOX
         self.mask = pygame.mask.from_surface(self.image)
@@ -35,18 +38,18 @@ class FriendlyGhost(Ghost):
         self.images.clear()
         mob_size = self.MOB_SIZE // 2
         for y in range(3):
-            for x in range(2):
-                img_help = self.img.subsurface(
-                    pygame.Rect((x + 5) * 48, y * 48, 48, 48)
-                )
-                self.images.append(
-                    pygame.transform.scale(img_help, (mob_size, mob_size))
-                )
+            img_help = self.img.subsurface(
+                pygame.Rect(0, y * 32, 40, 32)
+            )
+            self.images.append(
+                pygame.transform.scale(img_help, (mob_size, mob_size))
+            )
 
     def attack(self):
         if self.game.enemies:
             self._shot_time_left -= 1
             if self._shot_time_left <= 0:
+                self.shot_animation_left = self.shot_animation_cd
                 Bullet(
                     self.game,
                     self.rect.centerx,
@@ -59,6 +62,9 @@ class FriendlyGhost(Ghost):
                 )
                 self.roll_next_shot_cd()
                 self._shot_time_left = self._shot_cd
+
+    def move(self):
+        self.move_because_of_player()
 
     def move_because_of_player(self, chase: bool = True):
         self.is_moving = False
@@ -103,28 +109,17 @@ class FriendlyGhost(Ghost):
         pass
 
     def animate_alive(self):
-        if self.is_moving:
-            self.time -= 1
-            if self.time <= 0:
-                self.time = self.next_frame_ticks_cd
-                self.which_frame += 1
-                self.which_frame %= 2
-        else:
-            self.which_frame = 0
+        self.time -= 1
+        if self.time <= 0:
+            self.time = self.next_frame_ticks_cd
+            self.which_frame += 1
+            self.which_frame %= 2
+        
+        if self.shot_animation_left > 0:
+            self.shot_animation_left -= 1
+            self.which_frame = 2
 
         self.next_frame()
 
-    def next_frame(self):
-        if self.is_moving:
-            if self.facing == Directions.LEFT or self.facing == Directions.RIGHT:
-                self.which_frame += 4
-                if self.facing == Directions.LEFT:
-                    self.image = pygame.transform.flip(
-                        self.images[self.which_frame], True, False
-                    )
-                    self.which_frame %= 2
-                    return
-            elif self.facing == Directions.UP:
-                self.which_frame += 2
+    def next_frame(self):  
         self.image = self.images[self.which_frame]
-        self.which_frame = self.which_frame % 2

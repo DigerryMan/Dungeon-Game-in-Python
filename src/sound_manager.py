@@ -25,7 +25,7 @@ class SoundManager:
         self.music = load_sounds("resources/music")
         self.sounds = load_sounds("resources/sounds2")
         self.set_music_volume(2)
-        self.set_sound_volume(4)
+        self.set_sound_volume(5)
         self.last_played = {}
 
     def set_music_volume(self, volume):
