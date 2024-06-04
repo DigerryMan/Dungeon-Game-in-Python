@@ -45,6 +45,7 @@ class MobSpawner:
             Wanderer,
             FastGhost,
             Fatty,
+            MeatSlime
         ]
         index = random.randint(0, len(mobs) - 1)
 
