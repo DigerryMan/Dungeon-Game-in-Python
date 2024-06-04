@@ -22,7 +22,7 @@ class Game:
         window_size = (1280, 720)
         os.environ["SDL_VIDEO_CENTERED"] = "1"
         self.screen = pygame.display.set_mode(window_size)
-        pygame.display.set_caption("Isaac")
+        pygame.display.set_caption("The Binding of Isaac: Rebirth")
         icon = pygame.image.load("resources/icons/256x256.ico")
         pygame.display.set_icon(icon)
 
