@@ -7,6 +7,8 @@ from entities.mobs.boss.monstro.monstro import Monstro
 from entities.mobs.boss.monstro.monstro2 import Monstro2
 from entities.mobs.boss.satan.satan import Satan
 from entities.mobs.boss.satan.satan2 import Satan2
+from entities.mobs.fast_ghost import FastGhost
+from entities.mobs.fatty import Fatty
 from entities.mobs.fly import Fly
 from entities.mobs.ghost import Ghost
 from entities.mobs.legs import Legs
@@ -28,7 +30,7 @@ class MobSpawner():
         self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
         self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
 
-        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer]
+        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer, FastGhost, Fatty]
         index = random.randint(0, len(mobs) - 1)
 
         if self.room.room_type == "boss":
