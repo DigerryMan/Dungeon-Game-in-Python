@@ -329,8 +329,8 @@ class ItemsList:
                 "friendly_ghost": 1,
             },
             "image": pygame.transform.scale(
-                game.image_loader.get_image("friend_ghost").subsurface(
-                    pygame.Rect(0, 0, game.settings.MOB_SIZE, game.settings.MOB_SIZE)
+                game.image_loader.get_image("items").subsurface(
+                    pygame.Rect(8 * 32, 5 * 32, 32, 32)
                 ),
                 (game.settings.TILE_SIZE // 2, game.settings.TILE_SIZE // 2),
             ),
@@ -372,7 +372,7 @@ class ItemsList:
 
     def get_random_item(self, category):
         if DROP_LOOT_EVERYTIME:  # FOR TESTING PURPOSES!
-            return self.epics["darkhold"]
+            return self.legendaries["friendly_ghost"]
         else:
             if category == Categories.VERY_COMMON:
                 return random.choice(list(self.very_commons.values()))
