@@ -7,8 +7,7 @@ from utils.directions import Directions
 class Fatty(Wanderer):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
-        self._health = 10
-        self._damage = 0.5
+        self._health = 10 * self.hp_scaling_factor()
         self._speed = 2 * game.settings.SCALE
         self._collision_damage = 1
         self.size = "Large"

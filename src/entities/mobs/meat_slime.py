@@ -7,7 +7,7 @@ class MeatSlime(Slime):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
 
-        self._health = 3
+        self._health = 3 * self.hp_scaling_factor()
         self._projectal_speed = int(7 * game.settings.SCALE)
         self._bullet_decay_sec = 1.8
 
@@ -41,7 +41,7 @@ class MeatSlime(Slime):
                 direction_to_shoot,
                 speed=diagonal_speed,
                 is_friendly=False,
-                dmg=1,
+                dmg=self._damage,
                 time_decay_in_seconds=self._bullet_decay_sec,
                 additional_speed=diagonal_speed * multiplier
             )
@@ -57,7 +57,7 @@ class MeatSlime(Slime):
                 direction_to_shoot,
                 speed=self._projectal_speed,
                 is_friendly=False,
-                dmg=1,
+                dmg=self._damage,
                 time_decay_in_seconds=self._bullet_decay_sec,
             )
             direction_to_shoot = direction_to_shoot.rotate_clockwise()

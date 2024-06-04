@@ -6,7 +6,7 @@ from entities.mobs.ghost import Ghost
 class FastGhost(Ghost):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
-        self._health = 3
+        self._health = 3 * self.hp_scaling_factor()
         self._speed = 4 * game.settings.SCALE
         self._projectal_speed = 9
 

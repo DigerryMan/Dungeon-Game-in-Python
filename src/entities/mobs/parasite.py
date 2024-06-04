@@ -13,7 +13,7 @@ class Parasite(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y, False, False)
         # CHANGEABLE STATS
-        self._health = 3
+        self._health = 3 * self.hp_scaling_factor()
         self._dig_cooldown = int(1.5 * FPS)
         self.shoot_cd_after_dig_out = int(0.7 * FPS)
 
@@ -63,6 +63,7 @@ class Parasite(Enemy):
                     self.rect.centery,
                     Directions.PLAYER,
                     is_friendly=False,
+                    dmg=self._damage
                 )
                 self.already_shot = True
                 self.time_left_to_shoot = self.shoot_cd_after_dig_out

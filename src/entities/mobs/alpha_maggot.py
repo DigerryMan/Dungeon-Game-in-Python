@@ -7,7 +7,7 @@ class AlphaMaggot(Maggot):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
         # CHANGEABLE STATS
-        self._health = 8
+        self._health = 8 * self.hp_scaling_factor()
         self._speed = 4 * game.settings.SCALE
         self._projectal_speed = 3
 
@@ -24,7 +24,8 @@ class AlphaMaggot(Maggot):
                 self.rect.centery,
                 Directions.PLAYER,
                 self._projectal_speed,
-                False,
+                is_friendly=False,
+                dmg=self._damage,
                 time_decay_in_seconds=1.5,
             )
             self.roll_next_shot_cd()

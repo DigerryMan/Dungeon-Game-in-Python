@@ -20,7 +20,7 @@ class Slime(Enemy):
         )
 
         # CHANGEABLE STATS
-        self._health = 6
+        self._health = 6 * self.hp_scaling_factor()
         self._projectal_speed = int(8 * game.settings.SCALE)
 
         self.t = random.random() * 0.5 + 0.8  # time of jump in sec
@@ -218,7 +218,7 @@ class Slime(Enemy):
                     direction_to_shoot,
                     speed=self._projectal_speed,
                     is_friendly=False,
-                    dmg=1,
+                    dmg=self._damage,
                     time_decay_in_seconds=self._bullet_decay_sec,
                 )
                 direction_to_shoot = direction_to_shoot.rotate_clockwise()

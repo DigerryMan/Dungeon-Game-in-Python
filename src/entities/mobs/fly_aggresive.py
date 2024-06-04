@@ -11,12 +11,11 @@ class FlyAggresive(Fly):
     def __init__(self, game, x, y, boss):
         super().__init__(game, x, y, False)
         self.boss = boss
-        self._max_health = 4
+        self._max_health = 4 * self.hp_scaling_factor()
         self._health = self._max_health
-        self._damage = 0.5
         self._speed = 2 * game.settings.SCALE
-        self._projectal_speed = 9
-        self._bullet_decay_sec = 0.5
+        self._projectal_speed = 11
+        self._bullet_decay_sec = 1.3
 
         self.will_chase = random.choice([True, False])
         self.prepare_images_v2()

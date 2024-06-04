@@ -15,7 +15,7 @@ class Ghost(Enemy):
             bullet_decay_sec=3,
         )
         # CHANGEABLE STATS
-        self._health = 6
+        self._health = 6 * self.hp_scaling_factor()
         self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 7
 

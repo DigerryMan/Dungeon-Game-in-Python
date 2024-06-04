@@ -12,7 +12,7 @@ class Satan2(Satan):
         super().__init__(game, x, y)
         self._max_health = 70
         self._health = self._max_health
-        self._damage = 0.8
+        self._damage = 1
 
         self.health_bar = BossHealthBar(game, self)
         self.animation = SatanAnimiation(self, game, "satan2")

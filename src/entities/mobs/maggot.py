@@ -10,7 +10,7 @@ class Maggot(Enemy):
     def __init__(self, game, x, y, moving_clockwise=random.choice([True, False])):
         super().__init__(game, x, y, False)
         # CHANGEABLE STATS
-        self._health = 4
+        self._health = 4 * self.hp_scaling_factor()
         self._speed = 3 * game.settings.SCALE
 
         # SKIN

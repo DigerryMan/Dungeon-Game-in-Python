@@ -8,7 +8,7 @@ from utils.directions import Directions
 class FriendlyGhost(Ghost):
     def __init__(self, game, x, y, reversed_moves=False):
         super().__init__(game, x, y)
-        self._damage = 1
+        self._damage = 2
         self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 10
         self._reversed_moves = reversed_moves

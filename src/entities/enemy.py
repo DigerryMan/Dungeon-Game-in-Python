@@ -30,9 +30,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
         is_wandering: bool = True,
         bullet_decay_sec: float = 0,
     ):
+        self.game = game
+
         # CHANGEABLE STATS
-        self._health = 4
-        self._damage = 1
+        self._health = 4 * self.hp_scaling_factor()
+        self._damage = 0.75 * self.dmg_scaling_factor()
         self._collision_damage = 1
         self.size = "Small"
 
@@ -76,7 +78,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._is_idling = self._is_wandering
 
         self._is_dead = False
-        self.game = game
         self.room = game.map.get_current_room()
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -272,3 +273,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
         elif self.size == "Small":
             self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")
+    
+    def hp_scaling_factor(self):
+        return 1 + 2*(self.game.map.get_current_room().level - 1)/7
+
+    def dmg_scaling_factor(self):
+        return 1 + (self.game.map.get_current_room().level - 1)/7

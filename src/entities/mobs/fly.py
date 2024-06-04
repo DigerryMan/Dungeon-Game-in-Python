@@ -19,7 +19,7 @@ class Fly(Enemy):
             bullet_decay_sec=2.0,
         )
         # CHANGEABLE STATS
-        self._health = 4
+        self._health = 4 * self.hp_scaling_factor()
         self._speed = 1 * game.settings.SCALE
         self._projectal_speed = 6
         self._shot_cd = int(2.4 * FPS)
