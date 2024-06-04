@@ -1,6 +1,9 @@
 import pygame
+
 from items.item_types import ItemType
+
 from ..lootable_item import LootableItem
+
 
 class PickupBomb(LootableItem):
     def __init__(self, game, x, y, amount=1, drop_animation=True):
@@ -19,7 +22,6 @@ class PickupBomb(LootableItem):
 
         self.mask = pygame.mask.from_surface(self.image)
         self.amount = amount
-        
 
     def picked_up(self):
         self.clean_up()

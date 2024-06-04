@@ -1,11 +1,13 @@
+import os
+
+import pygame
+
+from config import ADMIN, BLACK, FPS
+from entities.player.player import Player
 from entities.player.player_types import PlayerTypes
 from entities.player.stat_bars import StatBars
-import pygame
-import os
-from config import ADMIN, BLACK, FPS
 from items.stat_items.items_list import ItemsList
 from map.map import Map
-from entities.player.player import Player
 from menu.menu import Menu
 from sound_manager import SoundManager
 from utils.directions import Directions
@@ -17,11 +19,13 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        #window_size = (1920, 1080)
         window_size = (1280, 720)
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
+        os.environ["SDL_VIDEO_CENTERED"] = "1"
         self.screen = pygame.display.set_mode(window_size)
-        
+        pygame.display.set_caption("Isaac")
+        icon = pygame.image.load("resources/icons/256x256.ico")
+        pygame.display.set_icon(icon)
+
         self.settings = Settings(window_size)
         self.image_loader = ImageLoader(self.settings)
         self.items_list = ItemsList(self)
@@ -38,13 +42,25 @@ class Game:
         self.character_type = PlayerTypes.ISAAC
 
         self.handle_resolution_change(window_size)
-        self.sprite_groups = ["player_sprite", "entities", "all_sprites", "blocks", "shop_stands", "doors", 
-                              "enemies", "not_voulnerable", "attacks", "chest", "items", "trap_door", "collidables"]
+        self.sprite_groups = [
+            "player_sprite",
+            "entities",
+            "all_sprites",
+            "blocks",
+            "shop_stands",
+            "doors",
+            "enemies",
+            "not_voulnerable",
+            "attacks",
+            "chest",
+            "items",
+            "trap_door",
+            "collidables",
+        ]
         self.not_clearable_groups = ["player_sprite"]
         self.init_empty_sprite_groups()
 
         self.prepare_game()
-
 
     def prepare_game(self):
         self.map = None
@@ -66,10 +82,10 @@ class Game:
         for group_name in self.sprite_groups:
             setattr(self, group_name, pygame.sprite.LayeredUpdates())
 
-    def render_new_map(self, first_map = False):
+    def render_new_map(self, first_map=False):
         if first_map:
             self.prepare_game()
-            
+
         self.current_level += 1
         self.init_empty_sprite_groups()
         if self.player is None:
@@ -105,7 +121,7 @@ class Game:
 
             if self.paused:
                 self.menu.display_pause()
-            
+
             if self.player is not None and self.player.eq_opened:
                 self.display_eq()
 
@@ -134,7 +150,11 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        if not self.map.get_current_room().is_cleared and len(self.enemies) == 0 or ADMIN:
+        if (
+            not self.map.get_current_room().is_cleared
+            and len(self.enemies) == 0
+            or ADMIN
+        ):
             self.collidables.remove(self.doors)
             self.map.set_room_cleared()
 
@@ -151,7 +171,7 @@ class Game:
         self.menu.display_game_over()
         self.game_over_playing = False
 
-    def render_next_room(self, direction:Directions):
+    def render_next_room(self, direction: Directions):
         self.clear_sprites()
         self.map.render_next_room(direction)
         self.get_new_sprites(self.map.get_current_room())
@@ -160,7 +180,7 @@ class Game:
         for group_name in self.sprite_groups:
             if group_name not in self.not_clearable_groups:
                 getattr(self, group_name).empty()
-     
+
     def get_new_sprites(self, room):
         self.all_sprites.add(self.player_sprite)
         objects = room.get_objects()
@@ -182,20 +202,22 @@ class Game:
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
-        self.all_sprites.add(self.collidables, self.doors, self.enemies, self.attacks, self.items)
+        self.all_sprites.add(
+            self.collidables, self.doors, self.enemies, self.attacks, self.items
+        )
         self.entities.add(self.enemies, self.player_sprite)
 
-    def damage_player(self, enemy_dmg:int):
+    def damage_player(self, enemy_dmg: int):
         self.player.get_hit(enemy_dmg)
 
     def get_player_rect(self):
         return self.player.rect
 
     def display_eq(self):
-        self.player.eq.user_eq_input(None) #show big_item first time
+        self.player.eq.user_eq_input(None)  # show big_item first time
         self.sound_manager.play("pageTurn")
 
-        while(self.player.eq_opened):
+        while self.player.eq_opened:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
