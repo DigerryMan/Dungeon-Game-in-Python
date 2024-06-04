@@ -1,18 +1,20 @@
-import random
 import json
 import os
+import random
+
 from entities.player.equipment.equipment_display import EquipmentDisplay
 
-class Equipment():
+
+class Equipment:
     def __init__(self, player, game):
-        self.import_stats_dicts()          
+        self.import_stats_dicts()
         self.player = player
         self.game = game
-        
-        #DISPLAY
+
+        # DISPLAY
         self.eq_display = EquipmentDisplay(self, game)
 
-        #ITEMS
+        # ITEMS
         self.items = []
 
     def import_stats_dicts(self):
@@ -21,12 +23,14 @@ class Equipment():
             "max_stats.json",
             "min_stats.json",
             "extra_stats.json",
-            "extra_stats_max.json"
+            "extra_stats_max.json",
         ]
         for filename in files_to_load:
-            path = os.path.join("entities", "player", "equipment", "eq_stats_dicts", filename)
-            with open(path, 'r') as fp:
-                setattr(self, filename.split('.')[0], json.load(fp))
+            path = os.path.join(
+                "entities", "player", "equipment", "eq_stats_dicts", filename
+            )
+            with open(path, "r") as fp:
+                setattr(self, filename.split(".")[0], json.load(fp))
 
     def draw(self, screen):
         self.eq_display.draw(screen)
@@ -66,8 +70,7 @@ class Equipment():
             self.unpack_item_with_description(item_stats_dict)
         else:
             self.unpack_item_with_stats(item_stats_dict)
-            
-    
+
     def unpack_item_with_description(self, item_stats_dict):
         for key, value in item_stats_dict.items():
             if key != "description" and self.extra_stats.get(key) is not None:
@@ -84,21 +87,23 @@ class Equipment():
     def unpack_item_with_stats(self, item_stats_dict):
         healValue = 0
         for key, value in item_stats_dict.items():
-                if self.stats.get(key) is not None:
-                    self.stats[key] += value
-                    if self.stats[key] > self.max_stats[key]:
-                        self.stats[key] = self.max_stats[key]
-                    if self.stats[key] < self.min_stats[key]:
-                        self.stats[key] = self.min_stats[key]    
-                    if key == "health" and value > 0:
-                        healValue = value
-            
+            if self.stats.get(key) is not None:
+                self.stats[key] += value
+                if self.stats[key] > self.max_stats[key]:
+                    self.stats[key] = self.max_stats[key]
+                if self.stats[key] < self.min_stats[key]:
+                    self.stats[key] = self.min_stats[key]
+                if key == "health" and value > 0:
+                    healValue = value
+
         self.update_player_stats()
         if healValue:
             self.player.heal(healValue)
 
     def update_player_stats(self):
-        self.player.max_health = self.player.BASE_MAX_HEALTH + self.stats["health"] 
+        self.player.max_health = self.player.BASE_MAX_HEALTH + self.stats["health"]
         if self.player.health > self.player.max_health:
             self.player.health = self.player.max_health
-        self.player.speed = (self.player.BASE_SPEED + self.stats["speed"]) * self.game.settings.SCALE
+        self.player.speed = (
+            self.player.BASE_SPEED + self.stats["speed"]
+        ) * self.game.settings.SCALE

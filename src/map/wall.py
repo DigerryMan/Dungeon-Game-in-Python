@@ -1,5 +1,7 @@
 import pygame
+
 from config import WALL_LAYER
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -12,7 +14,7 @@ class Wall(pygame.sprite.Sprite):
         self.y = y * game.settings.TILE_SIZE
         self.width = game.settings.TILE_SIZE
         self.height = game.settings.TILE_SIZE
-        
+
         self.image = pygame.Surface((self.width, self.height))
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.rect.x = self.x

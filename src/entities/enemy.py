@@ -1,7 +1,13 @@
-import pygame
 import random
+from abc import ABC, abstractmethod
+
+import pygame
+
 from config import *
 from entities.bullet import Bullet
+from entities.enemy_collisions import EnemyCollisions
+from entities.enemy_moves import EnemyMoves
+from entities.mobs.death_animation import DeathAnimator
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
@@ -9,278 +15,247 @@ from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from map.block import Block
 from utils.directions import Directions
-from abc import ABC, abstractmethod
+from utils.image_transformer import ImageTransformer
+
 
 class Enemy(pygame.sprite.Sprite, ABC):
-    is_group_attacked:bool = False
-    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
-                 is_wandering:bool=True, bullet_decay_sec:float=0):
-        #CHANGEABLE STATS
-        self._health = 4
-        self._damage = 1
+    is_group_attacked: bool = False
+
+    def __init__(
+        self,
+        game,
+        x: int,
+        y: int,
+        check_block_colisions: bool = True,
+        is_wandering: bool = True,
+        bullet_decay_sec: float = 0,
+    ):
+        self.game = game
+
+        # CHANGEABLE STATS
+        self._health = 4 * self.hp_scaling_factor()
+        self._damage = 0.75 * self.dmg_scaling_factor()
         self._collision_damage = 1
-        
+        self.size = "Small"
+
         self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
+        self._bullet_decay_sec = bullet_decay_sec
         self._shot_cd = int(2.5 * FPS)
         self._shot_time_left = self._shot_cd
 
-        self._wander_interval = [int(0.7 * FPS), int(1.7 * FPS)]
-        self._idle_interval = [int(1.2 * FPS), int(2.5 * FPS)]
-
-        #POSITION
+        # POSITION
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
-        
-        #SKINS
+
+        # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
-        self.mask = pygame.mask.from_surface(self.image) 
+        self.unchanged_image = self.image.copy()
+        self.mask = pygame.mask.from_surface(self.image)
         self.frame = None
         self.images = []
 
-        #HITBOX
+        # HITBOX
         self.rect = self.image.get_rect()
         self.rect.x = x * game.settings.TILE_SIZE
         self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
-     
-        #REST
-        self._check_block_colisions = check_block_colisions
+
+        # GETTING HIT ANIMATION
+        self.hit_time_cd = int(0.1 * FPS)
+        self.hit_time = 0
+        self.is_change_of_frame = False
+
+        # REST
+        self.collisions_manager = EnemyCollisions(self, game, check_block_colisions)
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
+        self.death_animator = DeathAnimator(self, game)
+        self.enemy_moves = EnemyMoves(self, game)
         self._is_wandering = is_wandering
-        self._wander_time = self.roll_interval(self._wander_interval)
-        self._wander_time_left = self._wander_time
-        
-        self._idle_time = self.roll_interval(self._idle_interval)
         self._is_idling = self._is_wandering
-        self._idle_time_left = self._idle_time
-
-        self._bullet_decay_sec = bullet_decay_sec
-
-        self.size = "Small"
 
         self._is_dead = False
-        self.game = game
         self.room = game.map.get_current_room()
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
-   
 
     def update(self):
-        self.move()
-        self.collide_player()
-        if not self._is_wandering:
-            self.attack()
+        if not self._is_dead:
+            self.move()
+            self.collide_player()
+            if not self._is_wandering:
+                self.attack()
 
-        self.rect.x += self.x_change
-        if self._check_block_colisions:
-            self.collide_blocks('x')
+            self.terrain_collisions()
+            self.correct_facing()
+            self.correct_layer()
 
-        self.rect.y += self.y_change
-        if self._check_block_colisions:
-            self.collide_blocks('y')
-        
-        self.correct_facing()
-        self.correct_layer()
-        self.animate()
-
+        self.check_hit_and_animate()
         self.x_change = 0
         self.y_change = 0
 
+    def terrain_collisions(self):
+        self.collisions_manager.terrain_collisions()
+
+    def check_hit_and_animate(self):
+        if self.hit_time > 0:
+            self.hit_time -= 1
+            if self.hit_time == 0 and not self._is_dead:
+                self.restore_image_colors()
+        self.is_change_of_frame = False
+        self.animate()
+        if self.is_change_of_frame and self.hit_time > 0 and not self._is_dead:
+            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+
+    def restore_image_colors(self):
+        self.image = self.unchanged_image
+
     def move(self):
         if not self._is_dead:
-            if self._is_wandering:
-                self.wander()
-            else:
-                self.move_because_of_player() 
-        
-    def wander(self):
-        if self._is_idling:
-            if not self.check_group_attacked():
-                self.idle()
-            else:
-                self._is_idling = False
-                self._is_wandering = False
-        else:
-            self._wander_time_left -= 1
-            if self._wander_time_left <= 0:
-                self._is_idling = True
-                self._wander_time = self.roll_interval(self._wander_interval)
-                self._wander_time_left = self._wander_time
-            else:
-                if self.facing == Directions.LEFT:
-                    self.x_change = -self._speed//2
-                elif self.facing == Directions.RIGHT:
-                    self.x_change = self._speed//2
-                    self.correct_low_speed_enemies("x")
-                elif self.facing == Directions.UP:
-                    self.y_change = -self._speed//2
-                elif self.facing == Directions.DOWN:
-                    self.y_change = self._speed//2
-                    self.correct_low_speed_enemies("y")
-                
-    def idle(self):
-        self._idle_time_left -= 1
-        if self._idle_time_left <= 0:
-            self._is_idling = False
-            self.roll_facing()
-            self._idle_time = self.roll_interval(self._idle_interval)
-            self._idle_time_left = self._idle_time
+            self.enemy_moves.move()
 
-    def move_because_of_player(self, chase:bool=True):
-        player_vector = pygame.math.Vector2(self.game.get_player_rect().center)
-        enemy_vector = pygame.math.Vector2(self.rect.center)
-        distance = (player_vector - enemy_vector).magnitude()
-        if distance > 3:
-            direction = None
-            if distance > 0:
-                direction = (player_vector - enemy_vector).normalize()
-            else:
-                direction = pygame.math.Vector2()
-            
-            speed = self._speed
-            if not chase:
-                direction.rotate_ip(180)
-                speed = self._speed * self._chase_speed_debuff
-
-            velocity = direction * speed
-            self.x_change = velocity.x
-            self.y_change = velocity.y
-            self._correct_rounding()
-            self.correct_facing()
+    def move_because_of_player(self, chase: bool = True):
+        self.enemy_moves.move_because_of_player(chase)
 
     def collide_player(self):
-        if not self._is_dead:
-            rect_hits = pygame.sprite.spritecollide(self, self.game.player_sprite, False)
-            if rect_hits:
-                mask_hits = self.get_mask_colliding_sprite(rect_hits)
-                if mask_hits:
-                    self.game.damage_player(self._collision_damage)
-                    if self._is_wandering:
-                        self._is_wandering = False
-                        self.group_attacked()
+        self.collisions_manager.collide_player()
 
     def attack(self):
         self._shot_time_left -= 1
         if self._shot_time_left <= 0:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, 
-                   self._projectal_speed, False, self._damage, self._bullet_decay_sec)
+            Bullet(
+                self.game,
+                self.rect.centerx,
+                self.rect.centery,
+                Directions.PLAYER,
+                self._projectal_speed,
+                False,
+                self._damage,
+                self._bullet_decay_sec,
+            )
             self.roll_next_shot_cd()
             self._shot_time_left = self._shot_cd
 
-    def collide_blocks(self, orientation:str):
-        rect_hits = pygame.sprite.spritecollide(self, self.game.collidables, False)
-        if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                if orientation == 'x':
-                    self.rect.x -= self.x_change
-                if orientation == 'y':
-                    self.rect.y -= self.y_change
+    def collide_blocks(self, orientation: str):
+        self.collisions_manager.collide_blocks(orientation)
 
     def get_mask_colliding_sprite(self, rect_hits):
         for sprite in rect_hits:
-            if isinstance(sprite, Block): #done in order to prevent mobs from getting blocked by rough blocks
+            if isinstance(sprite, Block):
                 block_surface = pygame.Surface((sprite.rect.width, sprite.rect.height))
                 block_mask = pygame.mask.from_surface(block_surface)
                 offset_x = sprite.rect.x - self.rect.x
                 offset_y = sprite.rect.y - self.rect.y
                 if self.mask.overlap(block_mask, (offset_x, offset_y)):
                     return sprite
-                
+
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
 
     def _correct_rounding(self):
-        self.x_change += (1 if self.x_change >= 0 else -1)
-        self.y_change += (1 if self.y_change >= 0 else -1)
-
-    def roll_facing(self):
-        rand = random.choice([self.facing.rotate_clockwise(), self.facing.rotate_counter_clockwise(), self.facing.reverse(), self.facing])
-        self.facing = rand
+        self.x_change += 1 if self.x_change >= 0 else -1
+        self.y_change += 1 if self.y_change >= 0 else -1
 
     def correct_facing(self):
-        y_abs = abs(self.y_change)
-        x_abs = abs(self.x_change)
+        self.enemy_moves.correct_facing()
 
-        if(x_abs >= y_abs):
-            if self.x_change < 0:
-                self.facing = Directions.LEFT
-            elif self.x_change > 0:
-                self.facing = Directions.RIGHT
-        else:
-            if self.y_change < 0:
-                self.facing = Directions.UP
-            elif self.y_change > 0:
-                self.facing = Directions.DOWN 
+    def get_hit(self, dmg: int):
+        if self not in self.game.not_voulnerable:
+            self.play_hit_sound()
+            self._health -= dmg
+            self._is_wandering = False
+            self.group_attacked()
+            self.check_if_dead()
 
-    def get_hit(self, dmg:int):
-        self.play_hit_sound()
-        self._health -= dmg
-        self._is_wandering = False
-        self.group_attacked()
-        self.check_if_dead()
-    
+            self.hit_time = self.hit_time_cd
+            if not self._is_dead:
+                self.image = ImageTransformer.change_image_to_more_red(
+                    self.unchanged_image
+                )
+
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")
 
-    def play_audio(self, audio:str):
+    def play_audio(self, audio: str):
         self.game.sound_manager.play(audio)
 
     def check_if_dead(self):
         if self._health <= 0:
             self.start_dying()
 
-    def roll_interval(self, interval):
-        return random.randint(interval[0], interval[1])
-
     def roll_next_shot_cd(self):
-        self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
-            
+        self._shot_cd = random.randint(int(1.5 * FPS), int(3 * FPS))
+
     def correct_layer(self):
         self._layer = self.rect.bottom
 
-    def correct_low_speed_enemies(self, axis:str):
-        if self._speed//2 == 0:
-            if axis == 'x':
-                self.x_change = self._speed
-            if axis == 'y':
-                self.y_change = self._speed
-    
-    def start_dying(self, instant_death=True):
+    def start_dying(self, instant_death=False):
         self._is_dead = True
         self.play_death_sound()
+        self.drop_lootable()
         if instant_death:
             self.final_death()
-    
+        else:
+            self.game.not_voulnerable.add(self)
+
     def final_death(self):
         self.kill()
-        self.drop_lootable()
 
     def drop_lootable(self):
-        if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
-        else: 
-            if random.random() < 0.3: #chance to have any drop at all
-                if random.random() < 0.7: # chance to have a lootable (coin, heart, etc.)
+        if DROP_LOOT_EVERYTIME:  # FOR TESTING PURPOSES!
+            self.room.items.append(
+                Item(
+                    self.game,
+                    self.rect.centerx,
+                    self.rect.centery,
+                    Categories.VERY_COMMON,
+                )
+            )
+        else:
+            if random.random() < 0.3:  # chance to have any drop at all
+                if (
+                    random.random() < 0.7
+                ):  # chance to have a lootable (coin, heart, etc.)
                     if random.random() < 0.5:
-                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery, False))
+                        self.room.items.append(
+                            SilverCoin(self.game, self.rect.centerx, self.rect.centery)
+                        )
                     elif random.uniform(0, 0.5) < 0.3:
-                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery, False))
+                        self.room.items.append(
+                            GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
+                        )
                     else:
-                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery, False))
+                        self.room.items.append(
+                            PickupHeart(self.game, self.rect.centerx, self.rect.centery)
+                        )
                 else:
-                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON, False))
+                    self.room.items.append(
+                        Item(
+                            self.game,
+                            self.rect.centerx,
+                            self.rect.centery,
+                            Categories.VERY_COMMON,
+                        )
+                    )
 
     def draw_additional_images(self, screen):
         pass
 
-    @abstractmethod
     def animate(self):
+        if not self._is_dead:
+            self.animate_alive()
+        else:
+            self.animate_dead()
+
+    @abstractmethod
+    def animate_alive(self):
         pass
+
+    def animate_dead(self):
+        self.death_animator.death_animation()
 
     @staticmethod
     def check_group_attacked():
@@ -289,7 +264,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
     @staticmethod
     def group_attacked():
         Enemy.is_group_attacked = True
-    
+
     def get_bombed(self):
         self.get_hit(1)
 
@@ -298,3 +273,9 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
         elif self.size == "Small":
             self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")
+    
+    def hp_scaling_factor(self):
+        return 1 + 2*(self.game.map.get_current_room().level - 1)/7
+
+    def dmg_scaling_factor(self):
+        return 1 + (self.game.map.get_current_room().level - 1)/7

@@ -1,9 +1,12 @@
-import pygame
 import random
+
+import pygame
+
 from config import BLOCK_LAYER
 
+
 class Block(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, is_collidable = True):
+    def __init__(self, game, x, y, is_collidable=True):
         self.game = game
         self._layer = BLOCK_LAYER
         if is_collidable:
@@ -20,7 +23,7 @@ class Block(pygame.sprite.Sprite):
 
         self.image = game.image_loader.blocks["rock" + str(random.randint(1, 4))].copy()
         self.mask = pygame.mask.from_surface(self.image)
-        
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -28,4 +31,4 @@ class Block(pygame.sprite.Sprite):
     def get_bombed(self):
         self.kill()
         self.game.map.get_current_room().remove_block(self)
-        self.game.sound_manager.play("rockBreak")
+        self.game.sound_manager.play_if_not_playing("rockBreak")

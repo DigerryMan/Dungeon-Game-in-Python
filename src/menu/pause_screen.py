@@ -1,16 +1,31 @@
 import pygame
+
 from config import FPS
 
-class PauseScreen():
+
+class PauseScreen:
     def __init__(self, menu):
         self.menu = menu
         self.game = menu.game
 
     def display(self):
         self.game.sound_manager.play("pageTurn")
-        arrow_positions = [(self.game.settings.WIN_WIDTH//3.1, self.game.settings.WIN_HEIGHT//2.05),
-                           (self.game.settings.WIN_WIDTH//2.85, self.game.settings.WIN_HEIGHT//1.75)]
+        arrow_positions = [
+            (
+                self.game.settings.WIN_WIDTH // 2.58,
+                self.game.settings.WIN_HEIGHT // 2.17,
+            ),
+            (
+                self.game.settings.WIN_WIDTH // 2.45,
+                self.game.settings.WIN_HEIGHT // 1.95,
+            ),
+        ]
         current_arrow = 0
+
+        card_position = (
+            self.game.settings.WIN_WIDTH // 2 - self.menu.pause_card.get_width() // 2,
+            self.game.settings.WIN_HEIGHT // 2 - self.menu.pause_card.get_height() // 2,
+        )
 
         while self.game.paused:
             for event in pygame.event.get():
@@ -22,7 +37,7 @@ class PauseScreen():
                     if event.key == pygame.K_ESCAPE:
                         self.game.sound_manager.play("pageTurn")
                         self.game.paused = False
-                    
+
                     if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
                         current_arrow = current_arrow + 1 if current_arrow == 0 else 0
                         self.game.sound_manager.play("selectRight")
@@ -37,8 +52,11 @@ class PauseScreen():
                             self.game.sound_manager.stop_all_with_fadeout(2000)
                             self.game.sound_manager.play("pageTurn")
 
-            self.game.screen.blit(self.menu.pause_card, (self.game.settings.WIN_WIDTH//4, self.game.settings.WIN_HEIGHT//4))
-            self.game.screen.blit(self.menu.arrow, (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]))
+            self.game.screen.blit(self.menu.pause_card, card_position)
+            self.game.screen.blit(
+                self.menu.arrow,
+                (arrow_positions[current_arrow][0], arrow_positions[current_arrow][1]),
+            )
 
             self.game.clock.tick(FPS)
             pygame.display.update()
