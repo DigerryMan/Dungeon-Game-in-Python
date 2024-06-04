@@ -1,6 +1,7 @@
 import pygame
 from config import FPS
 from utils.directions import Directions
+from utils.image_transformer import ImageTransformer
 
 class PlayerAnimation():
     def __init__(self, game, player, player_type):
@@ -31,7 +32,11 @@ class PlayerAnimation():
         self.head_tear_anime_time_left = -1
         self.next_frame_ticks_cd = 3
         self.time = 0
-        
+
+        # BLINKING
+        self.opacity_cd = 4
+        self.is_opacity_changed = 0
+
         #PICK UP ITEM ANIMATION
         self.item_frames = ["pick0", "pick1", "pick2", "pick1"]
         self.item_pick_up_cd = int(0.6 * FPS)
@@ -125,8 +130,18 @@ class PlayerAnimation():
             self.head_frame = pygame.transform.flip(self.head_frame, True, False)
         
         self.frame.blit(self.head_frame, ((self.PLAYER_SIZE - self.head_frame.get_width())//2, -3))
+        if self.player.immortality_time_left > 1:
+            self.frame = ImageTransformer.change_opacity(self.frame, self.calculate_opacity())
         self.image = self.frame
     
+    def calculate_opacity(self):
+        if self.is_opacity_changed == 0:
+            self.is_opacity_changed = self.opacity_cd
+            return 125
+        else:
+            self.is_opacity_changed -= 1
+            return 0
+
     def set_body_frame(self):
         if self.player.direction == Directions.LEFT or self.player.direction == Directions.RIGHT:
             self.x_legs_frame += 10
