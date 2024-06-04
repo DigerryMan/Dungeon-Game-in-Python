@@ -1,21 +1,30 @@
 from config import MAP_RANGE
 from map.exploration_status import ExplorationStatus
 
-class Minimap():
+
+class Minimap:
     def __init__(self, map):
         self.map = map
-        self.minimap = [[ExplorationStatus.UNKNOWN for _ in range(MAP_RANGE)] for _ in range(MAP_RANGE)]
+        self.minimap = [
+            [ExplorationStatus.UNKNOWN for _ in range(MAP_RANGE)]
+            for _ in range(MAP_RANGE)
+        ]
         self.load_images()
         self.load_positions()
-
 
     def load_images(self):
         self.background = self.map.game.image_loader.minimap["background"].copy()
 
         self.room_images = {
-            ExplorationStatus.UNDISCOVERED: self.map.game.image_loader.minimap["undiscovered_room"].copy(),
-            ExplorationStatus.DISCOVERED: self.map.game.image_loader.minimap["discovered_room"].copy(),
-            ExplorationStatus.CURRENT: self.map.game.image_loader.minimap["current_room"].copy()
+            ExplorationStatus.UNDISCOVERED: self.map.game.image_loader.minimap[
+                "undiscovered_room"
+            ].copy(),
+            ExplorationStatus.DISCOVERED: self.map.game.image_loader.minimap[
+                "discovered_room"
+            ].copy(),
+            ExplorationStatus.CURRENT: self.map.game.image_loader.minimap[
+                "current_room"
+            ].copy(),
         }
         self.shop_icon = self.map.game.image_loader.minimap["shop_icon"].copy()
         self.boss_icon = self.map.game.image_loader.minimap["boss_icon"].copy()
@@ -24,14 +33,26 @@ class Minimap():
         screen_width = self.map.game.settings.WIN_WIDTH
         self.positions = {}
         self.positions["background"] = (screen_width - self.background.get_width(), 0)
-    
+
         room_icon_width = self.room_images[ExplorationStatus.UNDISCOVERED].get_width()
         room_icon_height = self.room_images[ExplorationStatus.UNDISCOVERED].get_height()
 
-        start_x = self.positions["background"][0] + (self.background.get_width() - 5 * room_icon_width) // 2
-        start_y = self.positions["background"][1] + (self.background.get_height() - 5 * room_icon_height) // 2
+        start_x = (
+            self.positions["background"][0]
+            + (self.background.get_width() - 5 * room_icon_width) // 2
+        )
+        start_y = (
+            self.positions["background"][1]
+            + (self.background.get_height() - 5 * room_icon_height) // 2
+        )
 
-        self.positions["rooms"] = [[(start_x + j * room_icon_width, start_y + i * room_icon_height) for j in range(5)] for i in range(5)]
+        self.positions["rooms"] = [
+            [
+                (start_x + j * room_icon_width, start_y + i * room_icon_height)
+                for j in range(5)
+            ]
+            for i in range(5)
+        ]
 
     def update_minimap(self):
         row, col = self.map.current_position
@@ -44,7 +65,12 @@ class Minimap():
             new_row = row + d_row[i]
             new_col = col + d_col[i]
 
-            if new_row >= 0 and new_row < MAP_RANGE and new_col >= 0 and new_col < MAP_RANGE:
+            if (
+                new_row >= 0
+                and new_row < MAP_RANGE
+                and new_col >= 0
+                and new_col < MAP_RANGE
+            ):
                 if self.minimap[new_row][new_col] == ExplorationStatus.UNKNOWN:
                     self.minimap[new_row][new_col] = ExplorationStatus.UNDISCOVERED
 
@@ -61,16 +87,37 @@ class Minimap():
                 room = self.map.room_map[i][j]
                 if room is not None:
                     if self.minimap[i][j] == ExplorationStatus.UNDISCOVERED:
-                        screen.blit(self.room_images[ExplorationStatus.UNDISCOVERED], self.positions["rooms"][i - left_row][j - left_col])
+                        screen.blit(
+                            self.room_images[ExplorationStatus.UNDISCOVERED],
+                            self.positions["rooms"][i - left_row][j - left_col],
+                        )
                     elif self.minimap[i][j] == ExplorationStatus.DISCOVERED:
-                        screen.blit(self.room_images[ExplorationStatus.DISCOVERED], self.positions["rooms"][i - left_row][j - left_col])
+                        screen.blit(
+                            self.room_images[ExplorationStatus.DISCOVERED],
+                            self.positions["rooms"][i - left_row][j - left_col],
+                        )
                     elif self.minimap[i][j] == ExplorationStatus.CURRENT:
-                        screen.blit(self.room_images[ExplorationStatus.CURRENT], self.positions["rooms"][i - left_row][j - left_col])
+                        screen.blit(
+                            self.room_images[ExplorationStatus.CURRENT],
+                            self.positions["rooms"][i - left_row][j - left_col],
+                        )
 
-                    if room.room_type == "shop" and self.minimap[i][j] != ExplorationStatus.UNKNOWN:
-                        screen.blit(self.shop_icon, self.positions["rooms"][i - left_row][j - left_col])
-                    elif room.room_type == "boss" and self.minimap[i][j] != ExplorationStatus.UNKNOWN:
-                        screen.blit(self.boss_icon, self.positions["rooms"][i - left_row][j - left_col])
+                    if (
+                        room.room_type == "shop"
+                        and self.minimap[i][j] != ExplorationStatus.UNKNOWN
+                    ):
+                        screen.blit(
+                            self.shop_icon,
+                            self.positions["rooms"][i - left_row][j - left_col],
+                        )
+                    elif (
+                        room.room_type == "boss"
+                        and self.minimap[i][j] != ExplorationStatus.UNKNOWN
+                    ):
+                        screen.blit(
+                            self.boss_icon,
+                            self.positions["rooms"][i - left_row][j - left_col],
+                        )
 
     def get_bounds_to_draw(self):
         current_row, current_col = self.map.current_position

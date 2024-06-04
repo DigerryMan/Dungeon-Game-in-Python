@@ -1,6 +1,9 @@
 import pygame
+
 from items.item_types import ItemType
+
 from ..lootable_item import LootableItem
+
 
 class PickupHeart(LootableItem):
     def __init__(self, game, x, y, heal_value=1, drop_animation=True):
@@ -22,7 +25,6 @@ class PickupHeart(LootableItem):
 
         self.mask = pygame.mask.from_surface(self.image)
         self.heal_value = heal_value
-        
 
     def picked_up(self):
         self.clean_up()

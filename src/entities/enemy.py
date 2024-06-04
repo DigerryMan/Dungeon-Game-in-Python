@@ -1,5 +1,8 @@
-import pygame
 import random
+from abc import ABC, abstractmethod
+
+import pygame
+
 from config import *
 from entities.bullet import Bullet
 from entities.enemy_collisions import EnemyCollisions
@@ -12,40 +15,47 @@ from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from map.block import Block
 from utils.directions import Directions
-from abc import ABC, abstractmethod
-
 from utils.image_transformer import ImageTransformer
 
+
 class Enemy(pygame.sprite.Sprite, ABC):
-    is_group_attacked:bool = False
-    def __init__(self, game, x:int, y:int, check_block_colisions:bool=True, 
-                 is_wandering:bool=True, bullet_decay_sec:float=0):
-        #CHANGEABLE STATS
+    is_group_attacked: bool = False
+
+    def __init__(
+        self,
+        game,
+        x: int,
+        y: int,
+        check_block_colisions: bool = True,
+        is_wandering: bool = True,
+        bullet_decay_sec: float = 0,
+    ):
+        # CHANGEABLE STATS
         self._health = 4
         self._damage = 1
         self._collision_damage = 1
         self.size = "Small"
-        
+
         self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
         self._bullet_decay_sec = bullet_decay_sec
         self._shot_cd = int(2.5 * FPS)
         self._shot_time_left = self._shot_cd
-        
-        #POSITION
+
+        # POSITION
         self.MOB_SIZE = game.settings.MOB_SIZE
         self.x_change = 0
         self.y_change = 0
-        
-        #SKINS
+
+        # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
         self.unchanged_image = self.image.copy()
-        self.mask = pygame.mask.from_surface(self.image) 
+        self.mask = pygame.mask.from_surface(self.image)
         self.frame = None
         self.images = []
 
-        #HITBOX
+        # HITBOX
         self.rect = self.image.get_rect()
         self.rect.x = x * game.settings.TILE_SIZE
         self.rect.y = y * game.settings.TILE_SIZE
@@ -53,11 +63,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         # GETTING HIT ANIMATION
         self.hit_time_cd = int(0.1 * FPS)
-        self.hit_time = 0     
-        self.is_change_of_frame = False  
+        self.hit_time = 0
+        self.is_change_of_frame = False
 
-
-        #REST
+        # REST
         self.collisions_manager = EnemyCollisions(self, game, check_block_colisions)
         self.facing = random.choice([Directions.LEFT, Directions.RIGHT])
 
@@ -71,7 +80,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.room = game.map.get_current_room()
         self.groups = self.game.all_sprites, self.game.enemies, self.game.entities
         pygame.sprite.Sprite.__init__(self, self.groups)
-   
+
     def update(self):
         if not self._is_dead:
             self.move()
@@ -82,7 +91,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.terrain_collisions()
             self.correct_facing()
             self.correct_layer()
-        
+
         self.check_hit_and_animate()
         self.x_change = 0
         self.y_change = 0
@@ -107,7 +116,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         if not self._is_dead:
             self.enemy_moves.move()
 
-    def move_because_of_player(self, chase:bool=True):
+    def move_because_of_player(self, chase: bool = True):
         self.enemy_moves.move_because_of_player(chase)
 
     def collide_player(self):
@@ -116,12 +125,20 @@ class Enemy(pygame.sprite.Sprite, ABC):
     def attack(self):
         self._shot_time_left -= 1
         if self._shot_time_left <= 0:
-            Bullet(self.game, self.rect.centerx, self.rect.centery, Directions.PLAYER, 
-                   self._projectal_speed, False, self._damage, self._bullet_decay_sec)
+            Bullet(
+                self.game,
+                self.rect.centerx,
+                self.rect.centery,
+                Directions.PLAYER,
+                self._projectal_speed,
+                False,
+                self._damage,
+                self._bullet_decay_sec,
+            )
             self.roll_next_shot_cd()
             self._shot_time_left = self._shot_cd
 
-    def collide_blocks(self, orientation:str):
+    def collide_blocks(self, orientation: str):
         self.collisions_manager.collide_blocks(orientation)
 
     def get_mask_colliding_sprite(self, rect_hits):
@@ -133,18 +150,18 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 offset_y = sprite.rect.y - self.rect.y
                 if self.mask.overlap(block_mask, (offset_x, offset_y)):
                     return sprite
-                
+
             if pygame.sprite.collide_mask(self, sprite):
                 return sprite
 
     def _correct_rounding(self):
-        self.x_change += (1 if self.x_change >= 0 else -1)
-        self.y_change += (1 if self.y_change >= 0 else -1)
+        self.x_change += 1 if self.x_change >= 0 else -1
+        self.y_change += 1 if self.y_change >= 0 else -1
 
     def correct_facing(self):
         self.enemy_moves.correct_facing()
 
-    def get_hit(self, dmg:int):
+    def get_hit(self, dmg: int):
         if self not in self.game.not_voulnerable:
             self.play_hit_sound()
             self._health -= dmg
@@ -154,12 +171,14 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
             self.hit_time = self.hit_time_cd
             if not self._is_dead:
-                self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
-    
+                self.image = ImageTransformer.change_image_to_more_red(
+                    self.unchanged_image
+                )
+
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")
 
-    def play_audio(self, audio:str):
+    def play_audio(self, audio: str):
         self.game.sound_manager.play(audio)
 
     def check_if_dead(self):
@@ -167,11 +186,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.start_dying()
 
     def roll_next_shot_cd(self):
-        self._shot_cd = random.randint(int(1.5*FPS), int(3*FPS))
-            
+        self._shot_cd = random.randint(int(1.5 * FPS), int(3 * FPS))
+
     def correct_layer(self):
         self._layer = self.rect.bottom
-    
+
     def start_dying(self, instant_death=False):
         self._is_dead = True
         self.play_death_sound()
@@ -180,24 +199,46 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.final_death()
         else:
             self.game.not_voulnerable.add(self)
-    
+
     def final_death(self):
         self.kill()
 
     def drop_lootable(self):
-        if DROP_LOOT_EVERYTIME: #FOR TESTING PURPOSES!
-            self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON))
-        else: 
-            if random.random() < 0.3: #chance to have any drop at all
-                if random.random() < 0.7: # chance to have a lootable (coin, heart, etc.)
+        if DROP_LOOT_EVERYTIME:  # FOR TESTING PURPOSES!
+            self.room.items.append(
+                Item(
+                    self.game,
+                    self.rect.centerx,
+                    self.rect.centery,
+                    Categories.VERY_COMMON,
+                )
+            )
+        else:
+            if random.random() < 0.3:  # chance to have any drop at all
+                if (
+                    random.random() < 0.7
+                ):  # chance to have a lootable (coin, heart, etc.)
                     if random.random() < 0.5:
-                        self.room.items.append(SilverCoin(self.game, self.rect.centerx, self.rect.centery))
+                        self.room.items.append(
+                            SilverCoin(self.game, self.rect.centerx, self.rect.centery)
+                        )
                     elif random.uniform(0, 0.5) < 0.3:
-                        self.room.items.append(GoldenCoin(self.game, self.rect.centerx, self.rect.centery))
+                        self.room.items.append(
+                            GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
+                        )
                     else:
-                        self.room.items.append(PickupHeart(self.game, self.rect.centerx, self.rect.centery))
+                        self.room.items.append(
+                            PickupHeart(self.game, self.rect.centerx, self.rect.centery)
+                        )
                 else:
-                    self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.VERY_COMMON))
+                    self.room.items.append(
+                        Item(
+                            self.game,
+                            self.rect.centerx,
+                            self.rect.centery,
+                            Categories.VERY_COMMON,
+                        )
+                    )
 
     def draw_additional_images(self, screen):
         pass
@@ -207,11 +248,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.animate_alive()
         else:
             self.animate_dead()
-        
-    @abstractmethod    
+
+    @abstractmethod
     def animate_alive(self):
         pass
-    
+
     def animate_dead(self):
         self.death_animator.death_animation()
 
@@ -222,7 +263,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
     @staticmethod
     def group_attacked():
         Enemy.is_group_attacked = True
-    
+
     def get_bombed(self):
         self.get_hit(1)
 

@@ -27,5 +27,6 @@ class PickupBomb(LootableItem):
         self.clean_up()
         self.kill()
         self.is_picked_up = True
+        self.game.sound_manager.play_if_not_playing("lift")
 
         return ItemType.PICKUP_BOMB, self.amount

@@ -1,8 +1,10 @@
 import pygame
+
 from config import *
 
+
 class Bomb(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, rotate = False):
+    def __init__(self, game, x, y, rotate=False):
         self.game = game
         self.image_type = "bomb"
         self.image = game.image_loader.bombs[self.image_type + "0"].copy()
@@ -32,10 +34,18 @@ class Bomb(pygame.sprite.Sprite):
         self.current_frame = (self.current_frame + 1) % self.frames
 
         if self.rotate:
-            self.image = pygame.transform.flip(self.game.image_loader.bombs[f"{self.image_type}{self.current_frame}"].copy(), True, False)
+            self.image = pygame.transform.flip(
+                self.game.image_loader.bombs[
+                    f"{self.image_type}{self.current_frame}"
+                ].copy(),
+                True,
+                False,
+            )
 
         else:
-            self.image = self.game.image_loader.bombs[f"{self.image_type}{self.current_frame}"].copy()
+            self.image = self.game.image_loader.bombs[
+                f"{self.image_type}{self.current_frame}"
+            ].copy()
 
     def explode(self):
         self.image_type = "bomb_explosion"
@@ -43,7 +53,9 @@ class Bomb(pygame.sprite.Sprite):
         self.frames = 12
         self.current_frame = 0
         self.time_per_frame = 5
-        self.image = self.game.image_loader.bombs[f"{self.image_type}{self.current_frame}"].copy()
+        self.image = self.game.image_loader.bombs[
+            f"{self.image_type}{self.current_frame}"
+        ].copy()
         bomb_center = self.rect.center
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y - self.game.settings.TILE_SIZE // 1.5)
@@ -53,7 +65,10 @@ class Bomb(pygame.sprite.Sprite):
     def check_collisions(self, bomb_center):
         for group in [self.game.player_sprite, self.game.enemies, self.game.blocks]:
             for sprite in group:
-                distance = ((sprite.rect.centerx - bomb_center[0])**2 + (sprite.rect.centery - bomb_center[1])**2)**0.5
+                distance = (
+                    (sprite.rect.centerx - bomb_center[0]) ** 2
+                    + (sprite.rect.centery - bomb_center[1]) ** 2
+                ) ** 0.5
                 if distance <= self.explosion_radius:
                     sprite.get_bombed()
 

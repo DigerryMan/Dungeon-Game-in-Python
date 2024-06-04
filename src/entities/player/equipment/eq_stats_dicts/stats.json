@@ -1,1 +1,11 @@
-{"health": 0, "dmg": 0, "dmg_reduction": 0, "shooting_cooldown": 0, "bullet_fly_time": 0, "shot_speed": 0, "speed": 0, "luck": 0, "immortality": 0}
+{
+  "health": 0,
+  "dmg": 0,
+  "dmg_reduction": 0,
+  "shooting_cooldown": 0,
+  "bullet_fly_time": 0,
+  "shot_speed": 0,
+  "speed": 0,
+  "luck": 0,
+  "immortality": 0
+}

@@ -1,11 +1,14 @@
 import pygame
+
 from config import FPS
 from entities.mobs.boss.shaking_animation import ShakingAnimation
 from utils.image_transformer import ImageTransformer
 
-class ForsakenAnimation():
+
+class ForsakenAnimation:
     looped_flying_frames = [2, 3, 7, 4, 10, 9, 8]
     enemies_spawning_frames = [0, 1]
+
     def __init__(self, boss, game):
         self.boss = boss
         self.game = game
@@ -24,24 +27,40 @@ class ForsakenAnimation():
         self.time_cd = 20
         self.frame_index = 0
 
-        #SHAKING
+        # SHAKING
         self.shaking_animation = ShakingAnimation(boss)
 
-        #flying
+        # flying
         self.index = 0
 
     def prepare_intro_images(self):
         img = self.img.subsurface(pygame.Rect(372, 175, 186, 166))
-        self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        self.intro_image = pygame.transform.scale(
+            img,
+            (
+                img.get_width() * 3 * self.game.settings.SCALE,
+                img.get_height() * 3 * self.game.settings.SCALE,
+            ),
+        )
         img = self.img.subsurface(pygame.Rect(24, 282, 138, 52))
-        self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+        self.intro_name = pygame.transform.scale(
+            img,
+            (
+                img.get_width() * 3 * self.game.settings.SCALE,
+                img.get_height() * 3 * self.game.settings.SCALE,
+            ),
+        )
 
     def prepare_images(self):
         end = 4
         for y in range(3):
             for x in range(end):
                 image = self.img.subsurface(pygame.Rect(x * 95, y * 92, 95, 92))
-                self.images.append(pygame.transform.scale(image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)))
+                self.images.append(
+                    pygame.transform.scale(
+                        image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)
+                    )
+                )
             if y == 1:
                 end = 3
 
@@ -52,7 +71,7 @@ class ForsakenAnimation():
             self.enemies_spawning_animation()
         elif self.boss.flying_active:
             self.flying_animation()
-    
+
     def enemies_spawning_animation(self):
         self.time -= 1
         self.shaking_animation.shake_animation_x_and_y()
@@ -60,7 +79,9 @@ class ForsakenAnimation():
             self.time = self.time_cd
             self.index += 1
             self.index %= len(ForsakenAnimation.enemies_spawning_frames)
-            self.boss.image = self.images[ForsakenAnimation.enemies_spawning_frames[self.index]]
+            self.boss.image = self.images[
+                ForsakenAnimation.enemies_spawning_frames[self.index]
+            ]
             self.boss.is_change_of_frame = True
             self.boss.unchanged_image = self.boss.image.copy()
 
@@ -83,7 +104,9 @@ class ForsakenAnimation():
         if self.boss.flying_time % 10 == 0:
             self.index += 1
             self.index %= len(ForsakenAnimation.looped_flying_frames)
-            self.boss.image = self.images[ForsakenAnimation.looped_flying_frames[self.index]]
+            self.boss.image = self.images[
+                ForsakenAnimation.looped_flying_frames[self.index]
+            ]
             self.boss.is_change_of_frame = True
             self.boss.unchanged_image = self.boss.image.copy()
 

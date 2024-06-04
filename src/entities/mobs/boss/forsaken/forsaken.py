@@ -1,7 +1,8 @@
+import pygame
+
 from config import FPS
 from entities.laser import Laser
 from entities.mobs.boss.boss_health_bar import BossHealthBar
-import pygame
 from entities.mobs.boss.forsaken.forsaken_animation import ForsakenAnimation
 from entities.mobs.legs import Legs
 from entities.mobs.slime import Enemy
@@ -11,6 +12,7 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
+
 
 class Forsaken(Enemy):
     def __init__(self, game, x: int, y: int):
@@ -25,23 +27,23 @@ class Forsaken(Enemy):
         self.MOB_SIZE = int(game.settings.MOB_SIZE * 3.5)
         self.death_animator.scale_to_new_size(self.MOB_SIZE)
 
-        #SKINS
+        # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
 
-        #HITBOX
+        # HITBOX
         self.rect = self.image.get_rect()
         self.rect.centerx = x * game.settings.TILE_SIZE
         self.rect.centery = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
 
-        #ANIMATION
+        # ANIMATION
         self.animation = ForsakenAnimation(self, game)
 
         # LASERS
         self.lasers_active = True
         self.laser_cd = 8 * FPS
         self.lasers_time = self.laser_cd
-       
+
         # ENEMIES SPAWN
         self.enemies_active = False
         self.enemies_cd = 5 * FPS
@@ -65,7 +67,7 @@ class Forsaken(Enemy):
             self.correct_layer()
             self.check_hit_and_animate()
             self.boss_stages()
-        else: 
+        else:
             self.check_hit_and_animate()
 
     def boss_stages(self):
@@ -78,9 +80,9 @@ class Forsaken(Enemy):
 
     def laser_spawner(self):
         self.lasers_time -= 1
-        if self.lasers_time == int(7.99* FPS):
+        if self.lasers_time == int(7.99 * FPS):
             self.play_audio("forsakenLaser")
-        elif self.lasers_time == int(6.5* FPS):
+        elif self.lasers_time == int(6.5 * FPS):
             self.spawn_lasers_horizontally()
         elif self.lasers_time == int(4.5 * FPS):
             self.spawn_lasers_vertically()
@@ -96,7 +98,7 @@ class Forsaken(Enemy):
         self.playing_delayed_laser_sound()
 
     def playing_delayed_laser_sound(self):
-        if self.lasers_time in [int(6.3* FPS), int(4.3* FPS), int(1.3* FPS)]:
+        if self.lasers_time in [int(6.3 * FPS), int(4.3 * FPS), int(1.3 * FPS)]:
             Laser.play_audio(self.game.sound_manager)
 
     def enemies_spawner(self):
@@ -107,35 +109,59 @@ class Forsaken(Enemy):
             self.lasers_active = True
         elif self.enemies_time == int(4.5 * FPS) or self.enemies_time == int(3.5 * FPS):
             self.play_audio("forsakenSpawn")
-            self.game.map.get_current_room().spawn_mob(Legs, self.rect.centerx//self.game.settings.TILE_SIZE, self.rect.centery//self.game.settings.TILE_SIZE)
+            self.game.map.get_current_room().spawn_mob(
+                Legs,
+                self.rect.centerx // self.game.settings.TILE_SIZE,
+                self.rect.centery // self.game.settings.TILE_SIZE,
+            )
 
     def animate_alive(self):
         self.animation.animate()
-    
+
     def draw_additional_images(self, screen):
         self.health_bar.draw(screen)
-    
+
     def spawn_lasers_horizontally(self, duration=1.5, opacity_time=0.4):
         self.lasers_active = True
         tile_size = self.game.settings.TILE_SIZE
         for x in range(3, self.game.settings.MAP_WIDTH - 1, 2):
             new_x = x * tile_size + tile_size // 12
             new_y = tile_size
-            Laser(self.game, new_x, new_y, Directions.DOWN, False, 1, duration, opacity_time, audio_on=False)
-    
+            Laser(
+                self.game,
+                new_x,
+                new_y,
+                Directions.DOWN,
+                False,
+                1,
+                duration,
+                opacity_time,
+                audio_on=False,
+            )
+
     def spawn_lasers_vertically(self, duration=1.5, opacity_time=0.4):
         self.lasers_active = True
         tile_size = self.game.settings.TILE_SIZE
         for y in range(2, self.game.settings.MAP_HEIGHT, 2):
-            new_x =tile_size
-            new_y = y * tile_size 
-            Laser(self.game, new_x, new_y, Directions.RIGHT, False, 1, duration, opacity_time, audio_on=False)
-    
+            new_x = tile_size
+            new_y = y * tile_size
+            Laser(
+                self.game,
+                new_x,
+                new_y,
+                Directions.RIGHT,
+                False,
+                1,
+                duration,
+                opacity_time,
+                audio_on=False,
+            )
+
     def flying(self):
         self.flying_time -= 1
         if self.flying_time == int(8.8 * FPS):
             self.play_audio("forsakenRoar")
-        
+
         if self.flying_time == int(9 * FPS):
             self.setup_start_of_fly()
         elif self.flying_time <= 0:
@@ -148,12 +174,12 @@ class Forsaken(Enemy):
             self.y_multiplier = -1
         elif self.flying_time < int(8 * FPS):
             self.fly()
-           
-    def setup_start_of_fly(self):        
+
+    def setup_start_of_fly(self):
         tile_size = self.game.settings.TILE_SIZE
-        self.rect.centery = (self.game.settings.MAP_HEIGHT - 3/2) * tile_size
+        self.rect.centery = (self.game.settings.MAP_HEIGHT - 3 / 2) * tile_size
         self.rect.centerx = int(3 * tile_size / 2)
-    
+
     def fly(self):
         self.block_collision_detection()
         self.rect.x += self.x_speed
@@ -176,6 +202,16 @@ class Forsaken(Enemy):
     def drop_lootable(self):
         drops = [SilverCoin] * 15 + [GoldenCoin] * 10 + [PickupHeart] * 3
         for drop in drops:
-            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
-        
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="forsaken"))
+            self.room.items.append(
+                drop(self.game, self.rect.centerx, self.rect.centery)
+            )
+
+        self.room.items.append(
+            Item(
+                self.game,
+                self.rect.centerx,
+                self.rect.centery,
+                Categories.LEGENDARY,
+                boss="forsaken",
+            )
+        )

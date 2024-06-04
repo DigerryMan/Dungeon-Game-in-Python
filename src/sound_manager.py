@@ -1,6 +1,8 @@
-import time
-from pygame import mixer
 import os
+import time
+
+from pygame import mixer
+
 
 def load_sounds(directory):
     sound_files = os.listdir(directory)
@@ -11,8 +13,10 @@ def load_sounds(directory):
         sounds[name] = mixer.Sound(path)
     return sounds
 
-music_volumes  = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
+
+music_volumes = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5]
 effect_volumes = [0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1]
+
 
 class SoundManager:
     def __init__(self):
@@ -50,7 +54,10 @@ class SoundManager:
 
     def play_if_not_playing(self, sound_name):
         current_time = time.time()
-        if sound_name in self.last_played and current_time - self.last_played[sound_name] < 0.05:
+        if (
+            sound_name in self.last_played
+            and current_time - self.last_played[sound_name] < 0.05
+        ):
             return
 
         if sound_name in self.sounds:

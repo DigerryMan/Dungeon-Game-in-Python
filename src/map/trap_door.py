@@ -1,5 +1,7 @@
 import pygame
+
 from config import BLOCK_LAYER
+
 
 class TrapDoor(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -14,7 +16,7 @@ class TrapDoor(pygame.sprite.Sprite):
         self.height = game.settings.TILE_SIZE
 
         self.image = game.image_loader.trap_door["closed"]
-        
+
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -24,10 +26,13 @@ class TrapDoor(pygame.sprite.Sprite):
         self.animated = False
 
     def update(self):
-        player_pos = pygame.Vector2(self.game.player.rect.centerx, self.game.player.rect.centery + self.game.settings.TILE_SIZE / 3)
+        player_pos = pygame.Vector2(
+            self.game.player.rect.centerx,
+            self.game.player.rect.centery + self.game.settings.TILE_SIZE / 3,
+        )
         trap_door_pos = pygame.Vector2(self.rect.centerx, self.rect.centery)
         distance = player_pos.distance_to(trap_door_pos)
-        
+
         if not self.animated and self.opened:
             self.timer -= 1
             if self.timer <= 0:
@@ -45,6 +50,6 @@ class TrapDoor(pygame.sprite.Sprite):
     def open(self):
         if self.opened:
             return
-        
+
         self.opened = True
         self.timer = 120

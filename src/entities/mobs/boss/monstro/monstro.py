@@ -1,8 +1,10 @@
 import random
+
+import pygame
+
 from config import FPS, WALL_MARKS
 from entities.bullet import Bullet
 from entities.mobs.boss.boss_health_bar import BossHealthBar
-import pygame
 from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
 from entities.mobs.slime import Slime
 from items.lootables.golden_coin import GoldenCoin
@@ -11,6 +13,7 @@ from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
 from items.stat_items.item import Item
 from utils.directions import Directions
+
 
 class Monstro(Slime):
     def __init__(self, game, x: int, y: int):
@@ -24,18 +27,20 @@ class Monstro(Slime):
         # CHANGED FROM ENEMY
         self.MOB_SIZE = game.settings.MOB_SIZE * 2
         self.death_animator.scale_to_new_size(self.MOB_SIZE)
-        self.img_shadow = pygame.transform.scale(self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6)))
+        self.img_shadow = pygame.transform.scale(
+            self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6))
+        )
 
-        #SKINS
+        # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
 
-        #HITBOX
+        # HITBOX
         self.rect = self.image.get_rect()
         self.rect.x = x * game.settings.TILE_SIZE
         self.rect.y = y * game.settings.TILE_SIZE
         self._layer = self.rect.bottom
 
-        #ANIMATION
+        # ANIMATION
         self.animation = MonstroAnimation(self, game)
 
         # BOSS STAGES
@@ -44,7 +49,7 @@ class Monstro(Slime):
         self.is_doing_bullet_attack = False
         self.bullet_direction = None
         self.bullet_shooting_cd = 0.8 * FPS
-        self.bullet_shooting_time_left = self.bullet_shooting_cd 
+        self.bullet_shooting_time_left = self.bullet_shooting_cd
 
         self.jump_cd_s = 1
         self.jump_cd = self.jump_cd_s * FPS
@@ -52,9 +57,9 @@ class Monstro(Slime):
         self.max_number_of_jumps = 5
         self.number_of_jumps = 0
         self.stage_1_time = None
-   
+
     def correct_possible_jumps(self):
-        self.possible_jumps.remove((0,0))
+        self.possible_jumps.remove((0, 0))
 
     def move(self):
         if self.is_jumping:
@@ -69,8 +74,10 @@ class Monstro(Slime):
 
     def find_possible_moves(self):
         x_p, y_p = self.game.player.rect.x, self.game.player.rect.y
-        x, y = round(x_p / self.game.settings.TILE_SIZE), round(y_p / self.game.settings.TILE_SIZE)
-       
+        x, y = round(x_p / self.game.settings.TILE_SIZE), round(
+            y_p / self.game.settings.TILE_SIZE
+        )
+
         if x <= 0:
             x = 1
         elif x >= self.game.settings.MAP_WIDTH - 2:
@@ -79,7 +86,7 @@ class Monstro(Slime):
         if y <= 0:
             y = 1
         elif y >= self.game.settings.MAP_HEIGHT - 2:
-            y = self.game.settings.MAP_HEIGHT - 3     
+            y = self.game.settings.MAP_HEIGHT - 3
 
         self.old_jump_x, self.old_jump_y = self.new_jump_x, self.new_jump_y
         self.new_jump_x, self.new_jump_y = x, y
@@ -96,9 +103,14 @@ class Monstro(Slime):
         self.calculate_parabolic_jump()
 
     def is_valid_move(self, x, y):
-        if x <= 0 or x >= self.game.settings.MAP_WIDTH - 2 or y <= 0  or y >= self.game.settings.MAP_HEIGHT - 2:
+        if (
+            x <= 0
+            or x >= self.game.settings.MAP_WIDTH - 2
+            or y <= 0
+            or y >= self.game.settings.MAP_HEIGHT - 2
+        ):
             return False
-        return self.room_layout[y][x] not in WALL_MARKS    
+        return self.room_layout[y][x] not in WALL_MARKS
 
     def calculate_parabolic_jump(self):
         self.z = self.new_jump_x - self.old_jump_x
@@ -108,14 +120,16 @@ class Monstro(Slime):
             self.tg = None
             self.v_y = (self.new_jump_y - self.old_jump_y) / (self.t)
         else:
-            self.tg = ((self.new_jump_y - self.old_jump_y) - 0.5 * 9.81 * (self.t) ** 2) / (self.v_x * (self.t))
+            self.tg = (
+                (self.new_jump_y - self.old_jump_y) - 0.5 * 9.81 * (self.t) ** 2
+            ) / (self.v_x * (self.t))
 
-    def calculate_current_y(self, t:float):
+    def calculate_current_y(self, t: float):
         if self.new_jump_x == self.old_jump_x and self.old_jump_y == self.new_jump_y:
             return self.old_jump_y
         if self.tg == None:
             return self.old_jump_y + t * self.v_y
-        return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t ** 2
+        return self.old_jump_y + self.v_x * t * self.tg + 0.5 * 9.81 * t**2
 
     def update(self):
         if not self._is_dead:
@@ -125,20 +139,20 @@ class Monstro(Slime):
             self.check_hit_and_animate()
         else:
             self.check_hit_and_animate()
-            
+
     def animate_alive(self):
         self.animation.animate()
-    
+
     def perform_boss_stage(self):
         if self.stage == 1:
             if self.number_of_jumps >= self.max_number_of_jumps:
-                self.stage = 0  
+                self.stage = 0
                 self.animation.idles_passed = 0
                 self.number_of_jumps = 0
                 self.roll_next_jumps_amount()
             else:
                 self.do_to_player_jumps_stage1()
-        
+
         elif self.stage == 0:
             self.do_bullet_attack_stage0()
             self.is_doing_bullet_attack = True
@@ -149,7 +163,7 @@ class Monstro(Slime):
     def do_bullet_attack_stage0(self):
         self.bullet_shooting_time_left -= 1
         if self.bullet_shooting_time_left == int(self.bullet_shooting_cd * 0.6):
-            self.shoot_one_of_crazy_bullets()       
+            self.shoot_one_of_crazy_bullets()
         elif self.bullet_shooting_time_left <= 0:
             self.bullet_shooting_time_left = self.bullet_shooting_cd
             self.stage = 1
@@ -157,19 +171,32 @@ class Monstro(Slime):
 
     def update_bullet_direction(self):
         x_p, y_p = self.game.player.get_center_position()
-        self.bullet_direction = Directions.get_direction_from_two_points(self.rect.centerx, self.rect.centery, x_p, y_p) 
+        self.bullet_direction = Directions.get_direction_from_two_points(
+            self.rect.centerx, self.rect.centery, x_p, y_p
+        )
 
     def shoot_one_of_crazy_bullets(self):
         self.play_audio(f"monstroShoot{random.randint(1,3)}")
         self.update_bullet_direction()
         for _ in range(9):
-            x, y = self.rect.centerx + random.randint(-12, 12), self.rect.centery + random.randint(-12, 12)
+            x, y = self.rect.centerx + random.randint(
+                -12, 12
+            ), self.rect.centery + random.randint(-12, 12)
             decay = random.random() * 0.2 + 0.3
-            speed = random.randint(15, 25) 
-            additional_speed = random.randint(-4, 4) 
-            Bullet(self.game, x, y, self.bullet_direction, speed, 
-                False, self._damage, decay, additional_speed)
-                
+            speed = random.randint(15, 25)
+            additional_speed = random.randint(-4, 4)
+            Bullet(
+                self.game,
+                x,
+                y,
+                self.bullet_direction,
+                speed,
+                False,
+                self._damage,
+                decay,
+                additional_speed,
+            )
+
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
 
     def do_to_player_jumps_stage1(self):
@@ -179,17 +206,33 @@ class Monstro(Slime):
     def drop_lootable(self):
         drops = [SilverCoin] * 5 + [GoldenCoin] * 3 + [PickupHeart] * 2
         for drop in drops:
-            self.room.items.append(drop(self.game, self.rect.centerx, self.rect.centery))
+            self.room.items.append(
+                drop(self.game, self.rect.centerx, self.rect.centery)
+            )
 
-        self.room.items.append(Item(self.game, self.rect.centerx, self.rect.centery, Categories.LEGENDARY, boss="monstro"))
+        self.room.items.append(
+            Item(
+                self.game,
+                self.rect.centerx,
+                self.rect.centery,
+                Categories.LEGENDARY,
+                boss="monstro",
+            )
+        )
 
     def draw_additional_images(self, screen):
         super().draw_additional_images(screen)
         self.health_bar.draw(screen)
-    
+
     def draw_shadow(self, screen):
         if self.is_jumping:
-            screen.blit(self.img_shadow, (self.shadow_x + self.MOB_SIZE//4, self.shadow_y + self.MOB_SIZE//2))
-    
+            screen.blit(
+                self.img_shadow,
+                (
+                    self.shadow_x + self.MOB_SIZE // 4,
+                    self.shadow_y + self.MOB_SIZE // 2,
+                ),
+            )
+
     def play_hit_sound(self):
         self.play_audio(f"monstroHit{random.randint(1, 3)}")

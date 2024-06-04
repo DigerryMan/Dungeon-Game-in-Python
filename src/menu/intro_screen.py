@@ -1,7 +1,9 @@
 import pygame
+
 from config import FPS
 
-class IntroScreen():
+
+class IntroScreen:
     def __init__(self, menu):
         self.menu = menu
         self.game = menu.game
@@ -14,7 +16,10 @@ class IntroScreen():
                     self.game.intro_playing = False
                     self.game.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN or (event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN)):
+                if event.type == pygame.MOUSEBUTTONDOWN or (
+                    event.type == pygame.KEYDOWN
+                    and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN)
+                ):
                     self.game.sound_manager.stop_with_fadeout("intro", 2000)
                     self.game.intro_playing = False
                     self.game.menu_playing = True

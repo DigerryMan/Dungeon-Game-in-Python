@@ -1,1 +1,7 @@
-{"friendly_ghost": 2, "dmg_multiplier": 3, "dmg_taken_multiplier": 3, "PHD_obtained": 1, "extra_shot_time": 4}
+{
+  "friendly_ghost": 2,
+  "dmg_multiplier": 3,
+  "dmg_taken_multiplier": 3,
+  "PHD_obtained": 1,
+  "extra_shot_time": 4
+}

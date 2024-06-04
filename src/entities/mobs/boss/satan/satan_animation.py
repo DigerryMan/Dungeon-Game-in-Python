@@ -1,13 +1,16 @@
 import pygame
+
 from entities.mobs.boss.shaking_animation import ShakingAnimation
 
-class SatanAnimiation():
+
+class SatanAnimiation:
     waking_up_frames = [21, 22, 23, 1]
     hands_frames = [1, 13, 14, 15, 1]
     laser_frames = [7, 3, 7, 9, 10, 7, 1, 0]
     mouth_frames = [1, 2, 6, 8, 0, 1]
     flying_frames = [1, 25]
-    def __init__(self, boss, game, _skin:str="satan"):
+
+    def __init__(self, boss, game, _skin: str = "satan"):
         self.boss = boss
         self.game = game
 
@@ -27,32 +30,68 @@ class SatanAnimiation():
         self.time = self.time_cd = 10
         self.index = 0
 
-        #SHAKING
+        # SHAKING
         self.shaking_animation = ShakingAnimation(boss)
-        
-        #TIME STAGES OF FRAMES
-        self.waking_up_time_stages = [0.99, 0.2, 0.12, 0.06]
-        self.waking_up_time_stages = [int(time * self.boss.bullets_from_hands_period) for time in self.waking_up_time_stages]
-        self.hands_time_stages = [0.99, 0.8, 0.49, 0.4, 0.12]
-        self.hands_time_stages = [int(time * self.boss.bullets_from_hands_period) for time in self.hands_time_stages]
-        self.laser_time_stages = [0.99, 0.95, 0.87, 0.75, 0.42, 0.3, 0.2, 0.1]
-        self.laser_time_stages = [int(time * self.boss.laser_breath_period) for time in self.laser_time_stages]
-        self.mouth_time_stages = [0.99, 0.92, 0.83, 0.55, 0.25, 0.05]
-        self.mouth_time_stages = [int(time * self.boss.mouth_attack_period) for time in self.mouth_time_stages]
-        self.flying_time_stages = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05]
-        self.flying_time_stages = [int(time * self.boss.flying_period) for time in self.flying_time_stages]
 
-    def prepare_intro_images(self, _skin:str="satan"):
+        # TIME STAGES OF FRAMES
+        self.waking_up_time_stages = [0.99, 0.2, 0.12, 0.06]
+        self.waking_up_time_stages = [
+            int(time * self.boss.bullets_from_hands_period)
+            for time in self.waking_up_time_stages
+        ]
+        self.hands_time_stages = [0.99, 0.8, 0.49, 0.4, 0.12]
+        self.hands_time_stages = [
+            int(time * self.boss.bullets_from_hands_period)
+            for time in self.hands_time_stages
+        ]
+        self.laser_time_stages = [0.99, 0.95, 0.87, 0.75, 0.42, 0.3, 0.2, 0.1]
+        self.laser_time_stages = [
+            int(time * self.boss.laser_breath_period) for time in self.laser_time_stages
+        ]
+        self.mouth_time_stages = [0.99, 0.92, 0.83, 0.55, 0.25, 0.05]
+        self.mouth_time_stages = [
+            int(time * self.boss.mouth_attack_period) for time in self.mouth_time_stages
+        ]
+        self.flying_time_stages = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.05]
+        self.flying_time_stages = [
+            int(time * self.boss.flying_period) for time in self.flying_time_stages
+        ]
+
+    def prepare_intro_images(self, _skin: str = "satan"):
         if _skin == "satan":
             img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
-            self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            self.intro_image = pygame.transform.scale(
+                img,
+                (
+                    img.get_width() * 3 * self.game.settings.SCALE,
+                    img.get_height() * 3 * self.game.settings.SCALE,
+                ),
+            )
             img = self.img.subsurface(pygame.Rect(237, 805, 122, 38))
-            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            self.intro_name = pygame.transform.scale(
+                img,
+                (
+                    img.get_width() * 3 * self.game.settings.SCALE,
+                    img.get_height() * 3 * self.game.settings.SCALE,
+                ),
+            )
         else:
             img = self.img.subsurface(pygame.Rect(30, 752, 159, 163))
-            self.intro_image = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            self.intro_image = pygame.transform.scale(
+                img,
+                (
+                    img.get_width() * 3 * self.game.settings.SCALE,
+                    img.get_height() * 3 * self.game.settings.SCALE,
+                ),
+            )
             img = self.img.subsurface(pygame.Rect(237, 805, 170, 38))
-            self.intro_name = pygame.transform.scale(img, (img.get_width() * 3 * self.game.settings.SCALE, img.get_height() * 3 * self.game.settings.SCALE))
+            self.intro_name = pygame.transform.scale(
+                img,
+                (
+                    img.get_width() * 3 * self.game.settings.SCALE,
+                    img.get_height() * 3 * self.game.settings.SCALE,
+                ),
+            )
 
     def prepare_images(self):
         size = self.boss.MOB_WIDTH, self.boss.MOB_HEIGHT
@@ -67,7 +106,7 @@ class SatanAnimiation():
         image = self.img.subsurface(pygame.Rect(4 * 200, 3 * 120, 200, 120))
         self.images.append(pygame.transform.scale(image, size))
 
-        image = self.img.subsurface(pygame.Rect(4 * 200,  0, 200, 240))
+        image = self.img.subsurface(pygame.Rect(4 * 200, 0, 200, 240))
         self.images.append(pygame.transform.scale(image, size))
 
     def animate(self):
@@ -85,26 +124,46 @@ class SatanAnimiation():
         elif self.boss.flying_active:
             self.flying_animation()
             self.shaking_animation.shake_animation_x_and_y()
-            
-    def waking_up_animation(self):
-        self.animate_full_time_stage(self.boss.start_time, self.waking_up_time_stages, 
-                                     SatanAnimiation.waking_up_frames, self.waking_up_time_stages)
 
-    def animate_bullets_from_hands(self):             
-        self.animate_full_time_stage(self.boss.bullets_from_hands_time, self.hands_time_stages, 
-                                     SatanAnimiation.hands_frames, self.hands_time_stages)
+    def waking_up_animation(self):
+        self.animate_full_time_stage(
+            self.boss.start_time,
+            self.waking_up_time_stages,
+            SatanAnimiation.waking_up_frames,
+            self.waking_up_time_stages,
+        )
+
+    def animate_bullets_from_hands(self):
+        self.animate_full_time_stage(
+            self.boss.bullets_from_hands_time,
+            self.hands_time_stages,
+            SatanAnimiation.hands_frames,
+            self.hands_time_stages,
+        )
 
     def animate_laser_breath(self):
-        self.animate_full_time_stage(self.boss.laser_breath_time, self.laser_time_stages, 
-                                     SatanAnimiation.laser_frames, self.laser_time_stages)
+        self.animate_full_time_stage(
+            self.boss.laser_breath_time,
+            self.laser_time_stages,
+            SatanAnimiation.laser_frames,
+            self.laser_time_stages,
+        )
 
     def animate_mouth_attack(self):
-        self.animate_full_time_stage(self.boss.mouth_attack_time, self.mouth_time_stages, 
-                                     SatanAnimiation.mouth_frames, self.mouth_time_stages)
+        self.animate_full_time_stage(
+            self.boss.mouth_attack_time,
+            self.mouth_time_stages,
+            SatanAnimiation.mouth_frames,
+            self.mouth_time_stages,
+        )
 
     def flying_animation(self):
-        self.animate_full_time_stage(self.boss.flying_time, self.flying_time_stages, 
-                                     SatanAnimiation.flying_frames, SatanAnimiation.flying_frames)
+        self.animate_full_time_stage(
+            self.boss.flying_time,
+            self.flying_time_stages,
+            SatanAnimiation.flying_frames,
+            SatanAnimiation.flying_frames,
+        )
 
     def animate_full_time_stage(self, boss_condition, time_stage, frames, modulo_cond):
         if boss_condition in time_stage:
@@ -113,4 +172,4 @@ class SatanAnimiation():
             self.boss.unchanged_image = self.boss.image.copy()
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
-            self.frame_index %= len(modulo_cond)     
+            self.frame_index %= len(modulo_cond)

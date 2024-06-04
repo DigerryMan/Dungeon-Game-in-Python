@@ -214,7 +214,7 @@ class Game:
         return self.player.rect
 
     def display_eq(self):
-        self.player.eq.user_eq_input(None)  # show big_item first time
+        self.player.eq.user_eq_input(None)
         self.sound_manager.play("pageTurn")
 
         while self.player.eq_opened:

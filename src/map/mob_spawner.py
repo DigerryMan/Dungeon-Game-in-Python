@@ -1,4 +1,5 @@
 import random
+
 from entities.mobs.alpha_maggot import AlphaMaggot
 from entities.mobs.boss.duke.duke import Duke
 from entities.mobs.boss.forsaken.forsaken import Forsaken
@@ -19,61 +20,131 @@ from entities.mobs.wanderer import Wanderer
 from utils.directions import Directions
 
 
-class MobSpawner():
+class MobSpawner:
     def __init__(self, room, game):
         self.game = game
         self.room = room
         self.mob_spawn_positions = []
-        self.mobs_amount = 2 + room.level // 2
-    
+        self.mobs_amount = 2 + room.level // 2 + random.randint(0, 1)
+
     def spawn_mobs(self):
         self.mobs_amount = min(self.mobs_amount, len(self.mob_spawn_positions))
-        self.mob_spawn_positions = random.sample(self.mob_spawn_positions, self.mobs_amount)
+        self.mob_spawn_positions = random.sample(
+            self.mob_spawn_positions, self.mobs_amount
+        )
 
-        mobs = [Legs, Parasite, AlphaMaggot, Fly, Ghost, Maggot, Slime, Wanderer, FastGhost, Fatty]
+        mobs = [
+            Legs,
+            Parasite,
+            AlphaMaggot,
+            Fly,
+            Ghost,
+            Maggot,
+            Slime,
+            Wanderer,
+            FastGhost,
+            Fatty,
+        ]
         index = random.randint(0, len(mobs) - 1)
 
         if self.room.room_type == "boss":
             match self.room.level:
                 case 1:
-                    self.room.enemies.append(Duke(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Duke(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 2:
-                    self.room.enemies.append(Monstro(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Monstro(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 3:
-                    self.room.enemies.append(Husk(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Husk(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 4:
-                    self.room.enemies.append(Satan(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Satan(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 5:
-                    self.room.enemies.append(Forsaken(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Forsaken(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 6:
-                    self.room.enemies.append(Monstro2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Monstro2(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
                 case 7:
-                    self.room.enemies.append(Satan2(self.game, self.mob_spawn_positions[0][1], self.mob_spawn_positions[0][0]))
+                    self.room.enemies.append(
+                        Satan2(
+                            self.game,
+                            self.mob_spawn_positions[0][1],
+                            self.mob_spawn_positions[0][0],
+                        )
+                    )
 
             return
 
-        for (y, x) in self.mob_spawn_positions:
+        for y, x in self.mob_spawn_positions:
             new_mob = mobs[index]
             self.room.enemies.append(new_mob(self.game, x, y))
             index = random.randint(0, len(mobs) - 1)
-            break # ADDED FOR ONLY 1 MOB TO SPAWN
-    
+
     def spawn_mob(self, mob_class, x, y, boss=None):
         if boss:
             self.room.enemies.append(mob_class(self.game, x, y, boss))
         else:
             self.room.enemies.append(mob_class(self.game, x, y))
-    
+
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE + self.game.settings.PLAYER_SIZE * 0.9)
+            self.game.player.rect.center = (
+                self.game.settings.WIN_WIDTH // 2,
+                (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE
+                + self.game.settings.PLAYER_SIZE * 0.9,
+            )
         elif entry_direction == Directions.DOWN:
-            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.TILE_SIZE * 1.1)
+            self.game.player.rect.center = (
+                self.game.settings.WIN_WIDTH // 2,
+                self.game.settings.TILE_SIZE * 1.1,
+            )
         elif entry_direction == Directions.LEFT:
-            self.game.player.set_rect_position((self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE), 
-                                          self.game.player.rect.y)
+            self.game.player.set_rect_position(
+                (self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE
+                + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
+                self.game.player.rect.y,
+            )
         elif entry_direction == Directions.RIGHT:
-            self.game.player.set_rect_position(self.game.settings.TILE_SIZE - (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
-                                          self.game.player.rect.y)
+            self.game.player.set_rect_position(
+                self.game.settings.TILE_SIZE
+                - (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
+                self.game.player.rect.y,
+            )
         elif entry_direction == Directions.CENTER:
-            self.game.player.rect.center = (self.game.settings.WIN_WIDTH // 2, self.game.settings.WIN_HEIGHT // 2)
+            self.game.player.rect.center = (
+                self.game.settings.WIN_WIDTH // 2,
+                self.game.settings.WIN_HEIGHT // 2,
+            )
