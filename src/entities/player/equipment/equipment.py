@@ -26,9 +26,7 @@ class Equipment:
             "extra_stats_max.json",
         ]
         for filename in files_to_load:
-            path = os.path.join(
-                "entities", "player", "equipment", "eq_stats_dicts", filename
-            )
+            path = os.path.join("resources", "eq_stats_dicts", filename)
             with open(path, "r") as fp:
                 setattr(self, filename.split(".")[0], json.load(fp))
 
