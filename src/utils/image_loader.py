@@ -44,7 +44,9 @@ class ImageLoader:
                 f"resources/mobs/fast_ghost.png"
             ).convert_alpha(),
             "fatty": pygame.image.load(f"resources/mobs/fatty.png").convert_alpha(),
-            "friendly_ghost": pygame.image.load(f"resources/mobs/friendly_ghost.png").convert_alpha()
+            "friendly_ghost": pygame.image.load(
+                f"resources/mobs/friendly_ghost.png"
+            ).convert_alpha(),
         }
 
         self.rooms_ = [
@@ -60,7 +62,7 @@ class ImageLoader:
             "womb",
         ]
         self.doors_ = ["boss_door", "wood_door", "red_door", "shop_door", "dark_door"]
-        self.blocks_ = ["rocks"]
+        self.blocks_ = ["rocks", "poops"]
 
         self.images_dict = {}
         self.load_images_to_dict()
@@ -464,6 +466,10 @@ class ImageLoader:
             self.images_dict["rocks"].subsurface(pygame.Rect(197, 135, 53, 55)),
             self.tile_size_tuple,
         ).convert_alpha()
+        self.blocks["treasure_rock_bomb"] = pygame.transform.scale(
+            self.images_dict["rocks"].subsurface(pygame.Rect(2, 129, 54, 59)),
+            self.tile_size_tuple,
+        ).convert_alpha()
 
         self.blocks["vase1"] = pygame.transform.scale(
             self.images_dict["rocks"].subsurface(pygame.Rect(129, 67, 57, 55)),
@@ -481,6 +487,15 @@ class ImageLoader:
             self.images_dict["rocks"].subsurface(pygame.Rect(197, 195, 49, 55)),
             self.tile_size_tuple,
         ).convert_alpha()
+
+        for i in range(5):
+            for j in range(5):
+                self.blocks["poop" + str(i) + "_" + str(4-j)] = pygame.transform.scale(
+                    self.images_dict["poops"].subsurface(
+                        pygame.Rect(i * 78, j * 78, 78, 78)
+                    ),
+                    self.tile_size_tuple,
+                ).convert_alpha()
 
     def load_tears(self):
         self.tears["blue_tear"] = pygame.transform.scale(
