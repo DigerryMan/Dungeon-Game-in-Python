@@ -63,7 +63,7 @@ class Parasite(Enemy):
                     self.rect.centery,
                     Directions.PLAYER,
                     is_friendly=False,
-                    dmg=self._damage
+                    dmg=self._damage,
                 )
                 self.already_shot = True
                 self.time_left_to_shoot = self.shoot_cd_after_dig_out
@@ -122,6 +122,10 @@ class Parasite(Enemy):
 
     def sound_managment(self):
         if self.curr_frame == 1:
-            self.play_audio(f"parasiteBurstOut{random.randint(1, 2)}")
+            self.game.sound_manager.play_if_not_playing(
+                f"parasiteBurstOut{random.randint(1, 2)}"
+            )
         elif self.curr_frame == 6:
-            self.play_audio(f"parasiteEnterGround{random.randint(1, 2)}")
+            self.game.sound_manager.play_if_not_playing(
+                f"parasiteEnterGround{random.randint(1, 2)}"
+            )

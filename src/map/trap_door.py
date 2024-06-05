@@ -46,6 +46,7 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.game.game_over_playing = True
             else:
                 self.game.render_new_map()
+                self.game.sound_manager.play("level_change")
 
     def open(self):
         if self.opened:

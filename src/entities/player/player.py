@@ -129,6 +129,7 @@ class Player(pygame.sprite.Sprite):
                 Bomb(self.game, self.rect.centerx, self.rect.centery, rotate=True)
             else:
                 Bomb(self.game, self.rect.centerx, self.rect.centery)
+            self.game.sound_manager.play("place_bomb")
             self.bombs -= 1
 
     def shoot(self, keys, x_y_vel):

@@ -273,9 +273,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
         elif self.size == "Small":
             self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")
-    
+        elif self.size == "Boss":
+            self.game.sound_manager.play("boss_death")
+
     def hp_scaling_factor(self):
-        return 1 + 2*(self.game.map.get_current_room().level - 1)/7
+        return 1 + 2 * (self.game.map.get_current_room().level - 1) / 7
 
     def dmg_scaling_factor(self):
-        return 1 + (self.game.map.get_current_room().level - 1)/7
+        return 1 + (self.game.map.get_current_room().level - 1) / 7

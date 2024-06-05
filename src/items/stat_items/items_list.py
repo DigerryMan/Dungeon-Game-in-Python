@@ -283,7 +283,7 @@ class ItemsList:
         self.epics["darkhold"] = {
             "name": "Darkhold",
             "category": Categories.EPIC,
-            "stats": {"dmg": 1, "health": -2},
+            "stats": {"dmg": 1, "health": -1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(7 * 32, 14 * 32, 32, 32)
