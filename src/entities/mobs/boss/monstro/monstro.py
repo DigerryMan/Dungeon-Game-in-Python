@@ -204,7 +204,7 @@ class Monstro(Slime):
         self.attack()
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 5 + [GoldenCoin] * 3 + [PickupHeart] * 2
+        drops = [SilverCoin] * 2 + [GoldenCoin] * 1 + [PickupHeart] * 2
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

@@ -232,7 +232,7 @@ class Satan(Enemy):
         self.game.not_voulnerable.add(self)
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 10 + [GoldenCoin] * 5 + [PickupHeart] * 3
+        drops = [SilverCoin] * 5 + [GoldenCoin] * 2 + [PickupHeart] * 5
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

@@ -215,15 +215,16 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 )
             )
         else:
-            if random.random() < 0.3:  # chance to have any drop at all
+            if random.random() < 0.2:  # chance to have any drop at all
                 if (
-                    random.random() < 0.7
+                    random.random() < 0.75
                 ):  # chance to have a lootable (coin, heart, etc.)
-                    if random.random() < 0.5:
+                    rand = random.random()
+                    if rand < 0.7:
                         self.room.items.append(
                             SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                         )
-                    elif random.uniform(0, 0.5) < 0.3:
+                    elif rand < 0.9:
                         self.room.items.append(
                             GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                         )

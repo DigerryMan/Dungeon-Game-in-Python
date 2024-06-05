@@ -43,12 +43,12 @@ class ShopStand(Block):
 
     def get_random_item(self):
         if random.random() < 0.75:
-            self.price = 25 + 5 * (self.game.map.level - 1)
+            self.price = 9
             return Item(
                 self.game, -1000, -1000, Categories.COMMON, drop_animation=False
             )
 
-        self.price = 60 + 5 * (self.game.map.level - 1)
+        self.price = 23
         return Item(self.game, -1000, -1000, Categories.EPIC, drop_animation=False)
 
     def draw(self):

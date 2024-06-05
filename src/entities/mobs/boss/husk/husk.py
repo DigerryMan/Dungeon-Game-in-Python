@@ -51,7 +51,7 @@ class Husk(Duke):
         )
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 7 + [GoldenCoin] * 5 + [PickupHeart] * 3
+        drops = [SilverCoin] * 4 + [GoldenCoin] * 3 + [PickupHeart] * 3
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)
