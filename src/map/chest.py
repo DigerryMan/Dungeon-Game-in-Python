@@ -104,7 +104,7 @@ class Chest(pygame.sprite.Sprite):
                         SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(1)):
+                for _ in range(random.randint(1,2)):
                     items_to_craft.append(
                         GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
