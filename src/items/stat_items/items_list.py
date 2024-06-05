@@ -34,7 +34,7 @@ class ItemsList:
         self.very_commons["dmg_reduction_pill"] = {
             "name": "Damage reduction pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"dmg_reduction": [-0.1, -0.05, 0.05, 0.1]},
+            "stats": {"dmg_reduction": [-0.04, -0.02, 0.02, 0.04]},
             "image": game.image_loader.lootables["dmg_reduction_pill"],
         }
 
@@ -55,7 +55,7 @@ class ItemsList:
         self.very_commons["bullet_fly_time_pill"] = {
             "name": "Bullet fly time pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"bullet_fly_time": [-0.1, 0.1]},
+            "stats": {"bullet_fly_time": [-0.05, 0.05]},
             "image": game.image_loader.lootables["bullet_fly_time_pill"],
         }
 
