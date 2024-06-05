@@ -458,6 +458,15 @@ class ImageLoader:
             self.tile_size_tuple,
         ).convert_alpha()
 
+        self.blocks["rock_crumble1"] = pygame.transform.scale(
+            self.images_dict["rocks"].subsurface(pygame.Rect(192, 0, 64, 64)),
+            self.tile_size_tuple,
+        ).convert_alpha()
+        self.blocks["rock_crumble2"] = pygame.transform.scale(
+            self.images_dict["rocks"].subsurface(pygame.Rect(192, 64, 64, 64)),
+            self.tile_size_tuple,
+        ).convert_alpha()
+
         self.blocks["treasure_rock1"] = pygame.transform.scale(
             self.images_dict["rocks"].subsurface(pygame.Rect(69, 69, 51, 55)),
             self.tile_size_tuple,

@@ -87,6 +87,7 @@ class RoomDrawer:
         self.game.blocks.draw(screen)
         self.game.items.draw(screen)
         self.game.trap_door.draw(screen)
+        self.game.destroyed_blocks.draw(screen)
 
         for shop_stand in self.room.shop_stands:
             shop_stand.draw()

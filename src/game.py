@@ -56,6 +56,7 @@ class Game:
             "items",
             "trap_door",
             "collidables",
+            "destroyed_blocks",
         ]
         self.not_clearable_groups = ["player_sprite"]
         self.init_empty_sprite_groups()
@@ -202,8 +203,14 @@ class Game:
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
+        self.destroyed_blocks.add(objects["destroyed_blocks"])
         self.all_sprites.add(
-            self.collidables, self.doors, self.enemies, self.attacks, self.items
+            self.collidables,
+            self.doors,
+            self.enemies,
+            self.attacks,
+            self.items,
+            self.destroyed_blocks,
         )
         self.entities.add(self.enemies, self.player_sprite)
 

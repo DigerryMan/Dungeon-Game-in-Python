@@ -181,7 +181,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"health": -1, "dmg": 0.25, "speed": -1},
+            "stats": {"immortality": -0.1, "dmg": 0.25},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
