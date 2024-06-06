@@ -15,7 +15,7 @@ from items.lootables.silver_coin import SilverCoin
 class Duke(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
-        self.size = "Large"
+        self.size = "Boss"
         self._max_health = 25
         self._health = self._max_health
         self._damage = 1
@@ -133,7 +133,7 @@ class Duke(Enemy):
             self.rect.y += y_speed
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 15 + [GoldenCoin] * 10 + [PickupHeart] * 2
+        drops = [SilverCoin] * 3 + [GoldenCoin] * 2 + [PickupHeart] * 2
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

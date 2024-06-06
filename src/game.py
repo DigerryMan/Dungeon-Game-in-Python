@@ -56,6 +56,7 @@ class Game:
             "items",
             "trap_door",
             "collidables",
+            "destroyed_blocks",
         ]
         self.not_clearable_groups = ["player_sprite"]
         self.init_empty_sprite_groups()
@@ -112,9 +113,6 @@ class Game:
             if self.menu_playing:
                 self.menu.display_main_menu()
 
-            if self.game_over_playing:
-                self.game_over()
-
             if not self.paused and self.running:
                 self.update()
                 self.draw()
@@ -124,6 +122,9 @@ class Game:
 
             if self.player is not None and self.player.eq_opened:
                 self.display_eq()
+
+            if self.game_over_playing:
+                self.game_over()
 
         pygame.quit()
 
@@ -202,8 +203,14 @@ class Game:
         self.enemies.add(objects["enemies"])
         self.collidables.add(objects["blocks"])
         self.collidables.add(objects["walls"])
+        self.destroyed_blocks.add(objects["destroyed_blocks"])
         self.all_sprites.add(
-            self.collidables, self.doors, self.enemies, self.attacks, self.items
+            self.collidables,
+            self.doors,
+            self.enemies,
+            self.attacks,
+            self.items,
+            self.destroyed_blocks,
         )
         self.entities.add(self.enemies, self.player_sprite)
 

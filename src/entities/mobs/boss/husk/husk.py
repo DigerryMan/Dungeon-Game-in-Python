@@ -15,7 +15,7 @@ from items.stat_items.item import Item
 class Husk(Duke):
     def __init__(self, game, x, y):
         super().__init__(game, x, y)
-        self.size = "Large"
+        self.size = "Boss"
         self._max_health = 40
         self._health = self._max_health
         self._damage = 1.5
@@ -51,7 +51,7 @@ class Husk(Duke):
         )
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 7 + [GoldenCoin] * 5 + [PickupHeart] * 3
+        drops = [SilverCoin] * 4 + [GoldenCoin] * 3 + [PickupHeart] * 3
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

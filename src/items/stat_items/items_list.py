@@ -34,14 +34,14 @@ class ItemsList:
         self.very_commons["dmg_reduction_pill"] = {
             "name": "Damage reduction pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"dmg_reduction": [-0.1, -0.05, 0.05, 0.1]},
+            "stats": {"dmg_reduction": [-0.04, -0.02, 0.02, 0.04]},
             "image": game.image_loader.lootables["dmg_reduction_pill"],
         }
 
         self.very_commons["shooting_cooldown_pill"] = {
             "name": "Shooting cooldown pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"shooting_cooldown": [0.04, 0.8, -0.8, -0.04]},
+            "stats": {"shooting_cooldown": [0.04, 0.08, -0.08, -0.04]},
             "image": game.image_loader.lootables["shooting_cooldown_pill"],
         }
 
@@ -55,7 +55,7 @@ class ItemsList:
         self.very_commons["bullet_fly_time_pill"] = {
             "name": "Bullet fly time pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"bullet_fly_time": [-0.1, 0.1]},
+            "stats": {"bullet_fly_time": [-0.05, 0.05]},
             "image": game.image_loader.lootables["bullet_fly_time_pill"],
         }
 
@@ -181,7 +181,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"health": -1, "dmg": 0.25, "speed": -1},
+            "stats": {"immortality": -0.1, "dmg": 0.25},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
@@ -283,7 +283,7 @@ class ItemsList:
         self.epics["darkhold"] = {
             "name": "Darkhold",
             "category": Categories.EPIC,
-            "stats": {"dmg": 1, "health": -2},
+            "stats": {"dmg": 1, "health": -1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(7 * 32, 14 * 32, 32, 32)

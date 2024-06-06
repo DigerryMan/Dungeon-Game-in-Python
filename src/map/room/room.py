@@ -37,6 +37,7 @@ class Room:
         self.walls = []
         self.items = []
         self.trap_door: TrapDoor = None
+        self.destroyed_blocks = []
 
         self.room_generator = RoomGenerator(self)
         self.room_drawer = RoomDrawer(self)
@@ -51,12 +52,17 @@ class Room:
             "walls": self.walls,
             "items": self.items,
             "trap_door": self.trap_door,
+            "destroyed_blocks": self.destroyed_blocks,
         }
 
     def remove_item(self, item: LootableItem):
         self.items.remove(item)
 
     def remove_block(self, block: Block):
+        self.blocks.remove(block)
+
+    def move_block_to_destroyed(self, block: Block):
+        self.destroyed_blocks.append(block)
         self.blocks.remove(block)
 
     def remove_shop_stand(self, shop_stand: ShopStand):

@@ -62,7 +62,7 @@ class Monstro2(Monstro):
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 20 + [GoldenCoin] * 30 + [PickupHeart] * 5
+        drops = [SilverCoin] * 8 + [GoldenCoin] * 3 + [PickupHeart] * 2
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

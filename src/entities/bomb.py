@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from config import *
@@ -60,7 +62,7 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y - self.game.settings.TILE_SIZE // 1.5)
         self.check_collisions(bomb_center)
-        self.game.sound_manager.play("explosion")
+        self.game.sound_manager.play(f"explosion{random.randint(1, 3)}")
 
     def check_collisions(self, bomb_center):
         for group in [self.game.player_sprite, self.game.enemies, self.game.blocks]:

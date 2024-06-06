@@ -215,15 +215,16 @@ class Enemy(pygame.sprite.Sprite, ABC):
                 )
             )
         else:
-            if random.random() < 0.3:  # chance to have any drop at all
+            if random.random() < 0.2:  # chance to have any drop at all
                 if (
-                    random.random() < 0.7
+                    random.random() < 0.75
                 ):  # chance to have a lootable (coin, heart, etc.)
-                    if random.random() < 0.5:
+                    rand = random.random()
+                    if rand < 0.7:
                         self.room.items.append(
                             SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                         )
-                    elif random.uniform(0, 0.5) < 0.3:
+                    elif rand < 0.9:
                         self.room.items.append(
                             GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                         )
@@ -273,9 +274,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
             self.game.sound_manager.play(f"Death_Burst_Large_{random.randint(0, 1)}")
         elif self.size == "Small":
             self.game.sound_manager.play(f"Death_Burst_Small_{random.randint(0, 2)}")
-    
+        elif self.size == "Boss":
+            self.game.sound_manager.play("boss_death")
+
     def hp_scaling_factor(self):
-        return 1 + 2*(self.game.map.get_current_room().level - 1)/7
+        return 1 + 2 * (self.game.map.get_current_room().level - 1) / 7
 
     def dmg_scaling_factor(self):
-        return 1 + (self.game.map.get_current_room().level - 1)/7
+        return 1 + (self.game.map.get_current_room().level - 1) / 7

@@ -5,6 +5,7 @@ from map.block import Block
 from map.chest import Chest
 from map.destructable_block import DestructableBlock
 from map.door import Door
+from map.poop import Poop
 from map.shop_stand import ShopStand
 from map.trap_door import TrapDoor
 from map.treasure_block import TreasureBlock
@@ -55,6 +56,9 @@ class RoomGenerator:
 
                     elif col == "D":
                         self.room.blocks.append(DestructableBlock(self.game, x, y))
+
+                    elif col == "P":
+                        self.room.blocks.append(Poop(self.game, x, y))
 
                     elif col == "s":
                         self.room.shop_stands.append(

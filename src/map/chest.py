@@ -83,7 +83,7 @@ class Chest(pygame.sprite.Sprite):
             )
         else:
             if self.type == "small":
-                for _ in range(random.randint(2, 3)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(
                         SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
@@ -99,12 +99,12 @@ class Chest(pygame.sprite.Sprite):
                     )
 
             elif self.type == "medium":
-                for _ in range(random.randint(2, 4)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(
                         SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(1, 2)):
+                for _ in range(random.randint(1,2)):
                     items_to_craft.append(
                         GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
@@ -114,18 +114,18 @@ class Chest(pygame.sprite.Sprite):
                         PickupHeart(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(0, 1)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(
                         PickupBomb(self.game, self.rect.centerx, self.rect.centery)
                     )
 
             elif self.type == "large":
-                for _ in range(random.randint(3, 5)):
+                for _ in range(random.randint(2, 3)):
                     items_to_craft.append(
                         SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(2, 3)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(
                         GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
@@ -134,7 +134,7 @@ class Chest(pygame.sprite.Sprite):
                     PickupHeart(self.game, self.rect.centerx, self.rect.centery)
                 )
 
-                for _ in range(random.randint(1, 2)):
+                for _ in range(random.randint(2, 3)):
                     items_to_craft.append(
                         PickupBomb(self.game, self.rect.centerx, self.rect.centery)
                     )

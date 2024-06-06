@@ -18,7 +18,7 @@ from utils.directions import Directions
 class Monstro(Slime):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
-        self.size = "Large"
+        self.size = "Boss"
         self._max_health = 25
         self._health = self._max_health
         self._damage = 1
@@ -204,7 +204,7 @@ class Monstro(Slime):
         self.attack()
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 5 + [GoldenCoin] * 3 + [PickupHeart] * 2
+        drops = [SilverCoin] * 2 + [GoldenCoin] * 1 + [PickupHeart] * 2
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)
