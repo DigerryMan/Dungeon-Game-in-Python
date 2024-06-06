@@ -1,8 +1,8 @@
-import game
+from game import Game
 
 
 def main():
-    game_instance = game.Game()
+    game_instance = Game()
     game_instance.run()
 
 
