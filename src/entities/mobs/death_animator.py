@@ -11,9 +11,16 @@ class DeathAnimator:
         self.dead_animation_time = 11 * self.next_frame_time
         self.dead_animation_time_left = self.dead_animation_time
 
+    
         self.img = game.image_loader.others["death_animation"]
         self.death_images = []
         self.prepare_death_images()
+
+
+    def setup_boss_death_animation(self):
+        self.img = self.game.image_loader.others["large_dust"]
+        self.death_images = []
+        self.prepare_boss_death_images()
 
     def prepare_death_images(self):
         death_mob_size = self.enemy.MOB_SIZE
@@ -21,6 +28,13 @@ class DeathAnimator:
             image_help = self.img.subsurface(pygame.Rect(x * 32, 0, 32, 32))
             self.death_images.append(
                 pygame.transform.scale(image_help, (death_mob_size, death_mob_size))
+            )
+
+    def prepare_boss_death_images(self):
+        for x in range(12):
+            image_help = self.img.subsurface(pygame.Rect(x * 400, 0, 400, 300))
+            self.death_images.append(
+                pygame.transform.scale(image_help, (self.enemy.MOB_WIDTH, self.enemy.MOB_HEIGHT))
             )
 
     def death_animation(self):

@@ -116,7 +116,7 @@ class ImageLoader:
             ).convert_alpha()
 
     def load_others(self):
-        others = ["laser", "laser_opacity", "death_animation"]
+        others = ["laser", "laser_opacity", "death_animation", "large_dust"]
         for other in others:
             self.others[other] = pygame.image.load(
                 f"resources/other/{other}.png"

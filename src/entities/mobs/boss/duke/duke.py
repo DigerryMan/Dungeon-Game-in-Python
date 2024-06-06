@@ -24,6 +24,8 @@ class Duke(Enemy):
 
         # CHANGED FROM ENEMY
         self.MOB_SIZE = int(game.settings.MOB_SIZE * 2.5)
+        self.MOB_WIDTH, self.MOB_HEIGHT = self.MOB_SIZE, self.MOB_SIZE
+        self.death_animator.setup_boss_death_animation()
         self.death_animator.scale_to_new_size(self.MOB_SIZE)
         # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
