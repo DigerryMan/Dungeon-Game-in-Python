@@ -622,6 +622,9 @@ class ImageLoader:
             self.images_dict["trap_door"].subsurface(pygame.Rect(16, 80, 32, 32)),
             self.tile_size_tuple,
         ).convert_alpha()
+        self.trap_door["help_control"] = pygame.image.load(
+            "resources/other/help_control.png"
+        ).convert_alpha()
 
     def load_lootables(self):
         size_to_scale = (self.settings.TILE_SIZE * 1.5, self.settings.TILE_SIZE * 1.5)
