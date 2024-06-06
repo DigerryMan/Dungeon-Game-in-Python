@@ -104,7 +104,7 @@ class Chest(pygame.sprite.Sprite):
                         SilverCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(1,2)):
+                for _ in range(random.randint(1, 2)):
                     items_to_craft.append(
                         GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
                     )
@@ -114,7 +114,7 @@ class Chest(pygame.sprite.Sprite):
                         PickupHeart(self.game, self.rect.centerx, self.rect.centery)
                     )
 
-                for _ in range(random.randint(1, 2)):
+                for _ in range(random.randint(2, 3)):
                     items_to_craft.append(
                         PickupBomb(self.game, self.rect.centerx, self.rect.centery)
                     )
@@ -134,7 +134,7 @@ class Chest(pygame.sprite.Sprite):
                     PickupHeart(self.game, self.rect.centerx, self.rect.centery)
                 )
 
-                for _ in range(random.randint(2, 3)):
+                for _ in range(random.randint(3, 4)):
                     items_to_craft.append(
                         PickupBomb(self.game, self.rect.centerx, self.rect.centery)
                     )

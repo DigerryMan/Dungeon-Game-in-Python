@@ -53,7 +53,7 @@ class Poop(DestructableBlock):
     def drop_lootable(self):
         rand = random.random()
         room = self.game.map.get_current_room()
-        if rand < 0.2:
+        if rand < 0.25:
             if rand < 0.05:
                 room.items.append(
                     GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
