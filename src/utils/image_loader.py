@@ -23,7 +23,7 @@ class ImageLoader:
             "maintitle",
             "character_selection",
         ]
-        self.characters = ["isaac_display", "eve_display", "lazarus_display"]
+        self.characters = ["isaac_display", "eve_display", "lazarus_display", "tainted_display"]
 
         self.player_types = PlayerTypes.get_all_characters_values()
         self.mobs_ = [
