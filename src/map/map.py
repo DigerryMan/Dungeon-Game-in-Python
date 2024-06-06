@@ -23,6 +23,9 @@ class Map:
         self.minimap = Minimap(self)
 
     def generate_rooms(self):
+        room_types_to_generate = [i for i in range(len(rooms))]
+        random.shuffle(room_types_to_generate)
+        room_type_index = 0
         for row in range(len(self.map_scheme)):
             for col in range(len(self.map_scheme[row])):
                 if self.map_scheme[row][col] == -inf:
@@ -69,10 +72,13 @@ class Map:
                     self.current_position = [row, col]
 
                 else:
-                    room_random_type = random.randint(0, len(rooms) - 1)
+                    room_random_type = room_types_to_generate[
+                        room_type_index % len(room_types_to_generate)
+                    ]
                     self.room_map[row][col] = Room(
                         room_random_type, self.game, doors_to_spawn, self.level
                     )
+                    room_type_index += 1
 
     def render_initial_room(self):
         row, col = self.current_position

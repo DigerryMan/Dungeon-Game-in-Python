@@ -98,7 +98,7 @@ class Player(pygame.sprite.Sprite):
             if not self.end_of_death_animation:
                 self.animation.play_death_animation()
             else:
-                self.game.game_over()
+                self.game.game_over_playing = True
 
     def user_input(self):
         keys = pygame.key.get_pressed()

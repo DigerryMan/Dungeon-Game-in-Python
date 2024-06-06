@@ -113,9 +113,6 @@ class Game:
             if self.menu_playing:
                 self.menu.display_main_menu()
 
-            if self.game_over_playing:
-                self.game_over()
-
             if not self.paused and self.running:
                 self.update()
                 self.draw()
@@ -125,6 +122,9 @@ class Game:
 
             if self.player is not None and self.player.eq_opened:
                 self.display_eq()
+
+            if self.game_over_playing:
+                self.game_over()
 
         pygame.quit()
 
