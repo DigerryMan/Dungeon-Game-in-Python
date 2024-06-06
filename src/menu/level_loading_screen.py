@@ -97,6 +97,13 @@ class LevelLoadingScreen:
 
             elapsed_time = pygame.time.get_ticks() - start_time
 
+            if elapsed_time >= self.duration:
+                should_display = False
+                self.game.sound_manager.play_with_fadein(
+                    "basementLoop", 2000, looped=True
+                )
+                break
+
             self.game.screen.blit(background, (0, 0))
             self.game.screen.blit(player_spot, player_spot_position)
             self.game.screen.blit(player_image, player_image_position)
@@ -142,9 +149,3 @@ class LevelLoadingScreen:
 
             self.game.clock.tick(FPS)
             pygame.display.update()
-
-            if elapsed_time > self.duration:
-                should_display = False
-                self.game.sound_manager.play_with_fadein(
-                    "basementLoop", 2000, looped=True
-                )
