@@ -214,7 +214,7 @@ class RoomGenerator:
             if (0, x + 0.5) not in doors_positions:
                 self.room.walls.append(Wall(self.game, x, 0))
             else:
-                self.room.door_blockers.append(Wall(self.game, x + 0.5, 0, True))
+                self.room.door_blockers.append(Wall(self.game, x + 0.5, 0))
                 self.room.walls.append(Wall(self.game, x - 0.5, 0))
                 self.room.walls.append(Wall(self.game, x + 1.5, 0))
                 x += 1
@@ -230,7 +230,7 @@ class RoomGenerator:
                 )
             else:
                 self.room.door_blockers.append(
-                    Wall(self.game, x + 0.5, self.game.settings.MAP_HEIGHT - 1, True)
+                    Wall(self.game, x + 0.5, self.game.settings.MAP_HEIGHT - 1)
                 )
                 self.room.walls.append(
                     Wall(self.game, x - 0.5, self.game.settings.MAP_HEIGHT - 1)
@@ -248,7 +248,7 @@ class RoomGenerator:
             if (y, 0) not in doors_positions:
                 self.room.walls.append(Wall(self.game, 0, y))
             else:
-                self.room.door_blockers.append(Wall(self.game, 0, y, True))
+                self.room.door_blockers.append(Wall(self.game, 0, y))
 
             y += 1
 
@@ -261,7 +261,7 @@ class RoomGenerator:
                 )
             else:
                 self.room.door_blockers.append(
-                    Wall(self.game, self.game.settings.MAP_WIDTH - 1, y, True)
+                    Wall(self.game, self.game.settings.MAP_WIDTH - 1, y)
                 )
 
             y += 1

@@ -22,8 +22,18 @@ class ImageLoader:
             "tick_transparent",
             "maintitle",
             "character_selection",
+            "level_loading_background",
         ]
-        self.characters = ["isaac_display", "eve_display", "lazarus_display", "tainted_display"]
+
+        self.minis_ = ["player", "final_boss", "1", "2", "3", "4", "5", "6", "7", "corridor"]
+        self.minis = {}
+
+        self.characters = [
+            "isaac_display",
+            "eve_display",
+            "lazarus_display",
+            "tainted_display",
+        ]
 
         self.player_types = PlayerTypes.get_all_characters_values()
         self.mobs_ = [
@@ -154,6 +164,11 @@ class ImageLoader:
         for menu_element in self.menu_:
             self.images_dict[menu_element] = pygame.image.load(
                 "resources/menu/" + menu_element + ".png"
+            )
+
+        for mini in self.minis_:
+            self.minis[mini] = pygame.image.load(
+                "resources/menu/minis/" + mini + ".png"
             )
 
         for character in self.characters:
@@ -341,6 +356,9 @@ class ImageLoader:
         self.images_dict["character_selection"] = pygame.transform.scale(
             self.images_dict["character_selection"], screen_size
         ).convert_alpha()
+        self.images_dict["level_loading_background"] = pygame.transform.scale(
+            self.images_dict["level_loading_background"], screen_size
+        ).convert_alpha()
 
         img = self.images_dict["spotlight"]
         self.images_dict["spotlight"] = pygame.transform.scale(
@@ -394,6 +412,15 @@ class ImageLoader:
                 self.images_dict["maintitle"].get_height() * 2.8 * self.settings.SCALE,
             ),
         ).convert_alpha()
+
+        for mini in self.minis:
+            self.minis[mini] = pygame.transform.scale(
+                self.minis[mini],
+                (
+                    self.minis[mini].get_width() * self.settings.SCALE * 4,
+                    self.minis[mini].get_height() * self.settings.SCALE * 4,
+                ),
+            ).convert_alpha()
 
     def scale_character_displays(self):
         for character in self.characters:
@@ -499,12 +526,14 @@ class ImageLoader:
 
         for i in range(5):
             for j in range(5):
-                self.blocks["poop" + str(i) + "_" + str(4-j)] = pygame.transform.scale(
-                    self.images_dict["poops"].subsurface(
-                        pygame.Rect(i * 78, j * 78, 78, 78)
-                    ),
-                    self.tile_size_tuple,
-                ).convert_alpha()
+                self.blocks["poop" + str(i) + "_" + str(4 - j)] = (
+                    pygame.transform.scale(
+                        self.images_dict["poops"].subsurface(
+                            pygame.Rect(i * 78, j * 78, 78, 78)
+                        ),
+                        self.tile_size_tuple,
+                    ).convert_alpha()
+                )
 
     def load_tears(self):
         self.tears["blue_tear"] = pygame.transform.scale(
