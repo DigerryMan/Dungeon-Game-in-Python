@@ -38,7 +38,7 @@ class PlayerTypes(Enum):
             PlayerTypes.ISAAC: (6, 1, 9),
             PlayerTypes.LAZARUS: (5, 0.8, 10),
             PlayerTypes.EVE: (5, 1.5, 8),
-            PlayerTypes.TAINTED: (30, 30, 12),
+            PlayerTypes.TAINTED: (30, 3, 12),
         }
 
         return player_stats.get(self, (None, None, None))
