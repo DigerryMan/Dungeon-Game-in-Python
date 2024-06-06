@@ -38,6 +38,7 @@ class Room:
         self.items = []
         self.trap_door: TrapDoor = None
         self.destroyed_blocks = []
+        self.door_blockers = []
 
         self.room_generator = RoomGenerator(self)
         self.room_drawer = RoomDrawer(self)
@@ -68,6 +69,12 @@ class Room:
     def remove_shop_stand(self, shop_stand: ShopStand):
         self.shop_stands.remove(shop_stand)
 
+    def remove_door_blockers(self):
+        for i in range(len(self.door_blockers) - 1, -1, -1):
+            block = self.door_blockers[i]
+            block.kill()
+            self.door_blockers.remove(block)
+
     def generate_room(self, entry_direction: Directions):
         if not self.drawn_once:
             self.room_generator.generate_room(entry_direction)
@@ -92,6 +99,7 @@ class Room:
         self.update_player_rooms_cleared()
         self.is_cleared = True
         self.enemies.clear()
+        self.remove_door_blockers()
 
         for door in self.doors:
             door.open()
