@@ -47,15 +47,17 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.game.game_over_playing = True
             else:
                 self.game.render_new_map()
-                self.game.menu.display_level_loading_screen()
+                self.game.level_loading_screen_playing = True
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
         if self.opened:
             size = int(self.game.settings.TILE_SIZE * 1.1)
             help_width = self.help_control_image.get_width()
-            screen.blit(self.help_control_image, (self.rect.centerx - help_width // 2, self.rect.y + size))
-
+            screen.blit(
+                self.help_control_image,
+                (self.rect.centerx - help_width // 2, self.rect.y + size),
+            )
 
     def open(self):
         if self.opened:

@@ -13,7 +13,7 @@ class LevelLoadingScreen:
     def display(self):
         self.game.sound_manager.stop_all_with_fadeout(250)
 
-        current_level = self.game.current_level
+        current_level = self.game.current_level - 1
 
         background = self.game.image_loader.images_dict["level_loading_background"]
 
