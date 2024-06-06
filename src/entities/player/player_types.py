@@ -13,7 +13,7 @@ class PlayerTypes(Enum):
     def get_all_characters():
         return [PlayerTypes.ISAAC, PlayerTypes.LAZARUS, PlayerTypes.EVE]
 
-    def get_all_characters_values():  #
+    def get_all_characters_values(): 
         return [
             PlayerTypes.ISAAC.value,
             PlayerTypes.LAZARUS.value,
@@ -23,10 +23,9 @@ class PlayerTypes(Enum):
     def get_player_stats(self):
         # values are (max_health, dmg, speed)
         player_stats = {
-            PlayerTypes.ISAAC: (4, 1, 9),
-            # PlayerTypes.LAZARUS: (3, 0.8, 10),
-            PlayerTypes.LAZARUS: (10, 10, 10),
-            PlayerTypes.EVE: (3, 1.5, 8),
+            PlayerTypes.ISAAC: (6, 1, 9),
+            PlayerTypes.LAZARUS: (5, 0.8, 10),
+            PlayerTypes.EVE: (5, 1.5, 8),
         }
 
         return player_stats.get(self, (None, None, None))
