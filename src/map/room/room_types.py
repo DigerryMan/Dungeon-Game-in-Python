@@ -240,6 +240,42 @@ ROOM_17 = [
     "################",
 ]
 
+ROOM_18 = [
+    "################",
+    "#PBBBB....BBBBP#",
+    "#..............#",
+    "#.DDDDD.EBBBB..#",
+    "#....ECECE.....#",
+    "#..BBBBE.DDDDD.#",
+    "#..............#",
+    "#PBBBB....BBBBP#",
+    "################",
+]
+
+ROOM_19 = [
+    "################",
+    "#BBBBBB..BBBBBB#",
+    "#............PP#",
+    "#.C.....E.....P#",
+    "#.....EEEE.....#",
+    "#P.....E.....C.#",
+    "#PP............#",
+    "#BBBBBB..BBBBBB#",
+    "################",
+]
+
+ROOM_20 = [
+    "################",
+    "#BBBBBB..BBBBBB#",
+    "#...E.........C#",
+    "#.BB.BB..BBEBB.#",
+    "#.BB.PPEEPP.BB.#",
+    "#.BBEBB..BB.BB.#",
+    "#C.........E...#",
+    "#BBBBBB..BBBBBB#",
+    "################",
+]
+
 rooms = [
     ROOM_1,
     ROOM_2,
@@ -258,6 +294,9 @@ rooms = [
     ROOM_15,
     ROOM_16,
     ROOM_17,
+    ROOM_18,
+    ROOM_19,
+    ROOM_20,
 ]
 
 special_rooms = {"start": STARTING_ROOM, "shop": SHOP_ROOM, "boss": BOSS_ROOM}
