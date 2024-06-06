@@ -45,7 +45,7 @@ class MobSpawner:
             Wanderer,
             FastGhost,
             Fatty,
-            MeatSlime
+            MeatSlime,
         ]
         index = random.randint(0, len(mobs) - 1)
 
@@ -123,28 +123,25 @@ class MobSpawner:
 
     def spawn_player(self, entry_direction):
         if entry_direction == Directions.UP:
-            self.game.player.rect.center = (
-                self.game.settings.WIN_WIDTH // 2,
-                (self.game.settings.MAP_HEIGHT - 2) * self.game.settings.TILE_SIZE
-                + self.game.settings.PLAYER_SIZE * 0.9,
+            self.game.player.rect.centerx = self.game.settings.WIN_WIDTH // 2
+            self.game.player.rect.y = self.game.settings.TILE_SIZE * (
+                self.game.settings.MAP_HEIGHT - 2
             )
+
         elif entry_direction == Directions.DOWN:
-            self.game.player.rect.center = (
-                self.game.settings.WIN_WIDTH // 2,
-                self.game.settings.TILE_SIZE * 1.1,
-            )
+            self.game.player.rect.centerx = self.game.settings.WIN_WIDTH // 2
+            self.game.player.rect.y = self.game.settings.TILE_SIZE
+
         elif entry_direction == Directions.LEFT:
-            self.game.player.set_rect_position(
-                (self.game.settings.MAP_WIDTH - 2) * self.game.settings.TILE_SIZE
-                + (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
-                self.game.player.rect.y,
+            self.game.player.rect.x = self.game.settings.TILE_SIZE * (
+                self.game.settings.MAP_WIDTH - 2
             )
+            self.game.player.rect.centery = self.game.settings.WIN_HEIGHT // 2
+
         elif entry_direction == Directions.RIGHT:
-            self.game.player.set_rect_position(
-                self.game.settings.TILE_SIZE
-                - (self.game.settings.TILE_SIZE - self.game.settings.PLAYER_SIZE),
-                self.game.player.rect.y,
-            )
+            self.game.player.rect.x = self.game.settings.TILE_SIZE
+            self.game.player.rect.centery = self.game.settings.WIN_HEIGHT // 2
+
         elif entry_direction == Directions.CENTER:
             self.game.player.rect.center = (
                 self.game.settings.WIN_WIDTH // 2,

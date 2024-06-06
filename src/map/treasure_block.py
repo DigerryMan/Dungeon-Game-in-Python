@@ -35,7 +35,7 @@ class TreasureBlock(Block):
 
     def drop_lootable(self):
         if self.is_bomb_treasure:
-            for _ in range(random.randint(1, 3)):
+            for _ in range(random.randint(3, 4)):
                 self.game.map.get_current_room().items.append(
                     PickupBomb(self.game, self.rect.centerx, self.rect.centery)
                 )

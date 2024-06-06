@@ -7,7 +7,7 @@ from config import *
 from entities.bullet import Bullet
 from entities.enemy_collisions import EnemyCollisions
 from entities.enemy_moves import EnemyMoves
-from entities.mobs.death_animation import DeathAnimator
+from entities.mobs.death_animator import DeathAnimator
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin

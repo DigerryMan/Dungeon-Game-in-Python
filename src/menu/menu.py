@@ -5,6 +5,7 @@ from menu.boss_intro_screen import BossIntroScreen
 from menu.character_selection_screen import CharacterSelectionScreen
 from menu.game_over_screen import GameOverScreen
 from menu.intro_screen import IntroScreen
+from menu.level_loading_screen import LevelLoadingScreen
 from menu.pause_screen import PauseScreen
 from menu.settings_screen.main_settings_screen import MainSettingsScreen
 
@@ -20,6 +21,7 @@ class Menu:
         self.pause_screen = PauseScreen(self)
         self.boss_intro_screen = BossIntroScreen(self)
         self.game_over_screen = GameOverScreen(self)
+        self.level_loading_screen = LevelLoadingScreen(self)
 
     def update_images(self):
         self.intro_background = self.game.image_loader.get_image("introbackground")
@@ -135,3 +137,6 @@ class Menu:
 
     def display_game_over(self):
         self.game_over_screen.display()
+
+    def display_level_loading_screen(self):
+        self.level_loading_screen.display()

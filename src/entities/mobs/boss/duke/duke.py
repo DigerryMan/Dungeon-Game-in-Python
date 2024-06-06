@@ -24,6 +24,8 @@ class Duke(Enemy):
 
         # CHANGED FROM ENEMY
         self.MOB_SIZE = int(game.settings.MOB_SIZE * 2.5)
+        self.MOB_WIDTH, self.MOB_HEIGHT = self.MOB_SIZE, self.MOB_SIZE
+        self.death_animator.setup_boss_death_animation()
         self.death_animator.scale_to_new_size(self.MOB_SIZE)
         # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
@@ -133,7 +135,7 @@ class Duke(Enemy):
             self.rect.y += y_speed
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 3 + [GoldenCoin] * 2 + [PickupHeart] * 2
+        drops = [SilverCoin] * 12 + [GoldenCoin] * 4 + [PickupHeart] * 3
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)

@@ -32,6 +32,7 @@ class Satan(Enemy):
         # CHANGED FROM ENEMY
         self.MOB_WIDTH = game.settings.MOB_SIZE * 5
         self.MOB_HEIGHT = int(game.settings.MOB_SIZE * 3.5)
+        self.death_animator.setup_boss_death_animation()
         self.death_animator.scale_to_new_size_v2(self.MOB_WIDTH, self.MOB_HEIGHT)
 
         # SKINS

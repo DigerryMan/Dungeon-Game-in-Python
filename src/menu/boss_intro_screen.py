@@ -124,8 +124,6 @@ class BossIntroScreen:
             self.game.clock.tick(FPS)
             pygame.display.update()
 
-        # self.game.sound_manager.stop_with_fadeout("bossIntro", 1000)
-
     def display_names(self, player_name, vs, boss_name):
         vs_position = (
             self.game.settings.WIN_WIDTH // 5,

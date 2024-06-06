@@ -26,6 +26,8 @@ class Monstro(Slime):
         self.health_bar = BossHealthBar(game, self)
         # CHANGED FROM ENEMY
         self.MOB_SIZE = game.settings.MOB_SIZE * 2
+        self.MOB_WIDTH, self.MOB_HEIGHT = self.MOB_SIZE, self.MOB_SIZE
+        self.death_animator.setup_boss_death_animation()
         self.death_animator.scale_to_new_size(self.MOB_SIZE)
         self.img_shadow = pygame.transform.scale(
             self.img_shadow, (int(self.MOB_SIZE * 0.6), int(self.MOB_SIZE * 0.6))

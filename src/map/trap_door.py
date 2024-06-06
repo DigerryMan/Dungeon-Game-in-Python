@@ -16,6 +16,7 @@ class TrapDoor(pygame.sprite.Sprite):
         self.height = game.settings.TILE_SIZE
 
         self.image = game.image_loader.trap_door["closed"]
+        self.help_control_image = game.image_loader.trap_door["help_control"]
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -41,12 +42,26 @@ class TrapDoor(pygame.sprite.Sprite):
                 self.animated = True
                 self.game.sound_manager.play_if_not_playing("doorOpen")
 
-        if distance <= self.game.settings.TILE_SIZE / 2 and self.animated:
+        if (
+            distance <= self.game.settings.TILE_SIZE / 2
+            and self.animated
+            and self.game.space_pressed
+        ):
             if self.game.map.level == 7:
                 self.game.game_over_playing = True
             else:
                 self.game.render_new_map()
-                self.game.sound_manager.play("level_change")
+                self.game.level_loading_screen_playing = True
+
+    def draw(self, screen):
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.opened and self.animated:
+            size = int(self.game.settings.TILE_SIZE * 1.1)
+            help_width = self.help_control_image.get_width()
+            screen.blit(
+                self.help_control_image,
+                (self.rect.centerx - help_width // 2, self.rect.y + size),
+            )
 
     def open(self):
         if self.opened:

@@ -66,8 +66,8 @@ class CharacterSelectionScreen:
             self.game.screen.blit(
                 image,
                 (
-                    self.game.settings.WIN_WIDTH // 2.25,
-                    self.game.settings.WIN_HEIGHT // 2.5,
+                    self.game.settings.WIN_WIDTH // 2 - image.get_width() // 2,
+                    self.game.settings.WIN_HEIGHT // 2.15 - image.get_height() // 2,
                 ),
             )
             self.game.screen.blit(

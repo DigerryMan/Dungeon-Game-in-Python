@@ -28,7 +28,7 @@ class Poop(DestructableBlock):
 
         if self.durability == 0 and not self.is_destroyed:
             self.is_destroyed = True
-            self.game.sound_manager.play_if_not_playing("fart")
+            self.game.sound_manager.play_if_not_playing(f"squish{random.randint(1, 3)}")
             self.game.map.get_current_room().move_block_to_destroyed(self)
             self.update_sprite_in_game_sprites()
             self.drop_lootable()
@@ -38,7 +38,7 @@ class Poop(DestructableBlock):
             self.is_destroyed = True
             self.durability = 0
             self.game.map.get_current_room().move_block_to_destroyed(self)
-            self.game.sound_manager.play_if_not_playing("fart")
+            self.game.sound_manager.play_if_not_playing(f"squish{random.randint(1, 3)}")
             self.image = self.game.image_loader.blocks[f"poop{self.type}_0"].copy()
             self.mask = pygame.mask.from_surface(self.image)
             self.update_sprite_in_game_sprites()
@@ -53,7 +53,7 @@ class Poop(DestructableBlock):
     def drop_lootable(self):
         rand = random.random()
         room = self.game.map.get_current_room()
-        if rand < 0.2:
+        if rand < 0.25:
             if rand < 0.05:
                 room.items.append(
                     GoldenCoin(self.game, self.rect.centerx, self.rect.centery)
