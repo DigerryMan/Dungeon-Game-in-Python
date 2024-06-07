@@ -135,20 +135,13 @@ class ImageLoader:
 
     def load_bosses(self):
         bosses = ["monstro", "monstro2", "satan", "satan2", "forsaken", "duke"]
+        hit_animations = ['satan_hit', 'satan2_hit', 'forsaken_hit']
+        bosses.extend(hit_animations)
         for boss in bosses:
             self.bosses[boss] = pygame.image.load(
                 f"resources/mobs/bosses/{boss}.png"
             ).convert_alpha()
-
-        self.load_bosses_hit_animations()
-
-    def load_bosses_hit_animations(self):
-        bosses = ["satan", "satan2", "forsaken"]
-        for boss in bosses:
-            self.bosses[boss + "_hit"] = ImageTransformer.change_image_to_more_red(
-                self.bosses[boss]
-            )
-
+            
     def load_others(self):
         others = ["laser", "laser_opacity", "death_animation", "large_dust"]
         for other in others:
