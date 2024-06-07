@@ -126,13 +126,13 @@ class SatanAnimiation:
                 image = self.img_hit.subsurface(pygame.Rect(x * 200, y * 120, 200, 120))
                 self.images_hit.append(pygame.transform.scale(image, size))
 
-        image = self.img.subsurface(pygame.Rect(4 * 200, 2 * 120, 200, 120))
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 2 * 120, 200, 120))
         self.images_hit.append(pygame.transform.scale(image, size))
 
-        image = self.img.subsurface(pygame.Rect(4 * 200, 3 * 120, 200, 120))
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 3 * 120, 200, 120))
         self.images_hit.append(pygame.transform.scale(image, size))
 
-        image = self.img.subsurface(pygame.Rect(4 * 200, 0, 200, 240))
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 0, 200, 240))
         self.images_hit.append(pygame.transform.scale(image, size))
 
     def animate(self):

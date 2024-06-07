@@ -53,7 +53,7 @@ class MobSpawner:
             match self.room.level:
                 case 1:
                     self.room.enemies.append(
-                        Forsaken(
+                        Duke(
                             self.game,
                             self.mob_spawn_positions[0][1],
                             self.mob_spawn_positions[0][0],
