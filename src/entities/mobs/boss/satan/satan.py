@@ -76,6 +76,7 @@ class Satan(Enemy):
         self.fly_speed = round(9 * self.game.settings.SCALE)
 
         # ANIMATION
+        self.image_transformer_used = False
         self.animation = SatanAnimiation(self, game)
 
     def draw_additional_images(self, screen):

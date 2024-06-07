@@ -53,7 +53,7 @@ class MobSpawner:
             match self.room.level:
                 case 1:
                     self.room.enemies.append(
-                        Duke(
+                        Satan(
                             self.game,
                             self.mob_spawn_positions[0][1],
                             self.mob_spawn_positions[0][0],

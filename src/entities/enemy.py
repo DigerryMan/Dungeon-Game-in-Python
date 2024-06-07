@@ -64,6 +64,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self._layer = self.rect.bottom
 
         # GETTING HIT ANIMATION
+        self.image_transformer_used = True
         self.hit_time_cd = int(0.1 * FPS)
         self.hit_time = 0
         self.is_change_of_frame = False
@@ -172,9 +173,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
             self.hit_time = self.hit_time_cd
             if not self._is_dead:
-                self.image = ImageTransformer.change_image_to_more_red(
-                    self.unchanged_image
-                )
+                if self.image_transformer_used:
+                    self.image = ImageTransformer.change_image_to_more_red(
+                        self.unchanged_image
+                    )
+                else:
+                    self.image = self.unchanged_image
 
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")
