@@ -40,6 +40,7 @@ class Forsaken(Enemy):
         self._layer = self.rect.bottom
 
         # ANIMATION
+        self.image_transformer_used = False
         self.animation = ForsakenAnimation(self, game)
 
         # LASERS
