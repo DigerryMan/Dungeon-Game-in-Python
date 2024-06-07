@@ -35,10 +35,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
         # CHANGEABLE STATS
         self._health = 4 * self.hp_scaling_factor()
         self._damage = 0.75 * self.dmg_scaling_factor()
-        self._collision_damage = 1
+        self._collision_damage = 0.5
         self.size = "Small"
 
-        self._speed = (3 + (random.random() * 2 - 1)) * game.settings.SCALE
+        self._speed = (3 + (random.randint(0, 1))) * game.settings.SCALE
         self._chase_speed_debuff = 1
         self._projectal_speed = 10
         self._bullet_decay_sec = bullet_decay_sec
