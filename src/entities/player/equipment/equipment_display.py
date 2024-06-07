@@ -176,15 +176,15 @@ class EquipmentDisplay:
         speed = round(speed)
         font = pygame.font.Font(self.font_path, 33)
         stat_formats = {
-            "health": f"{self.player.max_health} / {self.eq.max_stats['health'] + self.player.BASE_MAX_HEALTH}",
+            "health": f"{int(self.player.max_health)} / {int(self.eq.max_stats['health'] + self.player.BASE_MAX_HEALTH)}",
             "dmg": f"{(self.eq.stats['dmg'] + self.player.dmg):.1f} / {(self.eq.max_stats['dmg'] + self.player.dmg):.1f}",
             "dmg_reduction": f"{int(self.eq.stats['dmg_reduction'] * 100)} / {int(self.eq.max_stats['dmg_reduction'] * 100)} %",
             "shooting_cooldown": f"{(1/(BASE_SHOOTING_COOLDOWN - self.eq.stats['shooting_cooldown'])):.2f} / {(1/(BASE_SHOOTING_COOLDOWN - self.eq.max_stats['shooting_cooldown'])):.2f}",
-            "bullet_fly_time": f"{self.eq.stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME} / {int(self.eq.max_stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME)} s",
-            "shot_speed": f"{self.eq.stats['shot_speed'] + BASE_SHOT_SPEED} / {self.eq.max_stats['shot_speed'] + BASE_SHOT_SPEED}",
-            "speed": f"{self.eq.stats['speed'] + self.player.BASE_SPEED} / {self.eq.max_stats['speed'] + self.player.BASE_SPEED}",
+            "bullet_fly_time": f"{(self.eq.stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME):.1f} / {(self.eq.max_stats['bullet_fly_time'] + BASE_BULLET_FLY_TIME):.1f} s",
+            "shot_speed": f"{(self.eq.stats['shot_speed'] + BASE_SHOT_SPEED):.1f} / {(self.eq.max_stats['shot_speed'] + BASE_SHOT_SPEED):.1f}",
+            "speed": f"{int(self.eq.stats['speed'] + self.player.BASE_SPEED)} / {int(self.eq.max_stats['speed'] + self.player.BASE_SPEED)}",
             "luck": f"{int(self.eq.stats['luck'] * 100)} / {int(self.eq.max_stats['luck'] * 100)} %",
-            "immortality": f"{self.eq.stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT} / {self.eq.max_stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT} s",
+            "immortality": f"{(self.eq.stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT):.2f} / {(self.eq.max_stats['immortality'] + BASE_IMMORTALITY_AFTER_HIT):.2f} s",
         }
 
         for key in self.eq.stats:

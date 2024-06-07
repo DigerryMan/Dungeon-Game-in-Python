@@ -76,6 +76,7 @@ class Satan(Enemy):
         self.fly_speed = round(9 * self.game.settings.SCALE)
 
         # ANIMATION
+        self.image_transformer_used = False
         self.animation = SatanAnimiation(self, game)
 
     def draw_additional_images(self, screen):
@@ -90,7 +91,7 @@ class Satan(Enemy):
             self.collide_player()
             self.correct_layer()
         self.check_hit_and_animate()
-
+    
     def perform_boss_stage(self):
         if self.boss_figth_start_active:
             self.boss_figth_start_stage()
@@ -254,3 +255,6 @@ class Satan(Enemy):
 
     def play_hit_sound(self):
         self.play_audio("satanHit")
+
+    def restore_image_colors(self):
+        self.image = self.original_image_copy

@@ -15,12 +15,19 @@ class SatanAnimiation:
         self.game = game
 
         self.img = game.image_loader.bosses[_skin]
+        self.img_red =  game.image_loader.bosses[_skin+"_hit"]
         self.images = []
+        self.images_red = []
         self.frame_index = 0
         self.prepare_images()
 
+        
+        self.img_hit = game.image_loader.bosses[_skin+"_hit"]
+        self.images_hit = []
+        self.prepare_hit_images()
+
         self.boss.image = self.images[21]
-        self.boss.unchanged_image = self.boss.image.copy()
+        self.boss.unchanged_image = self.images_red[21]
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
 
         self.intro_image = None
@@ -100,6 +107,9 @@ class SatanAnimiation:
                 image = self.img.subsurface(pygame.Rect(x * 200, y * 120, 200, 120))
                 self.images.append(pygame.transform.scale(image, size))
 
+                image_red = self.img_red.subsurface(pygame.Rect(x * 200, y * 120, 200, 120))
+                self.images_red.append(pygame.transform.scale(image_red, size))
+
         image = self.img.subsurface(pygame.Rect(4 * 200, 2 * 120, 200, 120))
         self.images.append(pygame.transform.scale(image, size))
 
@@ -108,6 +118,22 @@ class SatanAnimiation:
 
         image = self.img.subsurface(pygame.Rect(4 * 200, 0, 200, 240))
         self.images.append(pygame.transform.scale(image, size))
+    
+    def prepare_hit_images(self):
+        size = self.boss.MOB_WIDTH, self.boss.MOB_HEIGHT
+        for y in range(6):
+            for x in range(4):
+                image = self.img_hit.subsurface(pygame.Rect(x * 200, y * 120, 200, 120))
+                self.images_hit.append(pygame.transform.scale(image, size))
+
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 2 * 120, 200, 120))
+        self.images_hit.append(pygame.transform.scale(image, size))
+
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 3 * 120, 200, 120))
+        self.images_hit.append(pygame.transform.scale(image, size))
+
+        image = self.img_hit.subsurface(pygame.Rect(4 * 200, 0, 200, 240))
+        self.images_hit.append(pygame.transform.scale(image, size))
 
     def animate(self):
         if self.boss.boss_figth_start_active:
@@ -168,8 +194,9 @@ class SatanAnimiation:
     def animate_full_time_stage(self, boss_condition, time_stage, frames, modulo_cond):
         if boss_condition in time_stage:
             self.boss.image = self.images[frames[self.frame_index]]
+            self.boss.original_image_copy = self.images[frames[self.frame_index]]
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images_hit[frames[self.frame_index]]
             self.boss.mask = pygame.mask.from_surface(self.boss.image)
             self.frame_index += 1
             self.frame_index %= len(modulo_cond)

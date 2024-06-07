@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from config import FPS
@@ -14,6 +16,7 @@ class Menu:
     def __init__(self, game):
         self.game = game
         self.update_images()
+        self.start_time = pygame.time.get_ticks()
 
         self.intro_screen = IntroScreen(self)
         self.character_selection_screen = CharacterSelectionScreen(self)
@@ -37,7 +40,12 @@ class Menu:
         self.menu_background = self.game.image_loader.get_image("menuoverlay")
         self.pause_card = self.game.image_loader.get_image("pausecard")
         self.arrow = self.game.image_loader.get_image("arrow")
+
         self.main_title = self.game.image_loader.get_image("maintitle")
+        self.main_title_position = (
+            self.game.settings.WIN_WIDTH // 2 - self.main_title.get_width() // 2,
+            0,
+        )
 
     def display_main_menu(self):
         self.game.sound_manager.play_with_fadein("menuMusic", 2000, looped=True)
@@ -56,6 +64,7 @@ class Menu:
             ),
         ]
         current_arrow = 0
+        start_time = pygame.time.get_ticks()
 
         while self.game.menu_playing:
             for event in pygame.event.get():
@@ -108,9 +117,7 @@ class Menu:
 
             self.game.screen.blit(self.menu_card, (0, 0))
             self.game.screen.blit(self.menu_background, (0, 0))
-            self.game.screen.blit(
-                self.main_title, (self.game.settings.WIN_WIDTH // 8, 0)
-            )
+            self.display_tilted_main_title()
 
             self.game.screen.blit(
                 self.arrow,
@@ -119,6 +126,24 @@ class Menu:
 
             self.game.clock.tick(FPS)
             pygame.display.update()
+
+    def display_tilted_main_title(self):
+        time_passed = pygame.time.get_ticks() - self.start_time
+        tilt_angle = math.sin(time_passed / 500) * 1
+
+        tilted_main_title = pygame.transform.rotate(self.main_title, tilt_angle)
+
+        new_x = (
+            self.main_title_position[0]
+            - (tilted_main_title.get_width() - self.main_title.get_width()) / 2
+        )
+        new_y = (
+            self.main_title_position[1]
+            - (tilted_main_title.get_height() - self.main_title.get_height()) / 2
+        )
+        tilted_main_title_position = (new_x, new_y)
+
+        self.game.screen.blit(tilted_main_title, tilted_main_title_position)
 
     def display_intro_screen(self):
         self.intro_screen.display()

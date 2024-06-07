@@ -50,8 +50,8 @@ class TrapDoor(pygame.sprite.Sprite):
             if self.game.map.level == 7:
                 self.game.game_over_playing = True
             else:
-                self.game.render_new_map()
                 self.game.level_loading_screen_playing = True
+                self.game.render_new_map()
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))

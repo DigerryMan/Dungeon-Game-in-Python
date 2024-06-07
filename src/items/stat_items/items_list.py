@@ -145,7 +145,7 @@ class ItemsList:
         self.commons["red_pepper"] = {
             "name": "Red pepper",
             "category": Categories.COMMON,
-            "stats": {"speed": 2},
+            "stats": {"speed": 2, "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(22 * 32, 9 * 32, 32, 32)
@@ -181,7 +181,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"immortality": -0.1, "dmg": 0.25},
+            "stats": {"speed": -1, "dmg": 0.25, "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
@@ -193,7 +193,7 @@ class ItemsList:
         self.commons["gameboy"] = {
             "name": "Gameboy",
             "category": Categories.COMMON,
-            "stats": {"dmg": 0.1, "shooting_cooldown": 0.1},
+            "stats": {"dmg": 0.1, "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 4 * 32, 32, 32)
@@ -255,7 +255,7 @@ class ItemsList:
         self.epics["holy_cross"] = {
             "name": "Holy cross",
             "category": Categories.EPIC,
-            "stats": {"luck": 0.1},
+            "stats": {"luck": 0.1, "speed": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(36 * 32, 6 * 32, 32, 32)
@@ -295,7 +295,7 @@ class ItemsList:
         self.epics["holy_bullet"] = {
             "name": "Holy bullet",
             "category": Categories.EPIC,
-            "stats": {"dmg": 0.5, "immortality": 0.1},
+            "stats": {"dmg": 0.5, "immortality": 0.1, "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 18 * 32, 32, 32)

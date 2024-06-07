@@ -160,6 +160,7 @@ class Player(pygame.sprite.Sprite):
             )
             self.health = round(self.health, 2)
             self.immortality_time_left = self.get_immortality_time()
+            print(self.health)
             self.check_is_dead()
 
     def check_is_dead(self):

@@ -1,6 +1,7 @@
 import pygame
 
 from entities.player.player_types import PlayerTypes
+from utils.image_transformer import ImageTransformer
 
 
 class ImageLoader:
@@ -23,9 +24,23 @@ class ImageLoader:
             "maintitle",
             "character_selection",
             "level_loading_background",
+            "spotlightcry1",
+            "spotlightcry2",
+            "introoverlay",
         ]
 
-        self.minis_ = ["player", "final_boss", "1", "2", "3", "4", "5", "6", "7", "corridor"]
+        self.minis_ = [
+            "player",
+            "final_boss",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "corridor",
+        ]
         self.minis = {}
 
         self.characters = [
@@ -119,12 +134,12 @@ class ImageLoader:
         self.load_bosses()
 
     def load_bosses(self):
-        bosses = ["monstro", "monstro2", "satan", "satan2", "forsaken", "duke"]
+        bosses = ["monstro", "monstro2", "satan", "satan2", "forsaken", "duke", "satan_hit", "satan2_hit", "forsaken_hit"]
         for boss in bosses:
             self.bosses[boss] = pygame.image.load(
                 f"resources/mobs/bosses/{boss}.png"
             ).convert_alpha()
-
+            
     def load_others(self):
         others = ["laser", "laser_opacity", "death_animation", "large_dust"]
         for other in others:
@@ -358,6 +373,25 @@ class ImageLoader:
         ).convert_alpha()
         self.images_dict["level_loading_background"] = pygame.transform.scale(
             self.images_dict["level_loading_background"], screen_size
+        ).convert_alpha()
+        self.images_dict["introoverlay"] = pygame.transform.scale(
+            self.images_dict["introoverlay"], screen_size
+        ).convert_alpha()
+
+        img = self.images_dict["spotlightcry1"]
+        self.images_dict["spotlightcry1"] = pygame.transform.scale(
+            img,
+            (
+                img.get_width() * 3.5 * self.settings.SCALE,
+                img.get_height() * 3.5 * self.settings.SCALE,
+            ),
+        ).convert_alpha()
+        self.images_dict["spotlightcry2"] = pygame.transform.scale(
+            self.images_dict["spotlightcry2"],
+            (
+                img.get_width() * 3.5 * self.settings.SCALE,
+                img.get_width() * 3.5 * self.settings.SCALE,
+            ),
         ).convert_alpha()
 
         img = self.images_dict["spotlight"]

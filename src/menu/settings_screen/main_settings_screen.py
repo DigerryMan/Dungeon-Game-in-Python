@@ -67,9 +67,7 @@ class MainSettingsScreen:
 
             self.game.screen.blit(self.menu.settings_card, (0, 0))
             self.game.screen.blit(self.menu.menu_background, (0, 0))
-            self.game.screen.blit(
-                self.menu.main_title, (self.game.settings.WIN_WIDTH // 8, 0)
-            )
+            self.menu.display_tilted_main_title()
 
             self.game.screen.blit(
                 self.menu.arrow,
