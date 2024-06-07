@@ -121,7 +121,8 @@ class ItemsList:
         self.commons["glasses"] = {
             "name": "Glasses",
             "category": Categories.COMMON,
-            "stats": {"bullet_fly_time": 0.2},
+            "stats": {"bullet_fly_time": 0.2, 
+                      "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(0 * 32, 12 * 32, 32, 32)
@@ -133,7 +134,8 @@ class ItemsList:
         self.commons["green_syringe"] = {
             "name": "Green syringe",
             "category": Categories.COMMON,
-            "stats": {"shot_speed": 2},
+            "stats": {"shot_speed": 2, 
+                      "shooting_cooldown": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 0 * 32, 32, 32)
@@ -145,7 +147,7 @@ class ItemsList:
         self.commons["red_pepper"] = {
             "name": "Red pepper",
             "category": Categories.COMMON,
-            "stats": {"speed": 2, "shooting_cooldown": 0.05},
+            "stats": {"speed": 2},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(22 * 32, 9 * 32, 32, 32)
@@ -181,7 +183,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"speed": -1, "dmg": 0.25, "shooting_cooldown": 0.05},
+            "stats": {"speed": -1, "dmg": 0.25, "shooting_cooldown": 0.05, "health": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
@@ -205,7 +207,7 @@ class ItemsList:
         self.commons["peanut_butter"] = {
             "name": "Peanut butter",
             "category": Categories.COMMON,
-            "stats": {"health": 1, "dmg": 0.1, "speed": -1},
+            "stats": {"health": 1, "dmg": 0.1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(17 * 32, 10 * 32, 32, 32)
@@ -217,7 +219,7 @@ class ItemsList:
         self.commons["explorers_guide"] = {
             "name": "Explorer's guide",
             "category": Categories.COMMON,
-            "stats": {"speed": 1},
+            "stats": {"speed": 1, "health": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(19 * 32, 5 * 32, 32, 32)
