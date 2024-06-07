@@ -19,6 +19,7 @@ class SatanAnimiation:
         self.frame_index = 0
         self.prepare_images()
 
+        
         self.img_hit = game.image_loader.bosses[_skin+"_hit"]
         self.images_hit = []
         self.prepare_hit_images()
