@@ -119,7 +119,7 @@ class ImageLoader:
         self.load_bosses()
 
     def load_bosses(self):
-        bosses = ["monstro", "monstro2", "satan", "satan2", "forsaken", "duke"]
+        bosses = ["monstro", "monstro2", "satan", "satan2", "forsaken", "duke", "satan_hit", "satan2_hit", "forsaken_hit"]
         for boss in bosses:
             self.bosses[boss] = pygame.image.load(
                 f"resources/mobs/bosses/{boss}.png"

@@ -53,6 +53,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
         self.unchanged_image = self.image.copy()
+        self.original_image_copy = self.image.copy()
         self.mask = pygame.mask.from_surface(self.image)
         self.frame = None
         self.images = []
@@ -109,7 +110,10 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.is_change_of_frame = False
         self.animate()
         if self.is_change_of_frame and self.hit_time > 0 and not self._is_dead:
-            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            if self.image_transformer_used:
+                self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            else:
+                self.image = self.unchanged_image
 
     def restore_image_colors(self):
         self.image = self.unchanged_image

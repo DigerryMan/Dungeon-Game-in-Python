@@ -255,3 +255,6 @@ class Satan(Enemy):
 
     def play_hit_sound(self):
         self.play_audio("satanHit")
+
+    def restore_image_colors(self):
+        self.image = self.original_image_copy
