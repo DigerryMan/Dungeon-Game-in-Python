@@ -6,7 +6,6 @@ from entities.mobs.boss.boss_health_bar import BossHealthBar
 from entities.mobs.boss.forsaken.forsaken_animation import ForsakenAnimation
 from entities.mobs.legs import Legs
 from entities.mobs.slime import Enemy
-from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
 from items.stat_items.categories import Categories
@@ -31,6 +30,8 @@ class Forsaken(Enemy):
 
         # SKINS
         self.image = pygame.Surface([self.MOB_SIZE, self.MOB_SIZE])
+
+
 
         # HITBOX
         self.rect = self.image.get_rect()
@@ -217,3 +218,6 @@ class Forsaken(Enemy):
                 boss="forsaken",
             )
         )
+    
+    def restore_image_colors(self):
+        self.image = self.original_image_copy

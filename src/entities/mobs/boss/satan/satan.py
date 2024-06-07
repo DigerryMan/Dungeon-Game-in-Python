@@ -76,6 +76,7 @@ class Satan(Enemy):
         self.fly_speed = round(9 * self.game.settings.SCALE)
 
         # ANIMATION
+        self.image_transformer_used = False
         self.animation = SatanAnimiation(self, game)
 
     def draw_additional_images(self, screen):
@@ -255,5 +256,5 @@ class Satan(Enemy):
     def play_hit_sound(self):
         self.play_audio("satanHit")
 
-    def use_transformer_to_color_change(self, transformer_used=False):
-        super().use_transformer_to_color_change(transformer_used)
+    def restore_image_colors(self):
+        self.image = self.original_image_copy

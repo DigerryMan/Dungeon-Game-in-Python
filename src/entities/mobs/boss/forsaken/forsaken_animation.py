@@ -12,9 +12,15 @@ class ForsakenAnimation:
     def __init__(self, boss, game):
         self.boss = boss
         self.game = game
+
         self.img = game.image_loader.bosses["forsaken"]
         self.images = []
         self.prepare_images()
+
+        self.img_hit = game.image_loader.bosses["forsaken_hit"]
+        self.images_hit = []
+        self.prepare_hit_images()
+
         self.boss.image = self.images[0]
         self.boss.unchanged_image = self.boss.image.copy()
         self.boss.mask = pygame.mask.from_surface(self.boss.image)
@@ -63,6 +69,19 @@ class ForsakenAnimation:
                 )
             if y == 1:
                 end = 3
+    
+    def prepare_hit_images(self):
+        end = 4
+        for y in range(3):
+            for x in range(end):
+                image = self.img_hit.subsurface(pygame.Rect(x * 95, y * 92, 95, 92))
+                self.images_hit.append(
+                    pygame.transform.scale(
+                        image, (self.boss.MOB_SIZE, self.boss.MOB_SIZE)
+                    )
+                )
+            if y == 1:
+                end = 3
 
     def animate(self):
         if self.boss.lasers_active:
@@ -82,14 +101,18 @@ class ForsakenAnimation:
             self.boss.image = self.images[
                 ForsakenAnimation.enemies_spawning_frames[self.index]
             ]
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images_hit[
+                ForsakenAnimation.enemies_spawning_frames[self.index]
+            ]
 
     def laser_animation(self):
         if self.boss.lasers_time == (8 * FPS - 1):
             self.boss.image = ImageTransformer.change_opacity(self.images[5], 100)
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images[5]
             self.game.not_voulnerable.add(self.boss)
         self.shaking_animation.shake_animation_x_and_y()
 
@@ -107,23 +130,29 @@ class ForsakenAnimation:
             self.boss.image = self.images[
                 ForsakenAnimation.looped_flying_frames[self.index]
             ]
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images_hit[
+                ForsakenAnimation.looped_flying_frames[self.index]
+            ]
 
     def disappearing_animation(self):
         if self.boss.flying_time == int(9.7 * FPS):
             self.game.not_voulnerable.add(self.boss)
             self.boss.image = ImageTransformer.change_opacity(self.images[5], 150)
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images_hit[5]
 
         elif self.boss.flying_time == int(9.3 * FPS):
             self.boss.image = ImageTransformer.change_opacity(self.images[5], 50)
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images[5]
 
         elif self.boss.flying_time == int(8.8 * FPS):
             self.game.not_voulnerable.remove(self.boss)
             self.boss.image = self.images[5]
+            self.boss.original_image_copy = self.boss.image.copy()
             self.boss.is_change_of_frame = True
-            self.boss.unchanged_image = self.boss.image.copy()
+            self.boss.unchanged_image = self.images[5]
