@@ -90,7 +90,7 @@ class Satan(Enemy):
             self.collide_player()
             self.correct_layer()
         self.check_hit_and_animate()
-
+    
     def perform_boss_stage(self):
         if self.boss_figth_start_active:
             self.boss_figth_start_stage()
@@ -254,3 +254,6 @@ class Satan(Enemy):
 
     def play_hit_sound(self):
         self.play_audio("satanHit")
+
+    def use_transformer_to_color_change(self, transformer_used=False):
+        super().use_transformer_to_color_change(transformer_used)

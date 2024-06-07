@@ -108,7 +108,12 @@ class Enemy(pygame.sprite.Sprite, ABC):
         self.is_change_of_frame = False
         self.animate()
         if self.is_change_of_frame and self.hit_time > 0 and not self._is_dead:
-            self.image = ImageTransformer.change_image_to_more_red(self.unchanged_image)
+            self.image = self.use_transformer_to_color_change()
+
+    def use_transformer_to_color_change(self, transformer_used=True):
+        if transformer_used:
+            return ImageTransformer.change_image_to_more_red(self.unchanged_image)
+        return self.unchanged_image
 
     def restore_image_colors(self):
         self.image = self.unchanged_image
@@ -172,9 +177,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
             self.hit_time = self.hit_time_cd
             if not self._is_dead:
-                self.image = ImageTransformer.change_image_to_more_red(
-                    self.unchanged_image
-                )
+                self.image = self.use_transformer_to_color_change()
 
     def play_hit_sound(self):
         self.play_audio(f"enemyHit{random.randint(1, 3)}")
