@@ -13,7 +13,7 @@ class Poop(DestructableBlock):
 
         self.type = random.randint(0, 4)
         self.image = game.image_loader.blocks[f"poop{self.type}_4"].copy()
-        self.mask = pygame.mask.from_surface(self.image)
+        self.prepare_mask()
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x

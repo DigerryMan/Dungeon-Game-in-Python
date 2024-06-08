@@ -10,7 +10,7 @@ class DestructableBlock(Block):
         super().__init__(game, x, y)
 
         self.image = game.image_loader.blocks["vase" + str(random.randint(1, 4))].copy()
-        self.mask = pygame.mask.from_surface(self.image)
+        self.prepare_mask()
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x

@@ -22,7 +22,7 @@ class TreasureBlock(Block):
                 "treasure_rock" + str(random.randint(1, 2))
             ].copy()
 
-        self.mask = pygame.mask.from_surface(self.image)
+        self.prepare_mask()
 
         self.rect = self.image.get_rect()
         self.rect.x = self.x
