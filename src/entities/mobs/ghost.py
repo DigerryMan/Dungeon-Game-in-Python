@@ -1,7 +1,9 @@
 import pygame
 
+from config import FPS
 from entities.enemy import Enemy
 from utils.directions import Directions
+import random
 
 
 class Ghost(Enemy):
@@ -18,6 +20,9 @@ class Ghost(Enemy):
         self._health = 6 * self.hp_scaling_factor()
         self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 7
+        self._damage = 0.5
+        self._collision_damage = 0.25
+        self.afk_time_left = int(random.uniform(0.8, 1.2) * FPS)
 
         # ANIMATION
         self.next_frame_ticks_cd = 10
@@ -79,3 +84,10 @@ class Ghost(Enemy):
 
     def correct_layer(self):
         self._layer = 3000
+    
+    def move(self):
+        if not self._is_dead:
+            if self.afk_time_left <= 0:
+                self.enemy_moves.move()
+            else:
+                self.afk_time_left -= 1

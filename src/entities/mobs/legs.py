@@ -1,15 +1,18 @@
+import random
 import pygame
 
+from config import FPS
 from utils.directions import Directions
-
 from ..enemy import Enemy
 
 
 class Legs(Enemy):
     def __init__(self, game, x, y):
         super().__init__(game, x, y, True, is_wandering=False)
-        self._speed = 3 * game.settings.SCALE
+        self._speed = int(random.uniform(2.5, 3.5) * game.settings.SCALE)
         self._health = 5 * self.hp_scaling_factor()
+        self.afk_time_left = int(random.uniform(0.4, 0.6) * FPS)
+
 
         # ANIMATION
         self.next_frame_ticks_cd = 3
@@ -23,7 +26,7 @@ class Legs(Enemy):
         self.prepare_images()
         self.image = self.images[0]
         self.unchanged_image = self.image.copy()
-
+        self.facing = Directions.DOWN
         # HITBOX
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -47,7 +50,7 @@ class Legs(Enemy):
     def animate_alive(self):
         self.reversed_frame = False
 
-        if not self._is_wandering or not self._is_idling:
+        if (not self._is_wandering or not self._is_idling) and not self.afk_time_left:
             self.time -= 1
 
         if self.time <= 0:
@@ -73,3 +76,10 @@ class Legs(Enemy):
             self.image = self.images[curr_frame]
 
         self.unchanged_image = self.image.copy()
+    
+    def move(self):
+        if not self._is_dead:
+            if self.afk_time_left <= 0:
+                self.enemy_moves.move()
+            else:
+                self.afk_time_left -= 1
