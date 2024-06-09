@@ -121,8 +121,8 @@ class ItemsList:
         self.commons["glasses"] = {
             "name": "Glasses",
             "category": Categories.COMMON,
-            "stats": {"bullet_fly_time": 0.1, 
-                      "shooting_cooldown": 0.02},
+            "stats": {"bullet_fly_time": 0.05, 
+                      "shooting_cooldown": 0.03},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(0 * 32, 12 * 32, 32, 32)
@@ -171,7 +171,7 @@ class ItemsList:
         self.commons["paw"] = {
             "name": "Paw",
             "category": Categories.COMMON,
-            "stats": {"health": 1, "bullet_fly_time": 0.1},
+            "stats": {"health": 1, "bullet_fly_time": 0.05},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 6 * 32, 32, 32)
@@ -195,7 +195,7 @@ class ItemsList:
         self.commons["gameboy"] = {
             "name": "Gameboy",
             "category": Categories.COMMON,
-            "stats": {"dmg": 0.1, "shooting_cooldown": 0.04},
+            "stats": {"dmg": 0.1, "shooting_cooldown": 0.02},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 4 * 32, 32, 32)
@@ -297,7 +297,7 @@ class ItemsList:
         self.epics["holy_bullet"] = {
             "name": "Holy bullet",
             "category": Categories.EPIC,
-            "stats": {"dmg": 0.4, "immortality": 0.1, "shooting_cooldown": 0.04},
+            "stats": {"dmg": 0.4, "immortality": 0.1, "shooting_cooldown": 0.03},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 18 * 32, 32, 32)
@@ -346,7 +346,7 @@ class ItemsList:
                 "dmg": 0.2,
                 "dmg_reduction": 0.05,
                 "shot_speed": 1,
-                "bullet_fly_time": 0.5,
+                "bullet_fly_time": 0.08,
                 "luck": 0.05,
                 "immortality": 0.2,
                 "shooting_cooldown": 0.04,
