@@ -4,7 +4,8 @@ from map.block import Block
 
 
 class EnemyCollisions:
-    def __init__(self, enemy, game, check_block_colisions):
+    def __init__(self, enemy, game, check_block_colisions, boss=None):
+        self.boss = boss
         self.enemy = enemy
         self.game = game
         self._check_block_colisions = check_block_colisions
@@ -42,12 +43,15 @@ class EnemyCollisions:
             self.enemy, self.game.collidables, False
         )
         if rect_hits:
-            mask_hits = self.get_mask_colliding_sprite(rect_hits)
-            if mask_hits:
-                if orientation == "x":
-                    self.enemy.rect.x -= self.enemy.x_change
-                elif orientation == "y":
-                    self.enemy.rect.y -= self.enemy.y_change
+            if self.boss is None:
+                mask_hits = self.get_mask_colliding_sprite(rect_hits)
+                if mask_hits:
+                    self.revert_move(orientation)
+            else:
+                self.revert_move(orientation)
+            
+        if self.boss is not None:
+            self.collide_beetwen_FlyAggresive(orientation)
 
     def terrain_collisions(self):
         self.enemy.rect.x += self.enemy.x_change
@@ -57,3 +61,22 @@ class EnemyCollisions:
         self.enemy.rect.y += self.enemy.y_change
         if self._check_block_colisions:
             self.collide_blocks("y")
+
+    def revert_move(self, orientation: str):
+        if orientation == "x":
+            self.enemy.rect.x -= self.enemy.x_change
+        elif orientation == "y":
+            self.enemy.rect.y -= self.enemy.y_change
+    
+    def collide_beetwen_FlyAggresive(self, orientation: str):
+        rect_hits_enemies = pygame.sprite.spritecollide(self.enemy, self.game.enemies, False)
+        try:
+            rect_hits_enemies.remove(self.enemy)
+            rect_hits_enemies.remove(self.boss)
+        except ValueError:
+            pass
+
+        if rect_hits_enemies:
+            mask_hits = self.get_mask_colliding_sprite(rect_hits_enemies)
+            if mask_hits:
+                self.revert_move(orientation)

@@ -7,7 +7,7 @@ class LevelLoadingScreen:
     def __init__(self, menu):
         self.menu = menu
         self.game = menu.game
-        self.duration = 10000
+        self.duration = 8000
         self.fade_duration = 2000
 
     def display(self):
@@ -63,8 +63,8 @@ class LevelLoadingScreen:
             self.game.settings.WIN_HEIGHT // 1.4,
         )
 
-        jump_start = 3000
-        jump_end = 7000
+        jump_start = 2000
+        jump_end = 6000
         jump_duration = jump_end - jump_start
         jump_offset = 0
 

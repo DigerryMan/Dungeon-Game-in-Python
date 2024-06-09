@@ -37,7 +37,7 @@ class PlayerTypes(Enum):
         player_stats = {
             PlayerTypes.ISAAC: (6, 1, 9),
             PlayerTypes.LAZARUS: (5, 0.8, 10),
-            PlayerTypes.EVE: (5, 1.5, 8),
+            PlayerTypes.EVE: (4, 1.5, 8),
             PlayerTypes.TAINTED: (30, 3, 12),
         }
 

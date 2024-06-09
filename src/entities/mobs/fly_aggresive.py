@@ -2,6 +2,7 @@ import random
 
 import pygame
 
+from entities.enemy_collisions import EnemyCollisions
 from entities.mobs.fly import Fly
 
 
@@ -16,6 +17,7 @@ class FlyAggresive(Fly):
         self._speed = 2 * game.settings.SCALE
         self._projectal_speed = 11
         self._bullet_decay_sec = 1.3
+        self.collisions_manager = EnemyCollisions(self, game, True, self.boss)
 
         self.will_chase = random.choice([True, False])
         self.prepare_images_v2()
