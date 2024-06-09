@@ -20,8 +20,8 @@ class Ghost(Enemy):
         self._health = 6 * self.hp_scaling_factor()
         self._speed = 3 * game.settings.SCALE
         self._projectal_speed = 7
-        self._damage = 0.5
-        self._collision_damage = 0.25
+        self._damage = 0.75
+        self._collision_damage = 0.5
         self.afk_time_left = int(random.uniform(0.8, 1.2) * FPS)
 
         # ANIMATION

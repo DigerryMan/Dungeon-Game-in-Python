@@ -14,9 +14,9 @@ from utils.directions import Directions
 class Monstro2(Monstro):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
-        self._max_health = 300
+        self._max_health = 400
         self._health = self._max_health
-        self._damage = 1.25
+        self._damage = 1.75
         self._projectal_speed = 11
 
         self.health_bar = BossHealthBar(game, self)

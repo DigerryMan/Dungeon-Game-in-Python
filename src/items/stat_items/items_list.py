@@ -109,7 +109,7 @@ class ItemsList:
         self.commons["small_sword"] = {
             "name": "Small sword",
             "category": Categories.COMMON,
-            "stats": {"dmg": 0.2},
+            "stats": {"dmg": 0.15},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(15 * 32, 19 * 32, 32, 32)
@@ -121,8 +121,8 @@ class ItemsList:
         self.commons["glasses"] = {
             "name": "Glasses",
             "category": Categories.COMMON,
-            "stats": {"bullet_fly_time": 0.2, 
-                      "shooting_cooldown": 0.05},
+            "stats": {"bullet_fly_time": 0.1, 
+                      "shooting_cooldown": 0.04},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(0 * 32, 12 * 32, 32, 32)
@@ -135,7 +135,7 @@ class ItemsList:
             "name": "Green syringe",
             "category": Categories.COMMON,
             "stats": {"shot_speed": 2, 
-                      "shooting_cooldown": 0.05},
+                      "shooting_cooldown": 0.04},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 0 * 32, 32, 32)
@@ -147,7 +147,7 @@ class ItemsList:
         self.commons["red_pepper"] = {
             "name": "Red pepper",
             "category": Categories.COMMON,
-            "stats": {"speed": 2},
+            "stats": {"speed": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(22 * 32, 9 * 32, 32, 32)
@@ -183,7 +183,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"speed": -1, "dmg": 0.25, "shooting_cooldown": 0.05, "health": 1},
+            "stats": {"speed": -1, "dmg": 0.2, "shooting_cooldown": 0.04, "health": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
@@ -195,7 +195,7 @@ class ItemsList:
         self.commons["gameboy"] = {
             "name": "Gameboy",
             "category": Categories.COMMON,
-            "stats": {"dmg": 0.1, "shooting_cooldown": 0.05},
+            "stats": {"dmg": 0.1, "shooting_cooldown": 0.04},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 4 * 32, 32, 32)
@@ -245,7 +245,7 @@ class ItemsList:
         self.epics["big_sword"] = {
             "name": "Big sword",
             "category": Categories.EPIC,
-            "stats": {"dmg": 0.5},
+            "stats": {"dmg": 0.4},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(26 * 32, 13 * 32, 32, 32)
@@ -285,7 +285,7 @@ class ItemsList:
         self.epics["darkhold"] = {
             "name": "Darkhold",
             "category": Categories.EPIC,
-            "stats": {"dmg": 1, "health": -1},
+            "stats": {"dmg": 0.75, "health": -1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(7 * 32, 14 * 32, 32, 32)
@@ -297,7 +297,7 @@ class ItemsList:
         self.epics["holy_bullet"] = {
             "name": "Holy bullet",
             "category": Categories.EPIC,
-            "stats": {"dmg": 0.5, "immortality": 0.1, "shooting_cooldown": 0.05},
+            "stats": {"dmg": 0.4, "immortality": 0.1, "shooting_cooldown": 0.04},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(9 * 32, 18 * 32, 32, 32)
@@ -342,15 +342,14 @@ class ItemsList:
             "name": "Eye of Horus",
             "category": Categories.LEGENDARY,
             "stats": {
-                "health": 2,
-                "dmg": 1,
-                "dmg_reduction": 0.2,
-                "shot_speed": 2,
+                "health": 1,
+                "dmg": 0.2,
+                "dmg_reduction": 0.05,
+                "shot_speed": 1,
                 "bullet_fly_time": 0.5,
-                "luck": 0.1,
-                "immortality": 0.5,
-                "shooting_cooldown": 0.1,
-                "speed": 1,
+                "luck": 0.05,
+                "immortality": 0.2,
+                "shooting_cooldown": 0.04,
             },
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
