@@ -1,7 +1,7 @@
 FPS = 60
 MAP_RANGE = 15
 ROOM_NUMBER = 11
-WALL_MARKS = ["B", "#", "D", "C"]
+WALL_MARKS = ["B", "#", "D", "C", "P"]
 
 # PLAYER SETTINGS
 BASE_HEALTH = 4
