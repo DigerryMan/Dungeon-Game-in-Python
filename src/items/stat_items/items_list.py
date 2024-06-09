@@ -27,7 +27,7 @@ class ItemsList:
         self.very_commons["dmg_pill"] = {
             "name": "Damage pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"dmg": [-0.2, -0.1, 0.1, 0.2]},
+            "stats": {"dmg": [-0.1, 0.1]},
             "image": game.image_loader.lootables["dmg_pill"],
         }
 
@@ -41,14 +41,14 @@ class ItemsList:
         self.very_commons["shooting_cooldown_pill"] = {
             "name": "Shooting cooldown pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"shooting_cooldown": [0.04, 0.08, -0.08, -0.04]},
+            "stats": {"shooting_cooldown": [0.02, -0.04]},
             "image": game.image_loader.lootables["shooting_cooldown_pill"],
         }
 
         self.very_commons["shot_speed_pill"] = {
             "name": "Shot speed pill",
             "category": Categories.VERY_COMMON,
-            "stats": {"shot_speed": [-1, -0.5, 0.5, 1]},
+            "stats": {"shot_speed": [-1, 1]},
             "image": game.image_loader.lootables["shot_speed_pill"],
         }
 
@@ -122,7 +122,7 @@ class ItemsList:
             "name": "Glasses",
             "category": Categories.COMMON,
             "stats": {"bullet_fly_time": 0.1, 
-                      "shooting_cooldown": 0.04},
+                      "shooting_cooldown": 0.02},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(0 * 32, 12 * 32, 32, 32)
@@ -134,8 +134,8 @@ class ItemsList:
         self.commons["green_syringe"] = {
             "name": "Green syringe",
             "category": Categories.COMMON,
-            "stats": {"shot_speed": 2, 
-                      "shooting_cooldown": 0.04},
+            "stats": {"shot_speed": 1, 
+                      "shooting_cooldown": 0.03},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 0 * 32, 32, 32)
@@ -183,7 +183,7 @@ class ItemsList:
         self.commons["suspicous_juice"] = {
             "name": "Suspicious juice",
             "category": Categories.COMMON,
-            "stats": {"speed": -1, "dmg": 0.2, "shooting_cooldown": 0.04, "health": 1},
+            "stats": {"speed": -1, "dmg": 0.15, "shooting_cooldown": 0.03, "health": 1},
             "image": pygame.transform.scale(
                 game.image_loader.get_image("items").subsurface(
                     pygame.Rect(13 * 32, 9 * 32, 32, 32)
