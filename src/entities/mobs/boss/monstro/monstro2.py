@@ -44,7 +44,7 @@ class Monstro2(Monstro):
             x, y = self.rect.centerx + random.randint(
                 -12, 12
             ), self.rect.centery + random.randint(-12, 12)
-            decay = random.random() * 0.25 + 0.4
+            decay = random.random() * 0.25 + 0.45
             speed = random.randint(18, 23)
             additional_speed = random.randint(-4, 4)
             Bullet(
