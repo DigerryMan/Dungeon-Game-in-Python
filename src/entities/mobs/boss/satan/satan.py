@@ -24,7 +24,7 @@ class Satan(Enemy):
     def __init__(self, game, x: int, y: int):
         super().__init__(game, x, y)
         self.size = "Boss"
-        self._max_health = 100
+        self._max_health = 225
         self._health = self._max_health
         self._damage = 2
 
