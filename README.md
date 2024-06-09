@@ -42,6 +42,25 @@ cd ./src
 python ./main.py
 ```
 
+# Controls
+<kbd>&uarr;</kbd>
+<kbd>&darr;</kbd>
+<kbd>&larr;</kbd>
+<kbd>&rarr;</kbd> - movement <br/>
+
+<kbd>W</kbd>
+<kbd>S</kbd>
+<kbd>A</kbd>
+<kbd>D</kbd> - shooting <br/>
+
+<kbd>E</kbd> - place bomb <br/>
+
+<kbd>Space</kbd> - pick up item / enter new level <br/>
+
+<kbd>Enter</kbd> - select menu element <br/>
+
+<kbd>Esc</kbd> - go back in menu <br/>
+
 # Screenshots
 
 ![](screenshots/gameplay.png)
@@ -74,22 +93,3 @@ python ./main.py
 
 
 ![](screenshots/satan.png)
-
-# Controls
-<kbd>&uarr;</kbd>
-<kbd>&darr;</kbd>
-<kbd>&larr;</kbd>
-<kbd>&rarr;</kbd> - movement <br/>
-
-<kbd>W</kbd>
-<kbd>S</kbd>
-<kbd>A</kbd>
-<kbd>D</kbd> - shooting <br/>
-
-<kbd>E</kbd> - place bomb <br/>
-
-<kbd>Space</kbd> - pick up item / enter new level <br/>
-
-<kbd>Enter</kbd> - select menu element <br/>
-
-<kbd>Esc</kbd> - go back in menu <br/>
