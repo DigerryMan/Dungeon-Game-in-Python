@@ -8,6 +8,8 @@ from entities.mobs.boss.monstro.monstro_animation import MonstroAnimation
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 from utils.directions import Directions
 
 
@@ -62,8 +64,12 @@ class Monstro2(Monstro):
         self.game.sound_manager.play(f"tear{random.randint(1, 2)}")
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 15 + [GoldenCoin] * 10 + [PickupHeart] * 3
+        drops = [SilverCoin] * 8 + [GoldenCoin] * 5 + [PickupHeart] * 3
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)
             )
+
+        self.room.items.append(
+            Item(self.game, self.rect.centerx, self.rect.centery, Categories.EPIC)
+        )

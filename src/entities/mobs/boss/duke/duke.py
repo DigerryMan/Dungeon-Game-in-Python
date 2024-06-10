@@ -10,6 +10,8 @@ from entities.mobs.slime import Enemy
 from items.lootables.golden_coin import GoldenCoin
 from items.lootables.pickup_heart import PickupHeart
 from items.lootables.silver_coin import SilverCoin
+from items.stat_items.categories import Categories
+from items.stat_items.item import Item
 
 
 class Duke(Enemy):
@@ -135,8 +137,13 @@ class Duke(Enemy):
             self.rect.y += y_speed
 
     def drop_lootable(self):
-        drops = [SilverCoin] * 12 + [GoldenCoin] * 4 + [PickupHeart] * 3
+        drops = [SilverCoin] * 3 + [GoldenCoin] * 2 + [PickupHeart] * 2
         for drop in drops:
             self.room.items.append(
                 drop(self.game, self.rect.centerx, self.rect.centery)
             )
+
+        rarity = Categories.COMMON if random.random() < 0.6 else Categories.EPIC
+        self.room.items.append(
+            Item(self.game, self.rect.centerx, self.rect.centery, rarity)
+        )
