@@ -93,3 +93,7 @@ python ./main.py
 
 
 ![](screenshots/satan.png)
+
+# Credits
+- Sprites resources: https://www.spriters-resource.com/pc_computer/bindingofisaacrebirth/
+- Sounds: https://www.sounds-resource.com/pc_computer/bindingofisaac/sound/4368/
