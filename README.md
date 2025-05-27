@@ -1,9 +1,62 @@
-# Dungeon Game in Python
-Game made with pygame, inspired by The Binding of Isaac
+# 🕹️ Dungeon Game in Python  
+## Roguelike Shooter Inspired by *The Binding of Isaac*
 
-Project made by Mateusz Bobula and Jakub Konopka for python lectures at AGH UST 2023/24
-
+### Built with **Python** & **Pygame**  
+- 🎓 AGH UST Project 2023/24 by Mateusz Bobula and Jakub Konopka 
+- 🏆 **Winner** of the Customer's Choice Distinction
+  
 ![](screenshots/intro.png)
+
+## 🎮 Gameplay features
+
+
+- **Intense, roughly 30-minute** roguelike experience  
+- Face **diverse enemies** and **challenging bosses**  
+- Explore **ever-changing floors** with procedurally generated layouts  
+- Encounter **progressively harder foes** as you descend deeper  
+- Collect powerful items, manage resources, and adapt to survive and conquer
+
+## 💀 Boss Fights
+
+Face off against **5 unique bosses**, including **Alpha versions** of some:
+
+| Satan | Forsaken |
+|-------|----------|
+| ![](screenshots/satan.png) | ![](screenshots/forsaken.png) |
+
+| Duke | Husk |
+|------|------|
+| ![](screenshots/duke.png) | ![](screenshots/husk.png) |
+
+---
+
+## 👾 Enemies & Items
+
+- 🧟‍♂️ **13 unique enemy types** — from crawling creeps to floor guardians  
+- 🎁 **31 lootable items** — passives, actives, and consumables to power up your run  
+- 🧙 **4 playable characters** — choose from Isaac, Lazarus, Eve or ???  
+- 📊 **9 player statistics** — including health, damage, speed, luck, fire rate, range, and more 
+- 💣 **Place bombs** to uncover hidden rooms or eliminate hordes  
+- 🪙 **Collect coins** and spend them in mysterious in-game shops
+
+# Controls
+<kbd>&uarr;</kbd>
+<kbd>&darr;</kbd>
+<kbd>&larr;</kbd>
+<kbd>&rarr;</kbd> - movement <br/>
+
+<kbd>W</kbd>
+<kbd>S</kbd>
+<kbd>A</kbd>
+<kbd>D</kbd> - shooting <br/>
+
+<kbd>E</kbd> - place bomb <br/>
+
+<kbd>Space</kbd> - pick up item / enter new floor <br/>
+
+<kbd>Enter</kbd> - select menu element <br/>
+
+<kbd>Esc</kbd> - go back in menu <br/>
 
 # Usage
 ### Windows
@@ -41,58 +94,6 @@ cd ./src
 ```sh
 python ./main.py
 ```
-
-# Controls
-<kbd>&uarr;</kbd>
-<kbd>&darr;</kbd>
-<kbd>&larr;</kbd>
-<kbd>&rarr;</kbd> - movement <br/>
-
-<kbd>W</kbd>
-<kbd>S</kbd>
-<kbd>A</kbd>
-<kbd>D</kbd> - shooting <br/>
-
-<kbd>E</kbd> - place bomb <br/>
-
-<kbd>Space</kbd> - pick up item / enter new level <br/>
-
-<kbd>Enter</kbd> - select menu element <br/>
-
-<kbd>Esc</kbd> - go back in menu <br/>
-
-# Screenshots
-
-![](screenshots/gameplay.png)
-
-
-
-
-![](screenshots/next_level.png)
-
-
-
-
-
-![](screenshots/boss_intro.png)
-
-
-
-
-
-![](screenshots/forsaken.png)
-
-
-
-
-
-![](screenshots/eq.png)
-
-
-
-
-
-![](screenshots/satan.png)
 
 # Credits
 - Sprites resources: https://www.spriters-resource.com/pc_computer/bindingofisaacrebirth/
